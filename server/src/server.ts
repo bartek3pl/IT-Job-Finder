@@ -2,11 +2,30 @@ import express from 'express';
 import cors from 'cors';
 import { ApolloServer } from 'apollo-server-express';
 
-import typeDefs from './typeDefs';
+import queryTypeDefs from './typeDefs/query';
+import mutationTypeDefs from './typeDefs/mutation';
+import enumsTypeDefs from './typeDefs/shared/enums';
+import interfacesTypeDefs from './typeDefs/shared/interfaces';
+import scalarsTypeDefs from './typeDefs/shared/scalars';
+import userTypeDefs from './typeDefs/user';
+import addressTypeDefs from './typeDefs/address';
+import jobOfferTypeDefs from './typeDefs/jobOffer';
+import companyTypeDefs from './typeDefs/company';
+
 import resolvers from './resolvers';
 
 const server = new ApolloServer({
-  typeDefs,
+  typeDefs: [
+    queryTypeDefs,
+    mutationTypeDefs,
+    enumsTypeDefs,
+    interfacesTypeDefs,
+    scalarsTypeDefs,
+    userTypeDefs,
+    addressTypeDefs,
+    jobOfferTypeDefs,
+    companyTypeDefs,
+  ],
   resolvers,
 });
 

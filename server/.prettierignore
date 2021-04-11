@@ -1,4 +1,6 @@
 node_modules/**
 dist/**
+src/generated/**
 
 package-lock.json
+graphql.schema.json

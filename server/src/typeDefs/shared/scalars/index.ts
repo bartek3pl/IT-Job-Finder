@@ -1,9 +1,10 @@
 import { gql } from 'apollo-server-express';
 
 const typeDefs = gql`
-  type Query {
-    hello: String
-  }
+  scalar DateTime
+  scalar Email
+  scalar Salary
+  scalar PostalCode
 `;
 
 export default typeDefs;
