@@ -1,0 +1,66 @@
+{
+  "name": "server",
+  "version": "1.0.0",
+  "description": "",
+  "main": "index.js",
+  "scripts": {
+    "start": "node src/server.ts --exec ts-node src/server.ts -e ts,graphql",
+    "dev": "nodemon src/server.ts --exec ts-node src/server.ts -e ts,graphql",
+    "format": "npx prettier --write ./src/**/*.ts",
+    "format:check": "npx prettier ./src/**/*.ts",
+    "lint": "npx eslint ./src/**/*.ts --fix",
+    "lint:check": "npx eslint ./src/**/*.ts",
+    "generate-types": "graphql-codegen --config codegen.yml",
+    "generate-types:watch": "graphql-codegen --config codegen.yml --watch"
+  },
+  "author": "Bartłomiej Hildebrandt",
+  "license": "ISC",
+  "husky": {
+    "hooks": {
+      "pre-commit": "lint-staged && npm run generate-types"
+    }
+  },
+  "lint-staged": {
+    "*.+(js|jsx|ts|tsx|json)": [
+      "prettier --write",
+      "git add"
+    ],
+    "**/*.ts": [
+      "eslint --fix",
+      "git add"
+    ]
+  },
+  "devDependencies": {
+    "@graphql-codegen/cli": "1.21.3",
+    "@types/express": "^4.17.11",
+    "@types/node": "^14.14.37",
+    "@typescript-eslint/eslint-plugin": "^4.21.0",
+    "@typescript-eslint/parser": "^4.21.0",
+    "dotenv": "^8.2.0",
+    "eslint": "^7.24.0",
+    "eslint-config-prettier": "^8.1.0",
+    "eslint-plugin-prettier": "^3.3.1",
+    "graphql-import-node": "0.0.4",
+    "graphql-tools": "^7.0.4",
+    "husky": "^6.0.0",
+    "lint-staged": "^10.5.4",
+    "nodemon": "^2.0.7",
+    "prettier": "2.2.1",
+    "ts-node": "^9.1.1",
+    "typescript": "^4.2.4",
+    "@graphql-codegen/typescript": "1.21.1",
+    "@graphql-codegen/typescript-resolvers": "1.19.0",
+    "@graphql-codegen/introspection": "1.18.1"
+  },
+  "dependencies": {
+    "apollo-server-express": "^2.22.2",
+    "bcrypt": "^5.0.1",
+    "chai": "^4.3.4",
+    "cors": "^2.8.5",
+    "eslint-config-airbnb": "^18.2.1",
+    "express": "^4.17.1",
+    "graphql": "^15.5.0",
+    "mocha": "^8.3.2",
+    "mongoose": "^5.12.3"
+  }
+}
