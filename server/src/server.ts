@@ -11,6 +11,7 @@ import userTypeDefs from './typeDefs/user';
 import addressTypeDefs from './typeDefs/address';
 import jobOfferTypeDefs from './typeDefs/jobOffer';
 import companyTypeDefs from './typeDefs/company';
+import fileTypeDefs from './typeDefs/file';
 
 import resolvers from './resolvers';
 
@@ -25,6 +26,7 @@ const server = new ApolloServer({
     addressTypeDefs,
     jobOfferTypeDefs,
     companyTypeDefs,
+    fileTypeDefs,
   ],
   resolvers,
 });

@@ -3,6 +3,7 @@ export type Maybe<T> = T | null;
 export type Exact<T extends { [key: string]: unknown }> = { [K in keyof T]: T[K] };
 export type MakeOptional<T, K extends keyof T> = Omit<T, K> & { [SubKey in K]?: Maybe<T[SubKey]> };
 export type MakeMaybe<T, K extends keyof T> = Omit<T, K> & { [SubKey in K]: Maybe<T[SubKey]> };
+export type RequireFields<T, K extends keyof T> = { [X in Exclude<keyof T, K>]?: T[X] } & { [P in K]-?: NonNullable<T[P]> };
 /** All built-in and custom scalars, mapped to their actual values */
 export type Scalars = {
   ID: string;
@@ -23,6 +24,7 @@ export type Scalars = {
 };
 
 
+/** Full address details of user or company */
 export type Address = {
   __typename?: 'Address';
   country?: Maybe<Scalars['String']>;
@@ -38,6 +40,7 @@ export enum CacheControlScope {
   Private = 'PRIVATE'
 }
 
+/** Full details about company */
 export type Company = {
   __typename?: 'Company';
   name: Scalars['String'];
@@ -46,13 +49,16 @@ export type Company = {
   logo?: Maybe<File>;
 };
 
+/** Employment contract for the employee */
 export enum ContractType {
   Uop = 'UOP',
-  B2B = 'B2B'
+  B2B = 'B2B',
+  Other = 'OTHER'
 }
 
 
 
+/** File to be uploaded (e.g. image) */
 export type File = {
   __typename?: 'File';
   filename: Scalars['String'];
@@ -60,6 +66,14 @@ export type File = {
   encoding: Scalars['String'];
 };
 
+/** Gender of registered user */
+export enum Gender {
+  Man = 'MAN',
+  Woman = 'WOMAN',
+  Other = 'OTHER'
+}
+
+/** Full details about posted job offer */
 export type JobOffer = {
   __typename?: 'JobOffer';
   title: Scalars['String'];
@@ -74,15 +88,24 @@ export type JobOffer = {
   updatedDate: Scalars['DateTime'];
 };
 
+/** Expected experience of the employee */
 export enum Level {
   Junior = 'JUNIOR',
   Mid = 'MID',
-  Senior = 'SENIOR'
+  Senior = 'SENIOR',
+  Other = 'OTHER'
 }
 
 export type Mutation = {
   __typename?: 'Mutation';
   empty?: Maybe<Scalars['String']>;
+  /** Create user with login, password and email. */
+  createUser?: Maybe<UserMutationResponse>;
+};
+
+
+export type MutationCreateUserArgs = {
+  input?: Maybe<UserInput>;
 };
 
 export type MutationResponse = {
@@ -99,6 +122,7 @@ export type Query = {
 
 
 
+/** Full details about registered user */
 export type User = {
   __typename?: 'User';
   _id: Scalars['ID'];
@@ -108,7 +132,7 @@ export type User = {
   lastName?: Maybe<Scalars['String']>;
   email: Scalars['Email'];
   age?: Maybe<Scalars['Int']>;
-  gender?: Maybe<Scalars['String']>;
+  gender?: Maybe<Gender>;
   address?: Maybe<Address>;
   skills?: Maybe<Array<Scalars['String']>>;
   experienceYears?: Maybe<Scalars['Int']>;
@@ -117,9 +141,23 @@ export type User = {
   githubLink?: Maybe<Scalars['String']>;
   linkedinLink?: Maybe<Scalars['String']>;
   favouriteJobOffers?: Maybe<Array<JobOffer>>;
-  emailNotification: Scalars['Boolean'];
+  emailNotification?: Maybe<Scalars['Boolean']>;
   createdDate: Scalars['DateTime'];
   updatedDate: Scalars['DateTime'];
+};
+
+export type UserInput = {
+  login: Scalars['String'];
+  password: Scalars['String'];
+  email: Scalars['Email'];
+};
+
+export type UserMutationResponse = MutationResponse & {
+  __typename?: 'UserMutationResponse';
+  code: Scalars['String'];
+  success: Scalars['Boolean'];
+  message: Scalars['String'];
+  user?: Maybe<User>;
 };
 
 
@@ -209,10 +247,11 @@ export type ResolversTypes = {
   DateTime: ResolverTypeWrapper<Scalars['DateTime']>;
   Email: ResolverTypeWrapper<Scalars['Email']>;
   File: ResolverTypeWrapper<File>;
+  Gender: Gender;
   JobOffer: ResolverTypeWrapper<JobOffer>;
   Level: Level;
   Mutation: ResolverTypeWrapper<{}>;
-  MutationResponse: never;
+  MutationResponse: ResolversTypes['UserMutationResponse'];
   Boolean: ResolverTypeWrapper<Scalars['Boolean']>;
   PostalCode: ResolverTypeWrapper<Scalars['PostalCode']>;
   Query: ResolverTypeWrapper<{}>;
@@ -220,6 +259,8 @@ export type ResolversTypes = {
   Upload: ResolverTypeWrapper<Scalars['Upload']>;
   User: ResolverTypeWrapper<User>;
   ID: ResolverTypeWrapper<Scalars['ID']>;
+  UserInput: UserInput;
+  UserMutationResponse: ResolverTypeWrapper<UserMutationResponse>;
 };
 
 /** Mapping between all available schema types and the resolvers parents */
@@ -233,7 +274,7 @@ export type ResolversParentTypes = {
   File: File;
   JobOffer: JobOffer;
   Mutation: {};
-  MutationResponse: never;
+  MutationResponse: ResolversParentTypes['UserMutationResponse'];
   Boolean: Scalars['Boolean'];
   PostalCode: Scalars['PostalCode'];
   Query: {};
@@ -241,6 +282,8 @@ export type ResolversParentTypes = {
   Upload: Scalars['Upload'];
   User: User;
   ID: Scalars['ID'];
+  UserInput: UserInput;
+  UserMutationResponse: UserMutationResponse;
 };
 
 export type CacheControlDirectiveArgs = {   maxAge?: Maybe<Scalars['Int']>;
@@ -297,10 +340,11 @@ export type JobOfferResolvers<ContextType = any, ParentType extends ResolversPar
 
 export type MutationResolvers<ContextType = any, ParentType extends ResolversParentTypes['Mutation'] = ResolversParentTypes['Mutation']> = {
   empty?: Resolver<Maybe<ResolversTypes['String']>, ParentType, ContextType>;
+  createUser?: Resolver<Maybe<ResolversTypes['UserMutationResponse']>, ParentType, ContextType, RequireFields<MutationCreateUserArgs, never>>;
 };
 
 export type MutationResponseResolvers<ContextType = any, ParentType extends ResolversParentTypes['MutationResponse'] = ResolversParentTypes['MutationResponse']> = {
-  __resolveType: TypeResolveFn<null, ParentType, ContextType>;
+  __resolveType: TypeResolveFn<'UserMutationResponse', ParentType, ContextType>;
   code?: Resolver<ResolversTypes['String'], ParentType, ContextType>;
   success?: Resolver<ResolversTypes['Boolean'], ParentType, ContextType>;
   message?: Resolver<ResolversTypes['String'], ParentType, ContextType>;
@@ -330,7 +374,7 @@ export type UserResolvers<ContextType = any, ParentType extends ResolversParentT
   lastName?: Resolver<Maybe<ResolversTypes['String']>, ParentType, ContextType>;
   email?: Resolver<ResolversTypes['Email'], ParentType, ContextType>;
   age?: Resolver<Maybe<ResolversTypes['Int']>, ParentType, ContextType>;
-  gender?: Resolver<Maybe<ResolversTypes['String']>, ParentType, ContextType>;
+  gender?: Resolver<Maybe<ResolversTypes['Gender']>, ParentType, ContextType>;
   address?: Resolver<Maybe<ResolversTypes['Address']>, ParentType, ContextType>;
   skills?: Resolver<Maybe<Array<ResolversTypes['String']>>, ParentType, ContextType>;
   experienceYears?: Resolver<Maybe<ResolversTypes['Int']>, ParentType, ContextType>;
@@ -339,9 +383,17 @@ export type UserResolvers<ContextType = any, ParentType extends ResolversParentT
   githubLink?: Resolver<Maybe<ResolversTypes['String']>, ParentType, ContextType>;
   linkedinLink?: Resolver<Maybe<ResolversTypes['String']>, ParentType, ContextType>;
   favouriteJobOffers?: Resolver<Maybe<Array<ResolversTypes['JobOffer']>>, ParentType, ContextType>;
-  emailNotification?: Resolver<ResolversTypes['Boolean'], ParentType, ContextType>;
+  emailNotification?: Resolver<Maybe<ResolversTypes['Boolean']>, ParentType, ContextType>;
   createdDate?: Resolver<ResolversTypes['DateTime'], ParentType, ContextType>;
   updatedDate?: Resolver<ResolversTypes['DateTime'], ParentType, ContextType>;
+  __isTypeOf?: IsTypeOfResolverFn<ParentType, ContextType>;
+};
+
+export type UserMutationResponseResolvers<ContextType = any, ParentType extends ResolversParentTypes['UserMutationResponse'] = ResolversParentTypes['UserMutationResponse']> = {
+  code?: Resolver<ResolversTypes['String'], ParentType, ContextType>;
+  success?: Resolver<ResolversTypes['Boolean'], ParentType, ContextType>;
+  message?: Resolver<ResolversTypes['String'], ParentType, ContextType>;
+  user?: Resolver<Maybe<ResolversTypes['User']>, ParentType, ContextType>;
   __isTypeOf?: IsTypeOfResolverFn<ParentType, ContextType>;
 };
 
@@ -359,6 +411,7 @@ export type Resolvers<ContextType = any> = {
   Salary?: GraphQLScalarType;
   Upload?: GraphQLScalarType;
   User?: UserResolvers<ContextType>;
+  UserMutationResponse?: UserMutationResponseResolvers<ContextType>;
 };
 
 

@@ -1,6 +1,7 @@
 import { gql } from 'apollo-server-express';
 
 const typeDefs = gql`
+  "Full details about posted job offer"
   type JobOffer {
     title: String!
     description: String

@@ -1,12 +1,7 @@
 import { gql } from 'apollo-server-express';
 
 const typeDefs = gql`
-  type File {
-    filename: String!
-    mimetype: String!
-    encoding: String!
-  }
-
+  "Full details about company"
   type Company {
     name: String!
     address: Address

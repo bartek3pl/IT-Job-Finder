@@ -1,4 +1,4 @@
-import { UserInputError } from 'apollo-server-express';
+import { ValidationError, UserInputError } from 'apollo-server-express';
 import {
   postcodeValidator,
   postcodeValidatorExistsForCountry,
@@ -6,7 +6,7 @@ import {
 
 const validatePostalCode = (value: string): string => {
   if (typeof value !== 'string') {
-    throw new TypeError(`Value is not a string: ${value}`);
+    throw new UserInputError(`Value is not a string: ${value}`);
   }
 
   const arrayValue = value.split(',');
@@ -24,7 +24,9 @@ const validatePostalCode = (value: string): string => {
   const isValidFormat = postcodeValidator(postalCode, country);
 
   if (!isValidFormat) {
-    throw new TypeError(`Value is not a valid Postal Code: ${postalCode}`);
+    throw new ValidationError(
+      `Value is not a valid Postal Code: ${postalCode}`
+    );
   }
 
   return value;

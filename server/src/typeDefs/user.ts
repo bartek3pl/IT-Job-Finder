@@ -1,6 +1,20 @@
 import { gql } from 'apollo-server-express';
 
 const typeDefs = gql`
+  input UserInput {
+    login: String!
+    password: String!
+    email: Email!
+  }
+
+  type UserMutationResponse implements MutationResponse {
+    code: String!
+    success: Boolean!
+    message: String!
+    user: User
+  }
+
+  "Full details about registered user"
   type User {
     _id: ID!
     login: String!
@@ -9,7 +23,7 @@ const typeDefs = gql`
     lastName: String
     email: Email!
     age: Int
-    gender: String
+    gender: Gender
     address: Address
     skills: [String!]
     experienceYears: Int
@@ -18,7 +32,7 @@ const typeDefs = gql`
     githubLink: String
     linkedinLink: String
     favouriteJobOffers: [JobOffer!]
-    emailNotification: Boolean!
+    emailNotification: Boolean
     createdDate: DateTime!
     updatedDate: DateTime!
   }
