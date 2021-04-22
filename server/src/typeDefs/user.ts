@@ -8,7 +8,7 @@ const typeDefs = gql`
   }
 
   type UserMutationResponse implements MutationResponse {
-    code: String!
+    code: Int!
     success: Boolean!
     message: String!
     user: User

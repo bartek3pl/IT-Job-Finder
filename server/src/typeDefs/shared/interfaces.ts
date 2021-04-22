@@ -2,7 +2,7 @@ import { gql } from 'apollo-server-express';
 
 const typeDefs = gql`
   interface MutationResponse {
-    code: String!
+    code: Int!
     success: Boolean!
     message: String!
   }

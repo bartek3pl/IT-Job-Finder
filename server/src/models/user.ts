@@ -75,17 +75,15 @@ const user = new mongoose.Schema({
     default: false,
   },
   createdDate: {
-    type: Date,
-    default: Date.now,
+    type: String,
     required: true,
   },
   updatedDate: {
-    type: Date,
-    default: Date.now,
+    type: String,
     required: true,
   },
 });
 
-const Users = mongoose.model('user', user);
+const User = mongoose.model('user', user);
 
-export default Users;
+export default User;

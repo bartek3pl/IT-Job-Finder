@@ -10,6 +10,7 @@
     "forceConsistentCasingInFileNames": true,
     "esModuleInterop": true,
     "skipLibCheck": true,
+    "noImplicitAny": false
   },
   "exclude": [ "node_modules" ],
   "include": [ "src/**/*.ts" ]

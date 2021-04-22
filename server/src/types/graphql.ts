@@ -109,7 +109,7 @@ export type MutationCreateUserArgs = {
 };
 
 export type MutationResponse = {
-  code: Scalars['String'];
+  code: Scalars['Int'];
   success: Scalars['Boolean'];
   message: Scalars['String'];
 };
@@ -154,7 +154,7 @@ export type UserInput = {
 
 export type UserMutationResponse = MutationResponse & {
   __typename?: 'UserMutationResponse';
-  code: Scalars['String'];
+  code: Scalars['Int'];
   success: Scalars['Boolean'];
   message: Scalars['String'];
   user?: Maybe<User>;
@@ -345,7 +345,7 @@ export type MutationResolvers<ContextType = any, ParentType extends ResolversPar
 
 export type MutationResponseResolvers<ContextType = any, ParentType extends ResolversParentTypes['MutationResponse'] = ResolversParentTypes['MutationResponse']> = {
   __resolveType: TypeResolveFn<'UserMutationResponse', ParentType, ContextType>;
-  code?: Resolver<ResolversTypes['String'], ParentType, ContextType>;
+  code?: Resolver<ResolversTypes['Int'], ParentType, ContextType>;
   success?: Resolver<ResolversTypes['Boolean'], ParentType, ContextType>;
   message?: Resolver<ResolversTypes['String'], ParentType, ContextType>;
 };
@@ -390,7 +390,7 @@ export type UserResolvers<ContextType = any, ParentType extends ResolversParentT
 };
 
 export type UserMutationResponseResolvers<ContextType = any, ParentType extends ResolversParentTypes['UserMutationResponse'] = ResolversParentTypes['UserMutationResponse']> = {
-  code?: Resolver<ResolversTypes['String'], ParentType, ContextType>;
+  code?: Resolver<ResolversTypes['Int'], ParentType, ContextType>;
   success?: Resolver<ResolversTypes['Boolean'], ParentType, ContextType>;
   message?: Resolver<ResolversTypes['String'], ParentType, ContextType>;
   user?: Resolver<Maybe<ResolversTypes['User']>, ParentType, ContextType>;

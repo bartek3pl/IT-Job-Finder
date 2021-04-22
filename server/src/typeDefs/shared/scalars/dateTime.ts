@@ -1,10 +1,10 @@
 import { GraphQLScalarType, Kind, GraphQLError } from 'graphql';
 
-import validateDateTime from '../../../validators/validateDateTime';
+import validateDateTime from '../../../validators/scalars/validateDateTime';
 
 const GraphQLDateTime = new GraphQLScalarType({
   name: 'DateTime',
-  description: 'A DateTime string in 24-hr `HH:mm[:ss[.SSS]]` format.',
+  description: 'A DateTime string.',
 
   serialize: (value) => validateDateTime(value),
 

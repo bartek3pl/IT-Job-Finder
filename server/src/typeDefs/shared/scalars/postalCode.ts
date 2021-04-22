@@ -1,6 +1,6 @@
 import { GraphQLScalarType, Kind, GraphQLError } from 'graphql';
 
-import validatePostalCode from '../../../validators/validatePostalCode';
+import validatePostalCode from '../../../validators/scalars/validatePostalCode';
 
 const GraphQLPostalCode = new GraphQLScalarType({
   name: 'PostalCode',

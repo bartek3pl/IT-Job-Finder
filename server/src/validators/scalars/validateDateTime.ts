@@ -1,6 +1,6 @@
 import { ValidationError, UserInputError } from 'apollo-server-express';
 
-const DATE_TIME_REGEX = /^([0-1][0-9]|2[0-3]):([0-5][0-9])(:[0-5][0-9](\.\d{3})?)?$/;
+const DATE_TIME_REGEX = /^(\d{4})-(\d{1,2})-(\d{1,2}) (\d{1,2}):(\d{1,2}):(\d{1,2})$/;
 
 const validateDateTime = (value: string): string => {
   if (typeof value !== 'string') {

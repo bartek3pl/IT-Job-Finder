@@ -1,6 +1,6 @@
 import { GraphQLScalarType, Kind, GraphQLError } from 'graphql';
 
-import validateSalary from '../../../validators/validateSalary';
+import validateSalary from '../../../validators/scalars/validateSalary';
 
 const GraphQLSalary = new GraphQLScalarType({
   name: 'Salary',

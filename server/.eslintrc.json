@@ -22,7 +22,9 @@
       "no-console": "off",
       "class-methods-use-this": "off",
       "no-restricted-syntax": "off",
-      "no-underscore-dangle": "off"
+      "no-underscore-dangle": "off",
+      "@typescript-eslint/explicit-module-boundary-types": "off",
+      "@typescript-eslint/no-explicit-any": "off"
     },
     "globals": {
       "process": true

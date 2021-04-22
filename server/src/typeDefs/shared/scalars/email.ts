@@ -1,6 +1,6 @@
 import { GraphQLScalarType, Kind, GraphQLError } from 'graphql';
 
-import validateEmail from '../../../validators/validateEmail';
+import validateEmail from '../../../validators/scalars/validateEmail';
 
 const GraphQLEmail = new GraphQLScalarType({
   name: 'Email',

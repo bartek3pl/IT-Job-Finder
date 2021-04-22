@@ -2,6 +2,7 @@ import express from 'express';
 import cors from 'cors';
 import { ApolloServer } from 'apollo-server-express';
 
+import './data/dbConnectors';
 import queryTypeDefs from './typeDefs/query';
 import mutationTypeDefs from './typeDefs/mutation';
 import enumsTypeDefs from './typeDefs/shared/enums';
@@ -15,20 +16,29 @@ import fileTypeDefs from './typeDefs/file';
 
 import resolvers from './resolvers';
 
+const typeDefs = [
+  queryTypeDefs,
+  mutationTypeDefs,
+  enumsTypeDefs,
+  interfacesTypeDefs,
+  scalarsTypeDefs,
+  userTypeDefs,
+  addressTypeDefs,
+  jobOfferTypeDefs,
+  companyTypeDefs,
+  fileTypeDefs,
+];
+
+const context = async () => {
+  const token = true;
+
+  return { token };
+};
+
 const server = new ApolloServer({
-  typeDefs: [
-    queryTypeDefs,
-    mutationTypeDefs,
-    enumsTypeDefs,
-    interfacesTypeDefs,
-    scalarsTypeDefs,
-    userTypeDefs,
-    addressTypeDefs,
-    jobOfferTypeDefs,
-    companyTypeDefs,
-    fileTypeDefs,
-  ],
+  typeDefs,
   resolvers,
+  context,
 });
 
 const protocol = 'http';
@@ -43,5 +53,7 @@ app.use('*', cors());
 server.applyMiddleware({ app, path });
 
 app.listen({ port }, () => {
-  console.log(`Apollo Server on ${protocol}://${url}:${port}${path}`);
+  console.log(
+    `Apollo Server is listening on ${protocol}://${url}:${port}${path}.`
+  );
 });
