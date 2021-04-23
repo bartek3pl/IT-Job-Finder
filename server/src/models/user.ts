@@ -74,11 +74,11 @@ const user = new mongoose.Schema({
     type: Boolean,
     default: false,
   },
-  createdDate: {
+  createdDateTime: {
     type: String,
     required: true,
   },
-  updatedDate: {
+  updatedDateTime: {
     type: String,
     required: true,
   },

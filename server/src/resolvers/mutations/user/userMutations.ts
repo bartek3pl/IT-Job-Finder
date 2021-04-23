@@ -2,9 +2,11 @@ import { AuthenticationError } from 'apollo-server-express';
 import bcrypt from 'bcrypt';
 
 import {
-  UserInput,
-  UserMutationResponse,
+  CreateUserInput,
+  UpdateUserInput,
+  UserResponse,
   User as UserType,
+  Scalars,
 } from '../../../types/graphql';
 import { Token } from '../../../types/shared';
 import timestampToDateTime from '../../../utils/converters';
@@ -16,7 +18,7 @@ import validateEmail from '../../../validators/scalars/validateEmail';
 import C from './constants';
 import User from '../../../models/user';
 
-const databaseErrorResponse: UserMutationResponse = {
+const databaseErrorResponse: UserResponse = {
   code: 500,
   success: false,
   message: 'Internal database query error.',
@@ -26,9 +28,9 @@ const databaseErrorResponse: UserMutationResponse = {
 const userMutations = {
   createUser: async (
     _parent: any,
-    { input: { login, password, email } }: { input: UserInput },
+    { input: { login, password, email } }: { input: CreateUserInput },
     { token }: Token
-  ): Promise<UserMutationResponse> => {
+  ): Promise<UserResponse> => {
     if (!token) {
       throw new AuthenticationError('Invalid authentication token.');
     }
@@ -60,8 +62,8 @@ const userMutations = {
       };
     }
 
-    const createdDate = timestampToDateTime(new Date());
-    let createdUser: UserType;
+    const createdDateTime = timestampToDateTime(new Date());
+    let user: UserType;
 
     try {
       const isLoginInDatabase = await User.exists({ login });
@@ -75,14 +77,25 @@ const userMutations = {
         };
       }
 
+      const isEmailInDatabase = await User.exists({ email });
+
+      if (isEmailInDatabase) {
+        return {
+          code: 409,
+          success: false,
+          message: C.NOT_UNIQUE_EMAIL,
+          user: null,
+        };
+      }
+
       const encryptedPassword = await bcrypt.hash(password, 10);
 
-      createdUser = await User.create({
+      user = await User.create({
         login,
         email,
         password: encryptedPassword,
-        createdDate,
-        updatedDate: createdDate,
+        createdDateTime,
+        updatedDateTime: createdDateTime,
       });
     } catch (error) {
       console.error(error);
@@ -93,7 +106,112 @@ const userMutations = {
       code: 200,
       success: true,
       message: C.USER_SUCCESSFULLY_CREATED,
-      user: createdUser,
+      user,
+    };
+  },
+
+  deleteUser: async (
+    _parent: any,
+    { id }: { id: Scalars['ID'] },
+    { token }: Token
+  ): Promise<UserResponse> => {
+    if (!token) {
+      throw new AuthenticationError('Invalid authentication token.');
+    }
+
+    let user: UserType;
+
+    try {
+      const isUserInDatabase = await User.exists({ _id: id });
+
+      if (!isUserInDatabase) {
+        return {
+          code: 404,
+          success: false,
+          message: C.USER_NOT_EXISTS,
+          user: null,
+        };
+      }
+
+      user = await User.findByIdAndDelete(id).lean();
+    } catch (error) {
+      console.error(error);
+      return databaseErrorResponse;
+    }
+
+    return {
+      code: 200,
+      success: true,
+      message: C.USER_SUCCESSFULLY_DELETED,
+      user,
+    };
+  },
+
+  updateUser: async (
+    _parent: any,
+    {
+      id,
+      input: {
+        firstName,
+        lastName,
+        age,
+        gender,
+        address,
+        skills,
+        experienceYears,
+        level,
+        salary,
+        githubLink,
+        linkedinLink,
+        emailNotification,
+      },
+    }: { id: Scalars['ID']; input: UpdateUserInput },
+    { token }: Token
+  ): Promise<UserResponse> => {
+    if (!token) {
+      throw new AuthenticationError('Invalid authentication token.');
+    }
+
+    const updatedDate = timestampToDateTime(new Date());
+    let user: UserType;
+
+    try {
+      const isUserInDatabase = await User.exists({ _id: id });
+
+      if (!isUserInDatabase) {
+        return {
+          code: 404,
+          success: false,
+          message: C.USER_NOT_EXISTS,
+          user: null,
+        };
+      }
+
+      user = await User.findByIdAndUpdate(id, {
+        firstName,
+        lastName,
+        age,
+        gender,
+        address,
+        skills,
+        experienceYears,
+        level,
+        salary,
+        githubLink,
+        linkedinLink,
+        emailNotification,
+        updatedDate,
+      }).lean();
+    } catch (error) {
+      console.error(error);
+      return databaseErrorResponse;
+    }
+
+    return {
+      code: 200,
+      success: true,
+      message: C.USER_SUCCESSFULLY_UPDATED,
+      user,
     };
   },
 };

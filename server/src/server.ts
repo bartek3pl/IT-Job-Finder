@@ -39,6 +39,7 @@ const server = new ApolloServer({
   typeDefs,
   resolvers,
   context,
+  debug: process.env.NODE_ENV === 'development',
 });
 
 const protocol = 'http';

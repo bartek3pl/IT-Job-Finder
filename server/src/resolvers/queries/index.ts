@@ -1,5 +1,5 @@
-import userQueries from './userQueries';
-import jobOfferQueries from './jobOfferQueries';
+import userQueries from './user/userQueries';
+import jobOfferQueries from './jobOffer/jobOfferQueries';
 
 const queryResolvers = {
   ...userQueries,

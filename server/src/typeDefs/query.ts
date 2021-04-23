@@ -2,7 +2,15 @@ import { gql } from 'apollo-server-express';
 
 const typeDefs = gql`
   type Query {
-    empty: String
+    """
+    Gets all users.
+    """
+    getAllUsers: UsersResponse
+
+    """
+    Gets one user by user ID.
+    """
+    getUserById(id: ID!): UserResponse
   }
 `;
 

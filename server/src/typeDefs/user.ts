@@ -1,17 +1,39 @@
 import { gql } from 'apollo-server-express';
 
 const typeDefs = gql`
-  input UserInput {
+  input CreateUserInput {
     login: String!
     password: String!
     email: Email!
   }
 
-  type UserMutationResponse implements MutationResponse {
+  input UpdateUserInput {
+    firstName: String
+    lastName: String
+    age: Int
+    gender: Gender
+    address: UpdateAddressInput
+    skills: [String!]
+    experienceYears: Int
+    level: Level
+    salary: Salary
+    githubLink: String
+    linkedinLink: String
+    emailNotification: Boolean
+  }
+
+  type UserResponse implements Response {
     code: Int!
     success: Boolean!
     message: String!
     user: User
+  }
+
+  type UsersResponse implements Response {
+    code: Int!
+    success: Boolean!
+    message: String!
+    users: [User]
   }
 
   "Full details about registered user"
@@ -33,8 +55,8 @@ const typeDefs = gql`
     linkedinLink: String
     favouriteJobOffers: [JobOffer!]
     emailNotification: Boolean
-    createdDate: DateTime!
-    updatedDate: DateTime!
+    createdDateTime: DateTime!
+    updatedDateTime: DateTime!
   }
 `;
 

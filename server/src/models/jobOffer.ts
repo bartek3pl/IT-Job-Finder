@@ -34,12 +34,12 @@ const jobOffer = new mongoose.Schema({
     required: false,
     enum: ['uop', 'b2b', 'other'],
   },
-  createdDate: {
+  createdDateTime: {
     type: Date,
     default: Date.now,
     required: true,
   },
-  updatedDate: {
+  updatedDateTime: {
     type: Date,
     default: Date.now,
     required: true,

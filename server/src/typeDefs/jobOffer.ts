@@ -11,8 +11,8 @@ const typeDefs = gql`
     experienceYears: Int
     level: Level
     contractType: ContractType
-    createdDate: DateTime!
-    updatedDate: DateTime!
+    createdDateTime: DateTime!
+    updatedDateTime: DateTime!
   }
 `;
 
