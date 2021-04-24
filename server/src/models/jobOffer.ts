@@ -36,12 +36,10 @@ const jobOffer = new mongoose.Schema({
   },
   createdDateTime: {
     type: Date,
-    default: Date.now,
     required: true,
   },
   updatedDateTime: {
     type: Date,
-    default: Date.now,
     required: true,
   },
 });

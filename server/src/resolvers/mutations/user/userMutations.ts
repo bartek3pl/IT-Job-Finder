@@ -28,7 +28,25 @@ const databaseErrorResponse: UserResponse = {
 const userMutations = {
   createUser: async (
     _parent: any,
-    { input: { login, password, email } }: { input: CreateUserInput },
+    {
+      input: {
+        login,
+        password,
+        email,
+        firstName,
+        lastName,
+        age,
+        gender,
+        address,
+        skills,
+        experienceYears,
+        level,
+        salary,
+        githubLink,
+        linkedinLink,
+        emailNotification,
+      },
+    }: { input: CreateUserInput },
     { token }: Token
   ): Promise<UserResponse> => {
     if (!token) {
@@ -94,6 +112,18 @@ const userMutations = {
         login,
         email,
         password: encryptedPassword,
+        firstName,
+        lastName,
+        age,
+        gender,
+        address,
+        skills,
+        experienceYears,
+        level,
+        salary,
+        githubLink,
+        linkedinLink,
+        emailNotification,
         createdDateTime,
         updatedDateTime: createdDateTime,
       });

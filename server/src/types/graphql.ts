@@ -60,6 +60,18 @@ export type CreateUserInput = {
   login: Scalars['String'];
   password: Scalars['String'];
   email: Scalars['Email'];
+  firstName?: Maybe<Scalars['String']>;
+  lastName?: Maybe<Scalars['String']>;
+  age?: Maybe<Scalars['Int']>;
+  gender?: Maybe<Gender>;
+  address?: Maybe<UpdateAddressInput>;
+  skills?: Maybe<Array<Scalars['String']>>;
+  experienceYears?: Maybe<Scalars['Int']>;
+  level?: Maybe<Level>;
+  salary?: Maybe<Scalars['Salary']>;
+  githubLink?: Maybe<Scalars['String']>;
+  linkedinLink?: Maybe<Scalars['String']>;
+  emailNotification?: Maybe<Scalars['Boolean']>;
 };
 
 
@@ -299,6 +311,7 @@ export type ResolversTypes = {
   Company: ResolverTypeWrapper<Company>;
   ContractType: ContractType;
   CreateUserInput: CreateUserInput;
+  Boolean: ResolverTypeWrapper<Scalars['Boolean']>;
   DateTime: ResolverTypeWrapper<Scalars['DateTime']>;
   Email: ResolverTypeWrapper<Scalars['Email']>;
   File: ResolverTypeWrapper<File>;
@@ -310,7 +323,6 @@ export type ResolversTypes = {
   PostalCode: ResolverTypeWrapper<Scalars['PostalCode']>;
   Query: ResolverTypeWrapper<{}>;
   Response: ResolversTypes['UserResponse'] | ResolversTypes['UsersResponse'];
-  Boolean: ResolverTypeWrapper<Scalars['Boolean']>;
   Salary: ResolverTypeWrapper<Scalars['Salary']>;
   UpdateAddressInput: UpdateAddressInput;
   UpdateUserInput: UpdateUserInput;
@@ -327,6 +339,7 @@ export type ResolversParentTypes = {
   Int: Scalars['Int'];
   Company: Company;
   CreateUserInput: CreateUserInput;
+  Boolean: Scalars['Boolean'];
   DateTime: Scalars['DateTime'];
   Email: Scalars['Email'];
   File: File;
@@ -336,7 +349,6 @@ export type ResolversParentTypes = {
   PostalCode: Scalars['PostalCode'];
   Query: {};
   Response: ResolversParentTypes['UserResponse'] | ResolversParentTypes['UsersResponse'];
-  Boolean: Scalars['Boolean'];
   Salary: Scalars['Salary'];
   UpdateAddressInput: UpdateAddressInput;
   UpdateUserInput: UpdateUserInput;

@@ -5,6 +5,18 @@ const typeDefs = gql`
     login: String!
     password: String!
     email: Email!
+    firstName: String
+    lastName: String
+    age: Int
+    gender: Gender
+    address: UpdateAddressInput
+    skills: [String!]
+    experienceYears: Int
+    level: Level
+    salary: Salary
+    githubLink: String
+    linkedinLink: String
+    emailNotification: Boolean
   }
 
   input UpdateUserInput {

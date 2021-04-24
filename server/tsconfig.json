@@ -2,7 +2,7 @@
   "compilerOptions": {
     "target": "es5",
     "module": "commonjs", 
-    "lib": [ "dom","es6" ],
+    "lib": [ "dom", "es6" ],
     "outDir": "dist",
     "rootDir": "src",
     "removeComments": true,
@@ -10,7 +10,7 @@
     "forceConsistentCasingInFileNames": true,
     "esModuleInterop": true,
     "skipLibCheck": true,
-    "noImplicitAny": false
+    "noImplicitAny": false,
   },
   "exclude": [ "node_modules" ],
   "include": [ "src/**/*.ts" ]
