@@ -13,7 +13,8 @@ const typeDefs = gql`
     skills: [String!]
     experienceYears: Int
     level: Level
-    salary: Salary
+    minSalary: Salary
+    maxSalary: Salary
     githubLink: String
     linkedinLink: String
     emailNotification: Boolean
@@ -28,7 +29,8 @@ const typeDefs = gql`
     skills: [String!]
     experienceYears: Int
     level: Level
-    salary: Salary
+    minSalary: Salary
+    maxSalary: Salary
     githubLink: String
     linkedinLink: String
     emailNotification: Boolean
@@ -62,7 +64,8 @@ const typeDefs = gql`
     skills: [String!]
     experienceYears: Int
     level: Level
-    salary: Salary
+    minSalary: Salary
+    maxSalary: Salary
     githubLink: String
     linkedinLink: String
     favouriteJobOffers: [JobOffer!]

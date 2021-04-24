@@ -7,4 +7,4 @@ const timestampToDateTime = (timestamp: Date) => {
   return formattedDateTime;
 };
 
-export default timestampToDateTime;
+export { timestampToDateTime };

@@ -43,6 +43,7 @@ export enum CacheControlScope {
 /** Full details about company */
 export type Company = {
   __typename?: 'Company';
+  _id: Scalars['ID'];
   name: Scalars['String'];
   address?: Maybe<Address>;
   employeesNumber?: Maybe<Scalars['Int']>;
@@ -56,6 +57,18 @@ export enum ContractType {
   Other = 'OTHER'
 }
 
+export type CreateJobOfferInput = {
+  title: Scalars['String'];
+  description?: Maybe<Scalars['String']>;
+  employer: UpdateCompanyInput;
+  minSalary: Scalars['Salary'];
+  maxSalary: Scalars['Salary'];
+  skills: Array<Scalars['String']>;
+  experienceYears?: Maybe<Scalars['Int']>;
+  level?: Maybe<Level>;
+  contractType?: Maybe<ContractType>;
+};
+
 export type CreateUserInput = {
   login: Scalars['String'];
   password: Scalars['String'];
@@ -68,7 +81,8 @@ export type CreateUserInput = {
   skills?: Maybe<Array<Scalars['String']>>;
   experienceYears?: Maybe<Scalars['Int']>;
   level?: Maybe<Level>;
-  salary?: Maybe<Scalars['Salary']>;
+  minSalary?: Maybe<Scalars['Salary']>;
+  maxSalary?: Maybe<Scalars['Salary']>;
   githubLink?: Maybe<Scalars['String']>;
   linkedinLink?: Maybe<Scalars['String']>;
   emailNotification?: Maybe<Scalars['Boolean']>;
@@ -84,6 +98,12 @@ export type File = {
   encoding: Scalars['String'];
 };
 
+export type FileInput = {
+  filename: Scalars['String'];
+  mimetype: Scalars['String'];
+  encoding: Scalars['String'];
+};
+
 /** Gender of registered user */
 export enum Gender {
   Man = 'MAN',
@@ -94,16 +114,34 @@ export enum Gender {
 /** Full details about posted job offer */
 export type JobOffer = {
   __typename?: 'JobOffer';
+  _id: Scalars['ID'];
   title: Scalars['String'];
   description?: Maybe<Scalars['String']>;
   employer: Company;
-  salary?: Maybe<Scalars['Salary']>;
+  minSalary: Scalars['Salary'];
+  maxSalary: Scalars['Salary'];
   skills: Array<Scalars['String']>;
   experienceYears?: Maybe<Scalars['Int']>;
   level?: Maybe<Level>;
   contractType?: Maybe<ContractType>;
   createdDateTime: Scalars['DateTime'];
   updatedDateTime: Scalars['DateTime'];
+};
+
+export type JobOfferResponse = Response & {
+  __typename?: 'JobOfferResponse';
+  code: Scalars['Int'];
+  success: Scalars['Boolean'];
+  message: Scalars['String'];
+  jobOffer?: Maybe<JobOffer>;
+};
+
+export type JobOffersResponse = Response & {
+  __typename?: 'JobOffersResponse';
+  code: Scalars['Int'];
+  success: Scalars['Boolean'];
+  message: Scalars['String'];
+  jobOffers?: Maybe<Array<Maybe<JobOffer>>>;
 };
 
 /** Expected experience of the employee */
@@ -116,12 +154,18 @@ export enum Level {
 
 export type Mutation = {
   __typename?: 'Mutation';
-  /** Creates user with login, password and email. */
+  /** Creates user with required login, password and email fields. */
   createUser?: Maybe<UserResponse>;
   /** Deletes user by ID. */
   deleteUser?: Maybe<UserResponse>;
   /** Updates user by ID. */
   updateUser?: Maybe<UserResponse>;
+  /** Creates job offer with with required title and employer fields. */
+  createJobOffer?: Maybe<JobOfferResponse>;
+  /** Deletes job offer by ID. */
+  deleteJobOffer?: Maybe<JobOfferResponse>;
+  /** Updates job offer by ID. */
+  updateJobOffer?: Maybe<JobOfferResponse>;
 };
 
 
@@ -141,16 +185,41 @@ export type MutationUpdateUserArgs = {
 };
 
 
+export type MutationCreateJobOfferArgs = {
+  input?: Maybe<CreateJobOfferInput>;
+};
+
+
+export type MutationDeleteJobOfferArgs = {
+  id: Scalars['ID'];
+};
+
+
+export type MutationUpdateJobOfferArgs = {
+  id: Scalars['ID'];
+  input?: Maybe<UpdateJobOfferInput>;
+};
+
+
 export type Query = {
   __typename?: 'Query';
   /** Gets all users. */
   getAllUsers?: Maybe<UsersResponse>;
   /** Gets one user by user ID. */
   getUserById?: Maybe<UserResponse>;
+  /** Gets all job offers. */
+  getAllJobOffers?: Maybe<JobOffersResponse>;
+  /** Gets one job offer by job offer ID. */
+  getJobOfferById?: Maybe<JobOfferResponse>;
 };
 
 
 export type QueryGetUserByIdArgs = {
+  id: Scalars['ID'];
+};
+
+
+export type QueryGetJobOfferByIdArgs = {
   id: Scalars['ID'];
 };
 
@@ -170,6 +239,25 @@ export type UpdateAddressInput = {
   apartmentNumber?: Maybe<Scalars['Int']>;
 };
 
+export type UpdateCompanyInput = {
+  name?: Maybe<Scalars['String']>;
+  address?: Maybe<UpdateAddressInput>;
+  employeesNumber?: Maybe<Scalars['Int']>;
+  logo?: Maybe<FileInput>;
+};
+
+export type UpdateJobOfferInput = {
+  title?: Maybe<Scalars['String']>;
+  description?: Maybe<Scalars['String']>;
+  employer?: Maybe<UpdateCompanyInput>;
+  minSalary?: Maybe<Scalars['Salary']>;
+  maxSalary?: Maybe<Scalars['Salary']>;
+  skills?: Maybe<Array<Scalars['String']>>;
+  experienceYears?: Maybe<Scalars['Int']>;
+  level?: Maybe<Level>;
+  contractType?: Maybe<ContractType>;
+};
+
 export type UpdateUserInput = {
   firstName?: Maybe<Scalars['String']>;
   lastName?: Maybe<Scalars['String']>;
@@ -179,7 +267,8 @@ export type UpdateUserInput = {
   skills?: Maybe<Array<Scalars['String']>>;
   experienceYears?: Maybe<Scalars['Int']>;
   level?: Maybe<Level>;
-  salary?: Maybe<Scalars['Salary']>;
+  minSalary?: Maybe<Scalars['Salary']>;
+  maxSalary?: Maybe<Scalars['Salary']>;
   githubLink?: Maybe<Scalars['String']>;
   linkedinLink?: Maybe<Scalars['String']>;
   emailNotification?: Maybe<Scalars['Boolean']>;
@@ -201,7 +290,8 @@ export type User = {
   skills?: Maybe<Array<Scalars['String']>>;
   experienceYears?: Maybe<Scalars['Int']>;
   level?: Maybe<Level>;
-  salary?: Maybe<Scalars['Salary']>;
+  minSalary?: Maybe<Scalars['Salary']>;
+  maxSalary?: Maybe<Scalars['Salary']>;
   githubLink?: Maybe<Scalars['String']>;
   linkedinLink?: Maybe<Scalars['String']>;
   favouriteJobOffers?: Maybe<Array<JobOffer>>;
@@ -309,22 +399,28 @@ export type ResolversTypes = {
   Int: ResolverTypeWrapper<Scalars['Int']>;
   CacheControlScope: CacheControlScope;
   Company: ResolverTypeWrapper<Company>;
+  ID: ResolverTypeWrapper<Scalars['ID']>;
   ContractType: ContractType;
+  CreateJobOfferInput: CreateJobOfferInput;
   CreateUserInput: CreateUserInput;
   Boolean: ResolverTypeWrapper<Scalars['Boolean']>;
   DateTime: ResolverTypeWrapper<Scalars['DateTime']>;
   Email: ResolverTypeWrapper<Scalars['Email']>;
   File: ResolverTypeWrapper<File>;
+  FileInput: FileInput;
   Gender: Gender;
   JobOffer: ResolverTypeWrapper<JobOffer>;
+  JobOfferResponse: ResolverTypeWrapper<JobOfferResponse>;
+  JobOffersResponse: ResolverTypeWrapper<JobOffersResponse>;
   Level: Level;
   Mutation: ResolverTypeWrapper<{}>;
-  ID: ResolverTypeWrapper<Scalars['ID']>;
   PostalCode: ResolverTypeWrapper<Scalars['PostalCode']>;
   Query: ResolverTypeWrapper<{}>;
-  Response: ResolversTypes['UserResponse'] | ResolversTypes['UsersResponse'];
+  Response: ResolversTypes['JobOfferResponse'] | ResolversTypes['JobOffersResponse'] | ResolversTypes['UserResponse'] | ResolversTypes['UsersResponse'];
   Salary: ResolverTypeWrapper<Scalars['Salary']>;
   UpdateAddressInput: UpdateAddressInput;
+  UpdateCompanyInput: UpdateCompanyInput;
+  UpdateJobOfferInput: UpdateJobOfferInput;
   UpdateUserInput: UpdateUserInput;
   Upload: ResolverTypeWrapper<Scalars['Upload']>;
   User: ResolverTypeWrapper<User>;
@@ -338,19 +434,25 @@ export type ResolversParentTypes = {
   String: Scalars['String'];
   Int: Scalars['Int'];
   Company: Company;
+  ID: Scalars['ID'];
+  CreateJobOfferInput: CreateJobOfferInput;
   CreateUserInput: CreateUserInput;
   Boolean: Scalars['Boolean'];
   DateTime: Scalars['DateTime'];
   Email: Scalars['Email'];
   File: File;
+  FileInput: FileInput;
   JobOffer: JobOffer;
+  JobOfferResponse: JobOfferResponse;
+  JobOffersResponse: JobOffersResponse;
   Mutation: {};
-  ID: Scalars['ID'];
   PostalCode: Scalars['PostalCode'];
   Query: {};
-  Response: ResolversParentTypes['UserResponse'] | ResolversParentTypes['UsersResponse'];
+  Response: ResolversParentTypes['JobOfferResponse'] | ResolversParentTypes['JobOffersResponse'] | ResolversParentTypes['UserResponse'] | ResolversParentTypes['UsersResponse'];
   Salary: Scalars['Salary'];
   UpdateAddressInput: UpdateAddressInput;
+  UpdateCompanyInput: UpdateCompanyInput;
+  UpdateJobOfferInput: UpdateJobOfferInput;
   UpdateUserInput: UpdateUserInput;
   Upload: Scalars['Upload'];
   User: User;
@@ -374,6 +476,7 @@ export type AddressResolvers<ContextType = any, ParentType extends ResolversPare
 };
 
 export type CompanyResolvers<ContextType = any, ParentType extends ResolversParentTypes['Company'] = ResolversParentTypes['Company']> = {
+  _id?: Resolver<ResolversTypes['ID'], ParentType, ContextType>;
   name?: Resolver<ResolversTypes['String'], ParentType, ContextType>;
   address?: Resolver<Maybe<ResolversTypes['Address']>, ParentType, ContextType>;
   employeesNumber?: Resolver<Maybe<ResolversTypes['Int']>, ParentType, ContextType>;
@@ -397,10 +500,12 @@ export type FileResolvers<ContextType = any, ParentType extends ResolversParentT
 };
 
 export type JobOfferResolvers<ContextType = any, ParentType extends ResolversParentTypes['JobOffer'] = ResolversParentTypes['JobOffer']> = {
+  _id?: Resolver<ResolversTypes['ID'], ParentType, ContextType>;
   title?: Resolver<ResolversTypes['String'], ParentType, ContextType>;
   description?: Resolver<Maybe<ResolversTypes['String']>, ParentType, ContextType>;
   employer?: Resolver<ResolversTypes['Company'], ParentType, ContextType>;
-  salary?: Resolver<Maybe<ResolversTypes['Salary']>, ParentType, ContextType>;
+  minSalary?: Resolver<ResolversTypes['Salary'], ParentType, ContextType>;
+  maxSalary?: Resolver<ResolversTypes['Salary'], ParentType, ContextType>;
   skills?: Resolver<Array<ResolversTypes['String']>, ParentType, ContextType>;
   experienceYears?: Resolver<Maybe<ResolversTypes['Int']>, ParentType, ContextType>;
   level?: Resolver<Maybe<ResolversTypes['Level']>, ParentType, ContextType>;
@@ -410,10 +515,29 @@ export type JobOfferResolvers<ContextType = any, ParentType extends ResolversPar
   __isTypeOf?: IsTypeOfResolverFn<ParentType, ContextType>;
 };
 
+export type JobOfferResponseResolvers<ContextType = any, ParentType extends ResolversParentTypes['JobOfferResponse'] = ResolversParentTypes['JobOfferResponse']> = {
+  code?: Resolver<ResolversTypes['Int'], ParentType, ContextType>;
+  success?: Resolver<ResolversTypes['Boolean'], ParentType, ContextType>;
+  message?: Resolver<ResolversTypes['String'], ParentType, ContextType>;
+  jobOffer?: Resolver<Maybe<ResolversTypes['JobOffer']>, ParentType, ContextType>;
+  __isTypeOf?: IsTypeOfResolverFn<ParentType, ContextType>;
+};
+
+export type JobOffersResponseResolvers<ContextType = any, ParentType extends ResolversParentTypes['JobOffersResponse'] = ResolversParentTypes['JobOffersResponse']> = {
+  code?: Resolver<ResolversTypes['Int'], ParentType, ContextType>;
+  success?: Resolver<ResolversTypes['Boolean'], ParentType, ContextType>;
+  message?: Resolver<ResolversTypes['String'], ParentType, ContextType>;
+  jobOffers?: Resolver<Maybe<Array<Maybe<ResolversTypes['JobOffer']>>>, ParentType, ContextType>;
+  __isTypeOf?: IsTypeOfResolverFn<ParentType, ContextType>;
+};
+
 export type MutationResolvers<ContextType = any, ParentType extends ResolversParentTypes['Mutation'] = ResolversParentTypes['Mutation']> = {
   createUser?: Resolver<Maybe<ResolversTypes['UserResponse']>, ParentType, ContextType, RequireFields<MutationCreateUserArgs, never>>;
   deleteUser?: Resolver<Maybe<ResolversTypes['UserResponse']>, ParentType, ContextType, RequireFields<MutationDeleteUserArgs, 'id'>>;
   updateUser?: Resolver<Maybe<ResolversTypes['UserResponse']>, ParentType, ContextType, RequireFields<MutationUpdateUserArgs, 'id'>>;
+  createJobOffer?: Resolver<Maybe<ResolversTypes['JobOfferResponse']>, ParentType, ContextType, RequireFields<MutationCreateJobOfferArgs, never>>;
+  deleteJobOffer?: Resolver<Maybe<ResolversTypes['JobOfferResponse']>, ParentType, ContextType, RequireFields<MutationDeleteJobOfferArgs, 'id'>>;
+  updateJobOffer?: Resolver<Maybe<ResolversTypes['JobOfferResponse']>, ParentType, ContextType, RequireFields<MutationUpdateJobOfferArgs, 'id'>>;
 };
 
 export interface PostalCodeScalarConfig extends GraphQLScalarTypeConfig<ResolversTypes['PostalCode'], any> {
@@ -423,10 +547,12 @@ export interface PostalCodeScalarConfig extends GraphQLScalarTypeConfig<Resolver
 export type QueryResolvers<ContextType = any, ParentType extends ResolversParentTypes['Query'] = ResolversParentTypes['Query']> = {
   getAllUsers?: Resolver<Maybe<ResolversTypes['UsersResponse']>, ParentType, ContextType>;
   getUserById?: Resolver<Maybe<ResolversTypes['UserResponse']>, ParentType, ContextType, RequireFields<QueryGetUserByIdArgs, 'id'>>;
+  getAllJobOffers?: Resolver<Maybe<ResolversTypes['JobOffersResponse']>, ParentType, ContextType>;
+  getJobOfferById?: Resolver<Maybe<ResolversTypes['JobOfferResponse']>, ParentType, ContextType, RequireFields<QueryGetJobOfferByIdArgs, 'id'>>;
 };
 
 export type ResponseResolvers<ContextType = any, ParentType extends ResolversParentTypes['Response'] = ResolversParentTypes['Response']> = {
-  __resolveType: TypeResolveFn<'UserResponse' | 'UsersResponse', ParentType, ContextType>;
+  __resolveType: TypeResolveFn<'JobOfferResponse' | 'JobOffersResponse' | 'UserResponse' | 'UsersResponse', ParentType, ContextType>;
   code?: Resolver<ResolversTypes['Int'], ParentType, ContextType>;
   success?: Resolver<ResolversTypes['Boolean'], ParentType, ContextType>;
   message?: Resolver<ResolversTypes['String'], ParentType, ContextType>;
@@ -453,7 +579,8 @@ export type UserResolvers<ContextType = any, ParentType extends ResolversParentT
   skills?: Resolver<Maybe<Array<ResolversTypes['String']>>, ParentType, ContextType>;
   experienceYears?: Resolver<Maybe<ResolversTypes['Int']>, ParentType, ContextType>;
   level?: Resolver<Maybe<ResolversTypes['Level']>, ParentType, ContextType>;
-  salary?: Resolver<Maybe<ResolversTypes['Salary']>, ParentType, ContextType>;
+  minSalary?: Resolver<Maybe<ResolversTypes['Salary']>, ParentType, ContextType>;
+  maxSalary?: Resolver<Maybe<ResolversTypes['Salary']>, ParentType, ContextType>;
   githubLink?: Resolver<Maybe<ResolversTypes['String']>, ParentType, ContextType>;
   linkedinLink?: Resolver<Maybe<ResolversTypes['String']>, ParentType, ContextType>;
   favouriteJobOffers?: Resolver<Maybe<Array<ResolversTypes['JobOffer']>>, ParentType, ContextType>;
@@ -486,6 +613,8 @@ export type Resolvers<ContextType = any> = {
   Email?: GraphQLScalarType;
   File?: FileResolvers<ContextType>;
   JobOffer?: JobOfferResolvers<ContextType>;
+  JobOfferResponse?: JobOfferResponseResolvers<ContextType>;
+  JobOffersResponse?: JobOffersResponseResolvers<ContextType>;
   Mutation?: MutationResolvers<ContextType>;
   PostalCode?: GraphQLScalarType;
   Query?: QueryResolvers<ContextType>;

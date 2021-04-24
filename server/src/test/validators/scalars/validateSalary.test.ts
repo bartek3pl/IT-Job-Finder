@@ -6,29 +6,24 @@ import validateSalary from '../../../validators/scalars/validateSalary';
 describe('SalaryValidator', () => {
   const testCases = [
     {
-      value: '8000',
-      expected: '8000',
+      value: 8000,
+      expected: 8000,
       msg: 'valid salary',
     },
     {
-      value: '-1',
+      value: -1,
       expected: null,
       msg: 'negative salary',
     },
     {
-      value: '50001',
+      value: 50001,
       expected: null,
       msg: 'too much salary',
     },
     {
-      value: '5000.42',
-      expected: '5000.42',
+      value: 5000.42,
+      expected: 5000,
       msg: 'float salary',
-    },
-    {
-      value: 'notanumber',
-      expected: null,
-      msg: 'not a number salary',
     },
   ];
 

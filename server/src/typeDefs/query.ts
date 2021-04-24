@@ -11,6 +11,16 @@ const typeDefs = gql`
     Gets one user by user ID.
     """
     getUserById(id: ID!): UserResponse
+
+    """
+    Gets all job offers.
+    """
+    getAllJobOffers: JobOffersResponse
+
+    """
+    Gets one job offer by job offer ID.
+    """
+    getJobOfferById(id: ID!): JobOfferResponse
   }
 `;
 

@@ -18,7 +18,9 @@ const GraphQLSalary = new GraphQLScalarType({
       );
     }
 
-    return validateSalary(ast.value);
+    const numValue = parseInt(ast.value, 10);
+
+    return validateSalary(numValue);
   },
 });
 

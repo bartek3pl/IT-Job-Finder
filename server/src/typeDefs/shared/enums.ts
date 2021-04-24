@@ -13,6 +13,7 @@ const typeDefs = gql`
   enum ContractType {
     UOP
     B2B
+    UZ
     OTHER
   }
 

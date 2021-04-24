@@ -1,29 +1,28 @@
 import { ValidationError, UserInputError } from 'apollo-server-express';
 
-const isValidSalary = (value: string) => {
-  const numValue = parseInt(value, 10);
+const isValidSalary = (value: number) => {
   const minAmount = 0;
   const maxAmount = 50_000;
   const isValueValid =
-    Number.isInteger(numValue) &&
-    numValue >= minAmount &&
-    numValue <= maxAmount;
+    Number.isInteger(value) && value >= minAmount && value <= maxAmount;
 
   return isValueValid;
 };
 
-const validateSalary = (value: string): string => {
-  if (typeof value !== 'string') {
-    throw new UserInputError(`Value is not a string: ${value}`);
+const validateSalary = (value: number): number => {
+  if (typeof value !== 'number') {
+    throw new UserInputError(`Value is not a number: ${value}`);
   }
 
-  const isValidFormat = isValidSalary(value);
+  const intValue = Math.floor(value);
+
+  const isValidFormat = isValidSalary(intValue);
 
   if (!isValidFormat) {
-    throw new ValidationError(`Value is not a valid Salary: ${value}`);
+    throw new ValidationError(`Value is not a valid Salary: ${intValue}`);
   }
 
-  return value;
+  return intValue;
 };
 
 export default validateSalary;

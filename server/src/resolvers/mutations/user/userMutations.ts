@@ -9,7 +9,7 @@ import {
   Scalars,
 } from '../../../types/graphql';
 import { Token } from '../../../types/shared';
-import timestampToDateTime from '../../../utils/converters';
+import { timestampToDateTime } from '../../../utils/converters';
 import {
   validateLogin,
   validatePassword,
@@ -41,7 +41,8 @@ const userMutations = {
         skills,
         experienceYears,
         level,
-        salary,
+        minSalary,
+        maxSalary,
         githubLink,
         linkedinLink,
         emailNotification,
@@ -120,7 +121,8 @@ const userMutations = {
         skills,
         experienceYears,
         level,
-        salary,
+        minSalary,
+        maxSalary,
         githubLink,
         linkedinLink,
         emailNotification,
@@ -190,7 +192,8 @@ const userMutations = {
         skills,
         experienceYears,
         level,
-        salary,
+        minSalary,
+        maxSalary,
         githubLink,
         linkedinLink,
         emailNotification,
@@ -202,7 +205,7 @@ const userMutations = {
       throw new AuthenticationError('Invalid authentication token.');
     }
 
-    const updatedDate = timestampToDateTime(new Date());
+    const updatedDateTime = timestampToDateTime(new Date());
     let user: UserType;
 
     try {
@@ -217,21 +220,26 @@ const userMutations = {
         };
       }
 
-      user = await User.findByIdAndUpdate(id, {
-        firstName,
-        lastName,
-        age,
-        gender,
-        address,
-        skills,
-        experienceYears,
-        level,
-        salary,
-        githubLink,
-        linkedinLink,
-        emailNotification,
-        updatedDate,
-      }).lean();
+      user = await User.findByIdAndUpdate(
+        id,
+        {
+          firstName,
+          lastName,
+          age,
+          gender,
+          address,
+          skills,
+          experienceYears,
+          level,
+          minSalary,
+          maxSalary,
+          githubLink,
+          linkedinLink,
+          emailNotification,
+          updatedDateTime,
+        },
+        { new: true }
+      ).lean();
     } catch (error) {
       console.error(error);
       return databaseErrorResponse;

@@ -55,8 +55,16 @@ const user = new mongoose.Schema({
     required: false,
     enum: ['junior', 'mid', 'senior', 'other'],
   },
-  salary: {
+  minSalary: {
     type: Number,
+    min: 0,
+    max: 50_000,
+    required: false,
+  },
+  maxSalary: {
+    type: Number,
+    min: 0,
+    max: 50_000,
     required: false,
   },
   githubLink: {
