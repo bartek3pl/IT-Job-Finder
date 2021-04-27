@@ -47,6 +47,21 @@ const typeDefs = gql`
       userId: ID
       jobOfferId: ID
     ): UserFavouriteJobOffersResponse
+
+    """
+    Logins and authorizes user with login and password.
+    """
+    login(input: LoginUserInput): UserTokenResponse
+
+    """
+    Verifies access token validity.
+    """
+    verifyAccessToken(accessToken: String): AccessTokenResponse
+
+    """
+    Verifies refresh token validity.
+    """
+    verifyRefreshToken(refreshToken: String): RefreshTokenResponse
   }
 `;
 

@@ -13,6 +13,7 @@ import addressTypeDefs from './typeDefs/address';
 import jobOfferTypeDefs from './typeDefs/jobOffer';
 import companyTypeDefs from './typeDefs/company';
 import fileTypeDefs from './typeDefs/file';
+import tokenTypeDefs from './typeDefs/token';
 
 import resolvers from './resolvers';
 
@@ -27,6 +28,7 @@ const typeDefs = [
   jobOfferTypeDefs,
   companyTypeDefs,
   fileTypeDefs,
+  tokenTypeDefs,
 ];
 
 const context = async () => {

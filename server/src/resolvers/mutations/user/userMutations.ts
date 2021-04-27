@@ -6,8 +6,10 @@ import {
   UpdateUserInput,
   UserResponse,
   UserFavouriteJobOffersResponse,
+  UserTokenResponse,
   User as UserType,
   JobOffer as JobOfferType,
+  Token as TokenType,
   Scalars,
 } from '../../../types/graphql';
 import { Token } from '../../../types/shared';
@@ -21,6 +23,7 @@ import userC from './constants';
 import jobOfferC from '../jobOffer/constants';
 import User from '../../../models/user';
 import JobOffer from '../../../models/jobOffer';
+import authService from '../../../services/authService';
 
 const databaseUserErrorResponse: UserResponse = {
   code: 500,
@@ -37,7 +40,65 @@ const databaseUserJobOffersErrorResponse = {
   jobOffers: [],
 };
 
+const databaseUserTokenErrorResponse = {
+  code: 500,
+  success: false,
+  message: 'Internal database query error.',
+  user: null,
+  token: null,
+};
+
 const userMutations = {
+  login: async (
+    _parent: any,
+    {
+      input: { login, password },
+    }: { input: { login: Scalars['String']; password: Scalars['String'] } }
+  ): Promise<UserTokenResponse> => {
+    let user: UserType;
+    let token: TokenType;
+
+    try {
+      user = await User.findOne({ login }).lean();
+
+      if (!user) {
+        return {
+          code: 404,
+          success: false,
+          message: userC.USER_NOT_EXISTS,
+          user: null,
+          token: null,
+        };
+      }
+
+      const userPassword = user.password;
+      const isPasswordValid = await bcrypt.compare(password, userPassword);
+
+      if (!isPasswordValid) {
+        return {
+          code: 401,
+          success: false,
+          message: userC.WRONG_PASSWORD,
+          user: null,
+          token: null,
+        };
+      }
+
+      token = authService.generateTokens();
+    } catch (error) {
+      console.error(error);
+      return databaseUserTokenErrorResponse;
+    }
+
+    return {
+      code: 200,
+      success: true,
+      message: userC.USER_SUCCESSFULLY_LOGGED_IN,
+      user,
+      token,
+    };
+  },
+
   createUser: async (
     _parent: any,
     {
@@ -59,13 +120,8 @@ const userMutations = {
         linkedinLink,
         emailNotification,
       },
-    }: { input: CreateUserInput },
-    { token }: Token
+    }: { input: CreateUserInput }
   ): Promise<UserResponse> => {
-    if (!token) {
-      throw new AuthenticationError('Invalid authentication token.');
-    }
-
     if (!validateLogin(login)) {
       return {
         code: 400,

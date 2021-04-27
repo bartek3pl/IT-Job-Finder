@@ -1,6 +1,11 @@
 import { gql } from 'apollo-server-express';
 
 const typeDefs = gql`
+  input LoginUserInput {
+    login: String!
+    password: String!
+  }
+
   input CreateUserInput {
     login: String!
     password: String!
@@ -56,6 +61,14 @@ const typeDefs = gql`
     message: String!
     user: User
     jobOffers: [JobOffer]
+  }
+
+  type UserTokenResponse implements Response {
+    code: Int!
+    success: Boolean!
+    message: String!
+    user: User
+    token: Token
   }
 
   "Full details about registered user"
