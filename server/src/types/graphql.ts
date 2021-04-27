@@ -54,6 +54,7 @@ export type Company = {
 export enum ContractType {
   Uop = 'UOP',
   B2B = 'B2B',
+  Uz = 'UZ',
   Other = 'OTHER'
 }
 
@@ -166,6 +167,10 @@ export type Mutation = {
   deleteJobOffer?: Maybe<JobOfferResponse>;
   /** Updates job offer by ID. */
   updateJobOffer?: Maybe<JobOfferResponse>;
+  /** Adds chosen job offer to chosen user favourite job offers. */
+  addJobOfferToUserFavourite?: Maybe<UserFavouriteJobOffersResponse>;
+  /** Deletes chosen job offer from chosen user favourite job offers. */
+  deleteJobOfferFromUserFavourite?: Maybe<UserFavouriteJobOffersResponse>;
 };
 
 
@@ -201,6 +206,18 @@ export type MutationUpdateJobOfferArgs = {
 };
 
 
+export type MutationAddJobOfferToUserFavouriteArgs = {
+  userId?: Maybe<Scalars['ID']>;
+  jobOfferId?: Maybe<Scalars['ID']>;
+};
+
+
+export type MutationDeleteJobOfferFromUserFavouriteArgs = {
+  userId?: Maybe<Scalars['ID']>;
+  jobOfferId?: Maybe<Scalars['ID']>;
+};
+
+
 export type Query = {
   __typename?: 'Query';
   /** Gets all users. */
@@ -211,6 +228,8 @@ export type Query = {
   getAllJobOffers?: Maybe<JobOffersResponse>;
   /** Gets one job offer by job offer ID. */
   getJobOfferById?: Maybe<JobOfferResponse>;
+  /** Gets all favourite job offers of chosen user. */
+  getUserFavouriteJobOffers?: Maybe<JobOffersResponse>;
 };
 
 
@@ -220,6 +239,11 @@ export type QueryGetUserByIdArgs = {
 
 
 export type QueryGetJobOfferByIdArgs = {
+  id: Scalars['ID'];
+};
+
+
+export type QueryGetUserFavouriteJobOffersArgs = {
   id: Scalars['ID'];
 };
 
@@ -298,6 +322,15 @@ export type User = {
   emailNotification?: Maybe<Scalars['Boolean']>;
   createdDateTime: Scalars['DateTime'];
   updatedDateTime: Scalars['DateTime'];
+};
+
+export type UserFavouriteJobOffersResponse = Response & {
+  __typename?: 'UserFavouriteJobOffersResponse';
+  code: Scalars['Int'];
+  success: Scalars['Boolean'];
+  message: Scalars['String'];
+  user?: Maybe<User>;
+  jobOffers?: Maybe<Array<Maybe<JobOffer>>>;
 };
 
 export type UserResponse = Response & {
@@ -416,7 +449,7 @@ export type ResolversTypes = {
   Mutation: ResolverTypeWrapper<{}>;
   PostalCode: ResolverTypeWrapper<Scalars['PostalCode']>;
   Query: ResolverTypeWrapper<{}>;
-  Response: ResolversTypes['JobOfferResponse'] | ResolversTypes['JobOffersResponse'] | ResolversTypes['UserResponse'] | ResolversTypes['UsersResponse'];
+  Response: ResolversTypes['JobOfferResponse'] | ResolversTypes['JobOffersResponse'] | ResolversTypes['UserFavouriteJobOffersResponse'] | ResolversTypes['UserResponse'] | ResolversTypes['UsersResponse'];
   Salary: ResolverTypeWrapper<Scalars['Salary']>;
   UpdateAddressInput: UpdateAddressInput;
   UpdateCompanyInput: UpdateCompanyInput;
@@ -424,6 +457,7 @@ export type ResolversTypes = {
   UpdateUserInput: UpdateUserInput;
   Upload: ResolverTypeWrapper<Scalars['Upload']>;
   User: ResolverTypeWrapper<User>;
+  UserFavouriteJobOffersResponse: ResolverTypeWrapper<UserFavouriteJobOffersResponse>;
   UserResponse: ResolverTypeWrapper<UserResponse>;
   UsersResponse: ResolverTypeWrapper<UsersResponse>;
 };
@@ -448,7 +482,7 @@ export type ResolversParentTypes = {
   Mutation: {};
   PostalCode: Scalars['PostalCode'];
   Query: {};
-  Response: ResolversParentTypes['JobOfferResponse'] | ResolversParentTypes['JobOffersResponse'] | ResolversParentTypes['UserResponse'] | ResolversParentTypes['UsersResponse'];
+  Response: ResolversParentTypes['JobOfferResponse'] | ResolversParentTypes['JobOffersResponse'] | ResolversParentTypes['UserFavouriteJobOffersResponse'] | ResolversParentTypes['UserResponse'] | ResolversParentTypes['UsersResponse'];
   Salary: Scalars['Salary'];
   UpdateAddressInput: UpdateAddressInput;
   UpdateCompanyInput: UpdateCompanyInput;
@@ -456,6 +490,7 @@ export type ResolversParentTypes = {
   UpdateUserInput: UpdateUserInput;
   Upload: Scalars['Upload'];
   User: User;
+  UserFavouriteJobOffersResponse: UserFavouriteJobOffersResponse;
   UserResponse: UserResponse;
   UsersResponse: UsersResponse;
 };
@@ -538,6 +573,8 @@ export type MutationResolvers<ContextType = any, ParentType extends ResolversPar
   createJobOffer?: Resolver<Maybe<ResolversTypes['JobOfferResponse']>, ParentType, ContextType, RequireFields<MutationCreateJobOfferArgs, never>>;
   deleteJobOffer?: Resolver<Maybe<ResolversTypes['JobOfferResponse']>, ParentType, ContextType, RequireFields<MutationDeleteJobOfferArgs, 'id'>>;
   updateJobOffer?: Resolver<Maybe<ResolversTypes['JobOfferResponse']>, ParentType, ContextType, RequireFields<MutationUpdateJobOfferArgs, 'id'>>;
+  addJobOfferToUserFavourite?: Resolver<Maybe<ResolversTypes['UserFavouriteJobOffersResponse']>, ParentType, ContextType, RequireFields<MutationAddJobOfferToUserFavouriteArgs, never>>;
+  deleteJobOfferFromUserFavourite?: Resolver<Maybe<ResolversTypes['UserFavouriteJobOffersResponse']>, ParentType, ContextType, RequireFields<MutationDeleteJobOfferFromUserFavouriteArgs, never>>;
 };
 
 export interface PostalCodeScalarConfig extends GraphQLScalarTypeConfig<ResolversTypes['PostalCode'], any> {
@@ -549,10 +586,11 @@ export type QueryResolvers<ContextType = any, ParentType extends ResolversParent
   getUserById?: Resolver<Maybe<ResolversTypes['UserResponse']>, ParentType, ContextType, RequireFields<QueryGetUserByIdArgs, 'id'>>;
   getAllJobOffers?: Resolver<Maybe<ResolversTypes['JobOffersResponse']>, ParentType, ContextType>;
   getJobOfferById?: Resolver<Maybe<ResolversTypes['JobOfferResponse']>, ParentType, ContextType, RequireFields<QueryGetJobOfferByIdArgs, 'id'>>;
+  getUserFavouriteJobOffers?: Resolver<Maybe<ResolversTypes['JobOffersResponse']>, ParentType, ContextType, RequireFields<QueryGetUserFavouriteJobOffersArgs, 'id'>>;
 };
 
 export type ResponseResolvers<ContextType = any, ParentType extends ResolversParentTypes['Response'] = ResolversParentTypes['Response']> = {
-  __resolveType: TypeResolveFn<'JobOfferResponse' | 'JobOffersResponse' | 'UserResponse' | 'UsersResponse', ParentType, ContextType>;
+  __resolveType: TypeResolveFn<'JobOfferResponse' | 'JobOffersResponse' | 'UserFavouriteJobOffersResponse' | 'UserResponse' | 'UsersResponse', ParentType, ContextType>;
   code?: Resolver<ResolversTypes['Int'], ParentType, ContextType>;
   success?: Resolver<ResolversTypes['Boolean'], ParentType, ContextType>;
   message?: Resolver<ResolversTypes['String'], ParentType, ContextType>;
@@ -590,6 +628,15 @@ export type UserResolvers<ContextType = any, ParentType extends ResolversParentT
   __isTypeOf?: IsTypeOfResolverFn<ParentType, ContextType>;
 };
 
+export type UserFavouriteJobOffersResponseResolvers<ContextType = any, ParentType extends ResolversParentTypes['UserFavouriteJobOffersResponse'] = ResolversParentTypes['UserFavouriteJobOffersResponse']> = {
+  code?: Resolver<ResolversTypes['Int'], ParentType, ContextType>;
+  success?: Resolver<ResolversTypes['Boolean'], ParentType, ContextType>;
+  message?: Resolver<ResolversTypes['String'], ParentType, ContextType>;
+  user?: Resolver<Maybe<ResolversTypes['User']>, ParentType, ContextType>;
+  jobOffers?: Resolver<Maybe<Array<Maybe<ResolversTypes['JobOffer']>>>, ParentType, ContextType>;
+  __isTypeOf?: IsTypeOfResolverFn<ParentType, ContextType>;
+};
+
 export type UserResponseResolvers<ContextType = any, ParentType extends ResolversParentTypes['UserResponse'] = ResolversParentTypes['UserResponse']> = {
   code?: Resolver<ResolversTypes['Int'], ParentType, ContextType>;
   success?: Resolver<ResolversTypes['Boolean'], ParentType, ContextType>;
@@ -622,6 +669,7 @@ export type Resolvers<ContextType = any> = {
   Salary?: GraphQLScalarType;
   Upload?: GraphQLScalarType;
   User?: UserResolvers<ContextType>;
+  UserFavouriteJobOffersResponse?: UserFavouriteJobOffersResponseResolvers<ContextType>;
   UserResponse?: UserResponseResolvers<ContextType>;
   UsersResponse?: UsersResponseResolvers<ContextType>;
 };

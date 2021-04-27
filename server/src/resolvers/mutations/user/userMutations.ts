@@ -5,7 +5,9 @@ import {
   CreateUserInput,
   UpdateUserInput,
   UserResponse,
+  UserFavouriteJobOffersResponse,
   User as UserType,
+  JobOffer as JobOfferType,
   Scalars,
 } from '../../../types/graphql';
 import { Token } from '../../../types/shared';
@@ -15,14 +17,24 @@ import {
   validatePassword,
 } from '../../../validators/validateInputs';
 import validateEmail from '../../../validators/scalars/validateEmail';
-import C from './constants';
+import userC from './constants';
+import jobOfferC from '../jobOffer/constants';
 import User from '../../../models/user';
+import JobOffer from '../../../models/jobOffer';
 
-const databaseErrorResponse: UserResponse = {
+const databaseUserErrorResponse: UserResponse = {
   code: 500,
   success: false,
   message: 'Internal database query error.',
   user: null,
+};
+
+const databaseUserJobOffersErrorResponse = {
+  code: 500,
+  success: false,
+  message: 'Internal database query error.',
+  user: null,
+  jobOffers: [],
 };
 
 const userMutations = {
@@ -58,7 +70,7 @@ const userMutations = {
       return {
         code: 400,
         success: false,
-        message: C.INVALID_LOGIN,
+        message: userC.INVALID_LOGIN,
         user: null,
       };
     }
@@ -67,7 +79,7 @@ const userMutations = {
       return {
         code: 400,
         success: false,
-        message: C.INVALID_EMAIL,
+        message: userC.INVALID_EMAIL,
         user: null,
       };
     }
@@ -76,7 +88,7 @@ const userMutations = {
       return {
         code: 400,
         success: false,
-        message: C.INVALID_PASSWORD,
+        message: userC.INVALID_PASSWORD,
         user: null,
       };
     }
@@ -91,7 +103,7 @@ const userMutations = {
         return {
           code: 409,
           success: false,
-          message: C.NOT_UNIQUE_LOGIN,
+          message: userC.NOT_UNIQUE_LOGIN,
           user: null,
         };
       }
@@ -102,7 +114,7 @@ const userMutations = {
         return {
           code: 409,
           success: false,
-          message: C.NOT_UNIQUE_EMAIL,
+          message: userC.NOT_UNIQUE_EMAIL,
           user: null,
         };
       }
@@ -131,13 +143,13 @@ const userMutations = {
       });
     } catch (error) {
       console.error(error);
-      return databaseErrorResponse;
+      return databaseUserErrorResponse;
     }
 
     return {
       code: 200,
       success: true,
-      message: C.USER_SUCCESSFULLY_CREATED,
+      message: userC.USER_SUCCESSFULLY_CREATED,
       user,
     };
   },
@@ -160,7 +172,7 @@ const userMutations = {
         return {
           code: 404,
           success: false,
-          message: C.USER_NOT_EXISTS,
+          message: userC.USER_NOT_EXISTS,
           user: null,
         };
       }
@@ -168,13 +180,13 @@ const userMutations = {
       user = await User.findByIdAndDelete(id).lean();
     } catch (error) {
       console.error(error);
-      return databaseErrorResponse;
+      return databaseUserErrorResponse;
     }
 
     return {
       code: 200,
       success: true,
-      message: C.USER_SUCCESSFULLY_DELETED,
+      message: userC.USER_SUCCESSFULLY_DELETED,
       user,
     };
   },
@@ -215,7 +227,7 @@ const userMutations = {
         return {
           code: 404,
           success: false,
-          message: C.USER_NOT_EXISTS,
+          message: userC.USER_NOT_EXISTS,
           user: null,
         };
       }
@@ -242,14 +254,168 @@ const userMutations = {
       ).lean();
     } catch (error) {
       console.error(error);
-      return databaseErrorResponse;
+      return databaseUserErrorResponse;
     }
 
     return {
       code: 200,
       success: true,
-      message: C.USER_SUCCESSFULLY_UPDATED,
+      message: userC.USER_SUCCESSFULLY_UPDATED,
       user,
+    };
+  },
+
+  addJobOfferToUserFavourite: async (
+    _parent: any,
+    {
+      userId,
+      jobOfferId,
+    }: { userId: Scalars['ID']; jobOfferId: Scalars['ID'] },
+    { token }: Token
+  ): Promise<UserFavouriteJobOffersResponse> => {
+    if (!token) {
+      throw new AuthenticationError('Invalid authentication token.');
+    }
+
+    let user: UserType;
+    let jobOffers: Array<JobOfferType>;
+
+    try {
+      user = await User.findById(userId).lean();
+
+      if (!user) {
+        return {
+          code: 404,
+          success: false,
+          message: userC.USER_NOT_EXISTS,
+          user: null,
+          jobOffers: [],
+        };
+      }
+
+      const jobOffer = await JobOffer.findById(jobOfferId);
+
+      if (!jobOffer) {
+        return {
+          code: 404,
+          success: false,
+          message: jobOfferC.JOB_OFFER_NOT_EXISTS,
+          user: null,
+          jobOffers: [],
+        };
+      }
+
+      const isJobOfferAlreadyFavourite = await User.exists({
+        _id: userId,
+        'favouriteJobOffers._id': jobOfferId,
+      });
+
+      if (isJobOfferAlreadyFavourite) {
+        jobOffers = user.favouriteJobOffers ?? [];
+
+        return {
+          code: 409,
+          success: false,
+          message: userC.JOB_OFFER_ALREADY_FAVOURITE,
+          user,
+          jobOffers,
+        };
+      }
+
+      user = await User.findByIdAndUpdate(
+        userId,
+        { $push: { favouriteJobOffers: jobOffer } },
+        { new: true }
+      ).lean();
+      jobOffers = user.favouriteJobOffers ?? [];
+    } catch (error) {
+      console.error(error);
+      return databaseUserJobOffersErrorResponse;
+    }
+
+    return {
+      code: 200,
+      success: true,
+      message: userC.JOB_OFFER_SUCCESSFULLY_ADDED,
+      user,
+      jobOffers,
+    };
+  },
+
+  deleteJobOfferFromUserFavourite: async (
+    _parent: any,
+    {
+      userId,
+      jobOfferId,
+    }: { userId: Scalars['ID']; jobOfferId: Scalars['ID'] },
+    { token }: Token
+  ): Promise<UserFavouriteJobOffersResponse> => {
+    if (!token) {
+      throw new AuthenticationError('Invalid authentication token.');
+    }
+
+    let user: UserType;
+    let jobOffers: Array<JobOfferType>;
+
+    try {
+      user = await User.findById(userId).lean();
+
+      if (!user) {
+        return {
+          code: 404,
+          success: false,
+          message: userC.USER_NOT_EXISTS,
+          user: null,
+          jobOffers: [],
+        };
+      }
+
+      const jobOffer = await JobOffer.findById(jobOfferId);
+
+      if (!jobOffer) {
+        return {
+          code: 404,
+          success: false,
+          message: jobOfferC.JOB_OFFER_NOT_EXISTS,
+          user: null,
+          jobOffers: [],
+        };
+      }
+
+      const isJobOfferFavourite = await User.exists({
+        _id: userId,
+        'favouriteJobOffers._id': jobOfferId,
+      });
+
+      if (!isJobOfferFavourite) {
+        jobOffers = user.favouriteJobOffers ?? [];
+
+        return {
+          code: 404,
+          success: false,
+          message: userC.JOB_OFFER_NOT_FAVOURITE,
+          user,
+          jobOffers,
+        };
+      }
+
+      user = await User.findByIdAndUpdate(
+        userId,
+        { $pull: { favouriteJobOffers: { _id: jobOffer._id } } },
+        { new: true }
+      ).lean();
+      jobOffers = user.favouriteJobOffers ?? [];
+    } catch (error) {
+      console.error(error);
+      return databaseUserJobOffersErrorResponse;
+    }
+
+    return {
+      code: 200,
+      success: true,
+      message: userC.JOB_OFFER_SUCCESSFULLY_DELETED,
+      user,
+      jobOffers,
     };
   },
 };

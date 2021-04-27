@@ -31,6 +31,22 @@ const typeDefs = gql`
     Updates job offer by ID.
     """
     updateJobOffer(id: ID!, input: UpdateJobOfferInput): JobOfferResponse
+
+    """
+    Adds chosen job offer to chosen user favourite job offers.
+    """
+    addJobOfferToUserFavourite(
+      userId: ID
+      jobOfferId: ID
+    ): UserFavouriteJobOffersResponse
+
+    """
+    Deletes chosen job offer from chosen user favourite job offers.
+    """
+    deleteJobOfferFromUserFavourite(
+      userId: ID
+      jobOfferId: ID
+    ): UserFavouriteJobOffersResponse
   }
 `;
 

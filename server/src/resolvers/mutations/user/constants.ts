@@ -10,6 +10,13 @@ const constants = {
   USER_SUCCESSFULLY_CREATED: 'User successfully created.',
   USER_SUCCESSFULLY_DELETED: 'User successfully deleted.',
   USER_SUCCESSFULLY_UPDATED: 'User successfully updated.',
+
+  JOB_OFFER_ALREADY_FAVOURITE: 'Chosen job offer is already user favourite.',
+  JOB_OFFER_NOT_FAVOURITE: 'Chosen job offer is not in user favourite.',
+  JOB_OFFER_SUCCESSFULLY_ADDED:
+    'Chosen job offer successfully added to user favourite.',
+  JOB_OFFER_SUCCESSFULLY_DELETED:
+    'Chosen job offer successfully deleted from user favourite.',
 };
 
 export default constants;

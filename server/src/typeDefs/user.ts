@@ -50,6 +50,14 @@ const typeDefs = gql`
     users: [User]
   }
 
+  type UserFavouriteJobOffersResponse implements Response {
+    code: Int!
+    success: Boolean!
+    message: String!
+    user: User
+    jobOffers: [JobOffer]
+  }
+
   "Full details about registered user"
   type User {
     _id: ID!

@@ -21,6 +21,11 @@ const typeDefs = gql`
     Gets one job offer by job offer ID.
     """
     getJobOfferById(id: ID!): JobOfferResponse
+
+    """
+    Gets all favourite job offers of chosen user.
+    """
+    getUserFavouriteJobOffers(id: ID!): JobOffersResponse
   }
 `;
 
