@@ -59,9 +59,11 @@ const typeDefs = gql`
     verifyAccessToken(accessToken: String): AccessTokenResponse
 
     """
-    Verifies refresh token validity.
+    Generates new access and refresh token by refresh token.
     """
-    verifyRefreshToken(refreshToken: String): RefreshTokenResponse
+    generateTokensByRefreshToken(
+      refreshToken: String
+    ): AccessRefreshTokenResponse
   }
 `;
 

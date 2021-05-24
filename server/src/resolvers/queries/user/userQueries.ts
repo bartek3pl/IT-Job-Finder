@@ -8,6 +8,7 @@ import {
 } from '../../../types/graphql';
 import { Token } from '../../../types/shared';
 import C from './constants';
+import globalC from '../../../constants';
 import User from '../../../models/user';
 
 const databaseErrorUsersResponse: UsersResponse = {
@@ -26,12 +27,12 @@ const databaseErrorUserResponse: UserResponse = {
 
 const userQueries = {
   getAllUsers: async (
-    _parent: any,
-    _args: any,
-    { token }: Token
+    _parent: unknown,
+    _args: unknown,
+    token: Token
   ): Promise<UsersResponse> => {
     if (!token) {
-      throw new AuthenticationError('Invalid authentication token.');
+      throw new AuthenticationError(globalC.INVALID_AUTHENTICATION_TOKEN);
     }
 
     let users: Array<UserType>;
@@ -61,12 +62,12 @@ const userQueries = {
   },
 
   getUserById: async (
-    _parent: any,
+    _parent: unknown,
     { id }: { id: Scalars['ID'] },
-    { token }: Token
+    token: Token
   ): Promise<UserResponse> => {
     if (!token) {
-      throw new AuthenticationError('Invalid authentication token.');
+      throw new AuthenticationError(globalC.INVALID_AUTHENTICATION_TOKEN);
     }
 
     let user: UserType;

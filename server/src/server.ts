@@ -34,7 +34,7 @@ const typeDefs = [
 const context = async () => {
   const token = true;
 
-  return { token };
+  return token;
 };
 
 const server = new ApolloServer({

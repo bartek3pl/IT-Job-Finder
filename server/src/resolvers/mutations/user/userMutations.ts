@@ -9,7 +9,6 @@ import {
   UserTokenResponse,
   User as UserType,
   JobOffer as JobOfferType,
-  Token as TokenType,
   Scalars,
 } from '../../../types/graphql';
 import { Token } from '../../../types/shared';
@@ -21,6 +20,7 @@ import {
 import validateEmail from '../../../validators/scalars/validateEmail';
 import userC from './constants';
 import jobOfferC from '../jobOffer/constants';
+import globalC from '../../../constants';
 import User from '../../../models/user';
 import JobOffer from '../../../models/jobOffer';
 import authService from '../../../services/authService';
@@ -45,18 +45,20 @@ const databaseUserTokenErrorResponse = {
   success: false,
   message: 'Internal database query error.',
   user: null,
-  token: null,
+  accessToken: null,
+  refreshToken: null,
 };
 
 const userMutations = {
   login: async (
-    _parent: any,
+    _parent: unknown,
     {
       input: { login, password },
     }: { input: { login: Scalars['String']; password: Scalars['String'] } }
   ): Promise<UserTokenResponse> => {
     let user: UserType;
-    let token: TokenType;
+    let accessToken: Token;
+    let refreshToken: Token;
 
     try {
       user = await User.findOne({ login }).lean();
@@ -67,7 +69,8 @@ const userMutations = {
           success: false,
           message: userC.USER_NOT_EXISTS,
           user: null,
-          token: null,
+          accessToken: null,
+          refreshToken: null,
         };
       }
 
@@ -80,11 +83,14 @@ const userMutations = {
           success: false,
           message: userC.WRONG_PASSWORD,
           user: null,
-          token: null,
+          accessToken: null,
+          refreshToken: null,
         };
       }
 
-      token = authService.generateTokens();
+      const userId = user._id;
+      accessToken = authService.generateAccessToken(userId);
+      refreshToken = authService.generateRefreshToken(userId);
     } catch (error) {
       console.error(error);
       return databaseUserTokenErrorResponse;
@@ -95,12 +101,13 @@ const userMutations = {
       success: true,
       message: userC.USER_SUCCESSFULLY_LOGGED_IN,
       user,
-      token,
+      accessToken,
+      refreshToken,
     };
   },
 
   createUser: async (
-    _parent: any,
+    _parent: unknown,
     {
       input: {
         login,
@@ -211,12 +218,12 @@ const userMutations = {
   },
 
   deleteUser: async (
-    _parent: any,
+    _parent: unknown,
     { id }: { id: Scalars['ID'] },
-    { token }: Token
+    token: Token
   ): Promise<UserResponse> => {
     if (!token) {
-      throw new AuthenticationError('Invalid authentication token.');
+      throw new AuthenticationError(globalC.INVALID_AUTHENTICATION_TOKEN);
     }
 
     let user: UserType;
@@ -248,7 +255,7 @@ const userMutations = {
   },
 
   updateUser: async (
-    _parent: any,
+    _parent: unknown,
     {
       id,
       input: {
@@ -267,10 +274,10 @@ const userMutations = {
         emailNotification,
       },
     }: { id: Scalars['ID']; input: UpdateUserInput },
-    { token }: Token
+    token: Token
   ): Promise<UserResponse> => {
     if (!token) {
-      throw new AuthenticationError('Invalid authentication token.');
+      throw new AuthenticationError(globalC.INVALID_AUTHENTICATION_TOKEN);
     }
 
     const updatedDateTime = timestampToDateTime(new Date());
@@ -322,15 +329,15 @@ const userMutations = {
   },
 
   addJobOfferToUserFavourite: async (
-    _parent: any,
+    _parent: unknown,
     {
       userId,
       jobOfferId,
     }: { userId: Scalars['ID']; jobOfferId: Scalars['ID'] },
-    { token }: Token
+    token: Token
   ): Promise<UserFavouriteJobOffersResponse> => {
     if (!token) {
-      throw new AuthenticationError('Invalid authentication token.');
+      throw new AuthenticationError(globalC.INVALID_AUTHENTICATION_TOKEN);
     }
 
     let user: UserType;
@@ -383,6 +390,7 @@ const userMutations = {
         { $push: { favouriteJobOffers: jobOffer } },
         { new: true }
       ).lean();
+
       jobOffers = user.favouriteJobOffers ?? [];
     } catch (error) {
       console.error(error);
@@ -399,15 +407,15 @@ const userMutations = {
   },
 
   deleteJobOfferFromUserFavourite: async (
-    _parent: any,
+    _parent: unknown,
     {
       userId,
       jobOfferId,
     }: { userId: Scalars['ID']; jobOfferId: Scalars['ID'] },
-    { token }: Token
+    token: Token
   ): Promise<UserFavouriteJobOffersResponse> => {
     if (!token) {
-      throw new AuthenticationError('Invalid authentication token.');
+      throw new AuthenticationError(globalC.INVALID_AUTHENTICATION_TOKEN);
     }
 
     let user: UserType;
@@ -460,6 +468,7 @@ const userMutations = {
         { $pull: { favouriteJobOffers: { _id: jobOffer._id } } },
         { new: true }
       ).lean();
+
       jobOffers = user.favouriteJobOffers ?? [];
     } catch (error) {
       console.error(error);

@@ -5,26 +5,25 @@ const typeDefs = gql`
     code: Int!
     success: Boolean!
     message: String!
-    accessToken: Token
+    accessToken: String
   }
 
-  type RefreshTokenResponse implements Response {
+  type AccessRefreshTokenResponse implements Response {
     code: Int!
     success: Boolean!
     message: String!
-    refreshToken: Token
+    accessToken: String
+    refreshToken: String
   }
 
-  "Full JWT token details."
+  "Full JWT token payload details."
   type Token {
-    alg: String!
     typ: String!
+    exp: Int!
+    sub: Int!
     iss: String!
-    exp: String!
-    sub: String!
     aud: String!
     iat: String!
-    jti: String!
   }
 `;
 

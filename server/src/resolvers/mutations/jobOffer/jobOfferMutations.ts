@@ -11,6 +11,7 @@ import { Token } from '../../../types/shared';
 import { timestampToDateTime } from '../../../utils/converters';
 import { isNullish } from '../../../utils/checkers';
 import C from './constants';
+import globalC from '../../../constants';
 import JobOffer from '../../../models/jobOffer';
 
 const databaseErrorResponse: JobOfferResponse = {
@@ -22,7 +23,7 @@ const databaseErrorResponse: JobOfferResponse = {
 
 const jobOfferMutations = {
   createJobOffer: async (
-    _parent: any,
+    _parent: unknown,
     {
       input: {
         title,
@@ -36,10 +37,10 @@ const jobOfferMutations = {
         contractType,
       },
     }: { input: CreateJobOfferInput },
-    { token }: Token
+    token: Token
   ): Promise<JobOfferResponse> => {
     if (!token) {
-      throw new AuthenticationError('Invalid authentication token.');
+      throw new AuthenticationError(globalC.INVALID_AUTHENTICATION_TOKEN);
     }
 
     const createdDateTime = timestampToDateTime(new Date());
@@ -73,12 +74,12 @@ const jobOfferMutations = {
   },
 
   deleteJobOffer: async (
-    _parent: any,
+    _parent: unknown,
     { id }: { id: Scalars['ID'] },
-    { token }: Token
+    token: Token
   ): Promise<JobOfferResponse> => {
     if (!token) {
-      throw new AuthenticationError('Invalid authentication token.');
+      throw new AuthenticationError(globalC.INVALID_AUTHENTICATION_TOKEN);
     }
 
     let jobOffer: JobOfferType;
@@ -110,7 +111,7 @@ const jobOfferMutations = {
   },
 
   updateJobOffer: async (
-    _parent: any,
+    _parent: unknown,
     {
       id,
       input: {
@@ -125,10 +126,10 @@ const jobOfferMutations = {
         contractType,
       },
     }: { id: Scalars['ID']; input: UpdateJobOfferInput },
-    { token }: Token
+    token: Token
   ): Promise<JobOfferResponse> => {
     if (!token) {
-      throw new AuthenticationError('Invalid authentication token.');
+      throw new AuthenticationError(globalC.INVALID_AUTHENTICATION_TOKEN);
     }
 
     const updatedDateTime = timestampToDateTime(new Date());

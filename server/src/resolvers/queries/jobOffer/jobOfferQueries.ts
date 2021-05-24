@@ -8,6 +8,7 @@ import {
 } from '../../../types/graphql';
 import { Token } from '../../../types/shared';
 import C from './constants';
+import globalC from '../../../constants';
 import JobOffer from '../../../models/jobOffer';
 
 const databaseErrorJobOffersResponse: JobOffersResponse = {
@@ -26,12 +27,12 @@ const databaseErrorJobOfferResponse: JobOfferResponse = {
 
 const userQueries = {
   getAllJobOffers: async (
-    _parent: any,
-    _args: any,
-    { token }: Token
+    _parent: unknown,
+    _args: unknown,
+    token: Token
   ): Promise<JobOffersResponse> => {
     if (!token) {
-      throw new AuthenticationError('Invalid authentication token.');
+      throw new AuthenticationError(globalC.INVALID_AUTHENTICATION_TOKEN);
     }
 
     let jobOffers: Array<JobOfferType>;
@@ -61,12 +62,12 @@ const userQueries = {
   },
 
   getJobOfferById: async (
-    _parent: any,
+    _parent: unknown,
     { id }: { id: Scalars['ID'] },
-    { token }: Token
+    token: Token
   ): Promise<JobOfferResponse> => {
     if (!token) {
-      throw new AuthenticationError('Invalid authentication token.');
+      throw new AuthenticationError(globalC.INVALID_AUTHENTICATION_TOKEN);
     }
 
     let jobOffer: JobOfferType;

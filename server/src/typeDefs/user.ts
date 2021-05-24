@@ -68,7 +68,8 @@ const typeDefs = gql`
     success: Boolean!
     message: String!
     user: User
-    token: Token
+    accessToken: String
+    refreshToken: String
   }
 
   "Full details about registered user"

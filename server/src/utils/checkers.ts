@@ -1,3 +1,3 @@
-const isNullish = (value: any) => value === null || value === undefined;
+const isNullish = (value: unknown) => value === null || value === undefined;
 
 export { isNullish };
