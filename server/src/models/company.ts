@@ -8,7 +8,10 @@ const company = new mongoose.Schema({
     type: String,
     required: true,
   },
-  address: address,
+  address: {
+    type: address,
+    required: true,
+  },
   employeesNumber: {
     type: Number,
     required: false,

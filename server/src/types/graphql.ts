@@ -57,14 +57,32 @@ export enum CacheControlScope {
   Private = 'PRIVATE'
 }
 
+export type CompaniesResponse = Response & {
+  __typename?: 'CompaniesResponse';
+  code: Scalars['Int'];
+  success: Scalars['Boolean'];
+  message: Scalars['String'];
+  companies?: Maybe<Array<Maybe<Company>>>;
+};
+
 /** Full details about company */
 export type Company = {
   __typename?: 'Company';
   _id: Scalars['ID'];
   name: Scalars['String'];
-  address?: Maybe<Address>;
+  address: Address;
   employeesNumber?: Maybe<Scalars['Int']>;
   logo?: Maybe<File>;
+  createdDateTime: Scalars['DateTime'];
+  updatedDateTime: Scalars['DateTime'];
+};
+
+export type CompanyResponse = Response & {
+  __typename?: 'CompanyResponse';
+  code: Scalars['Int'];
+  success: Scalars['Boolean'];
+  message: Scalars['String'];
+  company?: Maybe<Company>;
 };
 
 /** Employment contract for the employee */
@@ -74,6 +92,13 @@ export enum ContractType {
   Uz = 'UZ',
   Other = 'OTHER'
 }
+
+export type CreateCompanyInput = {
+  name: Scalars['String'];
+  address?: Maybe<UpdateAddressInput>;
+  employeesNumber?: Maybe<Scalars['Int']>;
+  logo?: Maybe<FileInput>;
+};
 
 export type CreateJobOfferInput = {
   title: Scalars['String'];
@@ -189,6 +214,12 @@ export type Mutation = {
   deleteJobOffer?: Maybe<JobOfferResponse>;
   /** Updates job offer by ID. */
   updateJobOffer?: Maybe<JobOfferResponse>;
+  /** Creates company with with required title and employer fields. */
+  createCompany?: Maybe<CompanyResponse>;
+  /** Deletes company by ID. */
+  deleteCompany?: Maybe<CompanyResponse>;
+  /** Updates company by ID. */
+  updateCompany?: Maybe<CompanyResponse>;
   /** Adds chosen job offer to chosen user favourite job offers. */
   addJobOfferToUserFavourite?: Maybe<UserFavouriteJobOffersResponse>;
   /** Deletes chosen job offer from chosen user favourite job offers. */
@@ -234,6 +265,22 @@ export type MutationUpdateJobOfferArgs = {
 };
 
 
+export type MutationCreateCompanyArgs = {
+  input?: Maybe<CreateCompanyInput>;
+};
+
+
+export type MutationDeleteCompanyArgs = {
+  id: Scalars['ID'];
+};
+
+
+export type MutationUpdateCompanyArgs = {
+  id: Scalars['ID'];
+  input?: Maybe<UpdateCompanyInput>;
+};
+
+
 export type MutationAddJobOfferToUserFavouriteArgs = {
   userId?: Maybe<Scalars['ID']>;
   jobOfferId?: Maybe<Scalars['ID']>;
@@ -273,6 +320,10 @@ export type Query = {
   getJobOfferById?: Maybe<JobOfferResponse>;
   /** Gets all favourite job offers of chosen user. */
   getUserFavouriteJobOffers?: Maybe<JobOffersResponse>;
+  /** Gets all companies. */
+  getAllCompanies?: Maybe<CompaniesResponse>;
+  /** Gets one company by company ID. */
+  getCompanyById?: Maybe<CompanyResponse>;
 };
 
 
@@ -287,6 +338,11 @@ export type QueryGetJobOfferByIdArgs = {
 
 
 export type QueryGetUserFavouriteJobOffersArgs = {
+  id: Scalars['ID'];
+};
+
+
+export type QueryGetCompanyByIdArgs = {
   id: Scalars['ID'];
 };
 
@@ -498,9 +554,12 @@ export type ResolversTypes = {
   AccessTokenResponse: ResolverTypeWrapper<AccessTokenResponse>;
   Address: ResolverTypeWrapper<Address>;
   CacheControlScope: CacheControlScope;
+  CompaniesResponse: ResolverTypeWrapper<CompaniesResponse>;
   Company: ResolverTypeWrapper<Company>;
   ID: ResolverTypeWrapper<Scalars['ID']>;
+  CompanyResponse: ResolverTypeWrapper<CompanyResponse>;
   ContractType: ContractType;
+  CreateCompanyInput: CreateCompanyInput;
   CreateJobOfferInput: CreateJobOfferInput;
   CreateUserInput: CreateUserInput;
   DateTime: ResolverTypeWrapper<Scalars['DateTime']>;
@@ -516,7 +575,7 @@ export type ResolversTypes = {
   Mutation: ResolverTypeWrapper<{}>;
   PostalCode: ResolverTypeWrapper<Scalars['PostalCode']>;
   Query: ResolverTypeWrapper<{}>;
-  Response: ResolversTypes['AccessRefreshTokenResponse'] | ResolversTypes['AccessTokenResponse'] | ResolversTypes['JobOfferResponse'] | ResolversTypes['JobOffersResponse'] | ResolversTypes['UserFavouriteJobOffersResponse'] | ResolversTypes['UserResponse'] | ResolversTypes['UserTokenResponse'] | ResolversTypes['UsersResponse'];
+  Response: ResolversTypes['AccessRefreshTokenResponse'] | ResolversTypes['AccessTokenResponse'] | ResolversTypes['CompaniesResponse'] | ResolversTypes['CompanyResponse'] | ResolversTypes['JobOfferResponse'] | ResolversTypes['JobOffersResponse'] | ResolversTypes['UserFavouriteJobOffersResponse'] | ResolversTypes['UserResponse'] | ResolversTypes['UserTokenResponse'] | ResolversTypes['UsersResponse'];
   Salary: ResolverTypeWrapper<Scalars['Salary']>;
   Token: ResolverTypeWrapper<Token>;
   UpdateAddressInput: UpdateAddressInput;
@@ -539,8 +598,11 @@ export type ResolversParentTypes = {
   String: Scalars['String'];
   AccessTokenResponse: AccessTokenResponse;
   Address: Address;
+  CompaniesResponse: CompaniesResponse;
   Company: Company;
   ID: Scalars['ID'];
+  CompanyResponse: CompanyResponse;
+  CreateCompanyInput: CreateCompanyInput;
   CreateJobOfferInput: CreateJobOfferInput;
   CreateUserInput: CreateUserInput;
   DateTime: Scalars['DateTime'];
@@ -554,7 +616,7 @@ export type ResolversParentTypes = {
   Mutation: {};
   PostalCode: Scalars['PostalCode'];
   Query: {};
-  Response: ResolversParentTypes['AccessRefreshTokenResponse'] | ResolversParentTypes['AccessTokenResponse'] | ResolversParentTypes['JobOfferResponse'] | ResolversParentTypes['JobOffersResponse'] | ResolversParentTypes['UserFavouriteJobOffersResponse'] | ResolversParentTypes['UserResponse'] | ResolversParentTypes['UserTokenResponse'] | ResolversParentTypes['UsersResponse'];
+  Response: ResolversParentTypes['AccessRefreshTokenResponse'] | ResolversParentTypes['AccessTokenResponse'] | ResolversParentTypes['CompaniesResponse'] | ResolversParentTypes['CompanyResponse'] | ResolversParentTypes['JobOfferResponse'] | ResolversParentTypes['JobOffersResponse'] | ResolversParentTypes['UserFavouriteJobOffersResponse'] | ResolversParentTypes['UserResponse'] | ResolversParentTypes['UserTokenResponse'] | ResolversParentTypes['UsersResponse'];
   Salary: Scalars['Salary'];
   Token: Token;
   UpdateAddressInput: UpdateAddressInput;
@@ -601,12 +663,30 @@ export type AddressResolvers<ContextType = any, ParentType extends ResolversPare
   __isTypeOf?: IsTypeOfResolverFn<ParentType, ContextType>;
 };
 
+export type CompaniesResponseResolvers<ContextType = any, ParentType extends ResolversParentTypes['CompaniesResponse'] = ResolversParentTypes['CompaniesResponse']> = {
+  code?: Resolver<ResolversTypes['Int'], ParentType, ContextType>;
+  success?: Resolver<ResolversTypes['Boolean'], ParentType, ContextType>;
+  message?: Resolver<ResolversTypes['String'], ParentType, ContextType>;
+  companies?: Resolver<Maybe<Array<Maybe<ResolversTypes['Company']>>>, ParentType, ContextType>;
+  __isTypeOf?: IsTypeOfResolverFn<ParentType, ContextType>;
+};
+
 export type CompanyResolvers<ContextType = any, ParentType extends ResolversParentTypes['Company'] = ResolversParentTypes['Company']> = {
   _id?: Resolver<ResolversTypes['ID'], ParentType, ContextType>;
   name?: Resolver<ResolversTypes['String'], ParentType, ContextType>;
-  address?: Resolver<Maybe<ResolversTypes['Address']>, ParentType, ContextType>;
+  address?: Resolver<ResolversTypes['Address'], ParentType, ContextType>;
   employeesNumber?: Resolver<Maybe<ResolversTypes['Int']>, ParentType, ContextType>;
   logo?: Resolver<Maybe<ResolversTypes['File']>, ParentType, ContextType>;
+  createdDateTime?: Resolver<ResolversTypes['DateTime'], ParentType, ContextType>;
+  updatedDateTime?: Resolver<ResolversTypes['DateTime'], ParentType, ContextType>;
+  __isTypeOf?: IsTypeOfResolverFn<ParentType, ContextType>;
+};
+
+export type CompanyResponseResolvers<ContextType = any, ParentType extends ResolversParentTypes['CompanyResponse'] = ResolversParentTypes['CompanyResponse']> = {
+  code?: Resolver<ResolversTypes['Int'], ParentType, ContextType>;
+  success?: Resolver<ResolversTypes['Boolean'], ParentType, ContextType>;
+  message?: Resolver<ResolversTypes['String'], ParentType, ContextType>;
+  company?: Resolver<Maybe<ResolversTypes['Company']>, ParentType, ContextType>;
   __isTypeOf?: IsTypeOfResolverFn<ParentType, ContextType>;
 };
 
@@ -664,6 +744,9 @@ export type MutationResolvers<ContextType = any, ParentType extends ResolversPar
   createJobOffer?: Resolver<Maybe<ResolversTypes['JobOfferResponse']>, ParentType, ContextType, RequireFields<MutationCreateJobOfferArgs, never>>;
   deleteJobOffer?: Resolver<Maybe<ResolversTypes['JobOfferResponse']>, ParentType, ContextType, RequireFields<MutationDeleteJobOfferArgs, 'id'>>;
   updateJobOffer?: Resolver<Maybe<ResolversTypes['JobOfferResponse']>, ParentType, ContextType, RequireFields<MutationUpdateJobOfferArgs, 'id'>>;
+  createCompany?: Resolver<Maybe<ResolversTypes['CompanyResponse']>, ParentType, ContextType, RequireFields<MutationCreateCompanyArgs, never>>;
+  deleteCompany?: Resolver<Maybe<ResolversTypes['CompanyResponse']>, ParentType, ContextType, RequireFields<MutationDeleteCompanyArgs, 'id'>>;
+  updateCompany?: Resolver<Maybe<ResolversTypes['CompanyResponse']>, ParentType, ContextType, RequireFields<MutationUpdateCompanyArgs, 'id'>>;
   addJobOfferToUserFavourite?: Resolver<Maybe<ResolversTypes['UserFavouriteJobOffersResponse']>, ParentType, ContextType, RequireFields<MutationAddJobOfferToUserFavouriteArgs, never>>;
   deleteJobOfferFromUserFavourite?: Resolver<Maybe<ResolversTypes['UserFavouriteJobOffersResponse']>, ParentType, ContextType, RequireFields<MutationDeleteJobOfferFromUserFavouriteArgs, never>>;
   login?: Resolver<Maybe<ResolversTypes['UserTokenResponse']>, ParentType, ContextType, RequireFields<MutationLoginArgs, never>>;
@@ -681,10 +764,12 @@ export type QueryResolvers<ContextType = any, ParentType extends ResolversParent
   getAllJobOffers?: Resolver<Maybe<ResolversTypes['JobOffersResponse']>, ParentType, ContextType>;
   getJobOfferById?: Resolver<Maybe<ResolversTypes['JobOfferResponse']>, ParentType, ContextType, RequireFields<QueryGetJobOfferByIdArgs, 'id'>>;
   getUserFavouriteJobOffers?: Resolver<Maybe<ResolversTypes['JobOffersResponse']>, ParentType, ContextType, RequireFields<QueryGetUserFavouriteJobOffersArgs, 'id'>>;
+  getAllCompanies?: Resolver<Maybe<ResolversTypes['CompaniesResponse']>, ParentType, ContextType>;
+  getCompanyById?: Resolver<Maybe<ResolversTypes['CompanyResponse']>, ParentType, ContextType, RequireFields<QueryGetCompanyByIdArgs, 'id'>>;
 };
 
 export type ResponseResolvers<ContextType = any, ParentType extends ResolversParentTypes['Response'] = ResolversParentTypes['Response']> = {
-  __resolveType: TypeResolveFn<'AccessRefreshTokenResponse' | 'AccessTokenResponse' | 'JobOfferResponse' | 'JobOffersResponse' | 'UserFavouriteJobOffersResponse' | 'UserResponse' | 'UserTokenResponse' | 'UsersResponse', ParentType, ContextType>;
+  __resolveType: TypeResolveFn<'AccessRefreshTokenResponse' | 'AccessTokenResponse' | 'CompaniesResponse' | 'CompanyResponse' | 'JobOfferResponse' | 'JobOffersResponse' | 'UserFavouriteJobOffersResponse' | 'UserResponse' | 'UserTokenResponse' | 'UsersResponse', ParentType, ContextType>;
   code?: Resolver<ResolversTypes['Int'], ParentType, ContextType>;
   success?: Resolver<ResolversTypes['Boolean'], ParentType, ContextType>;
   message?: Resolver<ResolversTypes['String'], ParentType, ContextType>;
@@ -771,7 +856,9 @@ export type Resolvers<ContextType = any> = {
   AccessRefreshTokenResponse?: AccessRefreshTokenResponseResolvers<ContextType>;
   AccessTokenResponse?: AccessTokenResponseResolvers<ContextType>;
   Address?: AddressResolvers<ContextType>;
+  CompaniesResponse?: CompaniesResponseResolvers<ContextType>;
   Company?: CompanyResolvers<ContextType>;
+  CompanyResponse?: CompanyResponseResolvers<ContextType>;
   DateTime?: GraphQLScalarType;
   Email?: GraphQLScalarType;
   File?: FileResolvers<ContextType>;

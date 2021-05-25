@@ -26,6 +26,16 @@ const typeDefs = gql`
     Gets all favourite job offers of chosen user.
     """
     getUserFavouriteJobOffers(id: ID!): JobOffersResponse
+
+    """
+    Gets all companies.
+    """
+    getAllCompanies: CompaniesResponse
+
+    """
+    Gets one company by company ID.
+    """
+    getCompanyById(id: ID!): CompanyResponse
   }
 `;
 

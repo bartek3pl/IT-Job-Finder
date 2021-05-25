@@ -33,6 +33,21 @@ const typeDefs = gql`
     updateJobOffer(id: ID!, input: UpdateJobOfferInput): JobOfferResponse
 
     """
+    Creates company with with required title and employer fields.
+    """
+    createCompany(input: CreateCompanyInput): CompanyResponse
+
+    """
+    Deletes company by ID.
+    """
+    deleteCompany(id: ID!): CompanyResponse
+
+    """
+    Updates company by ID.
+    """
+    updateCompany(id: ID!, input: UpdateCompanyInput): CompanyResponse
+
+    """
     Adds chosen job offer to chosen user favourite job offers.
     """
     addJobOfferToUserFavourite(
