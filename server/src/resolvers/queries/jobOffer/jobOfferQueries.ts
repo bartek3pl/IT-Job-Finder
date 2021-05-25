@@ -29,9 +29,9 @@ const userQueries = {
   getAllJobOffers: async (
     _parent: unknown,
     _args: unknown,
-    token: Token
+    { accessToken }: { accessToken: Token }
   ): Promise<JobOffersResponse> => {
-    if (!token) {
+    if (!accessToken) {
       throw new AuthenticationError(globalC.INVALID_AUTHENTICATION_TOKEN);
     }
 
@@ -64,9 +64,9 @@ const userQueries = {
   getJobOfferById: async (
     _parent: unknown,
     { id }: { id: Scalars['ID'] },
-    token: Token
+    { accessToken }: { accessToken: Token }
   ): Promise<JobOfferResponse> => {
-    if (!token) {
+    if (!accessToken) {
       throw new AuthenticationError(globalC.INVALID_AUTHENTICATION_TOKEN);
     }
 

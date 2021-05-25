@@ -6,6 +6,7 @@ import file from './file';
 const company = new mongoose.Schema({
   name: {
     type: String,
+    unique: true,
     required: true,
   },
   address: {

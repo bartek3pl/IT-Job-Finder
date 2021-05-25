@@ -37,9 +37,9 @@ const jobOfferMutations = {
         contractType,
       },
     }: { input: CreateJobOfferInput },
-    token: Token
+    { accessToken }: { accessToken: Token }
   ): Promise<JobOfferResponse> => {
-    if (!token) {
+    if (!accessToken) {
       throw new AuthenticationError(globalC.INVALID_AUTHENTICATION_TOKEN);
     }
 
@@ -76,9 +76,9 @@ const jobOfferMutations = {
   deleteJobOffer: async (
     _parent: unknown,
     { id }: { id: Scalars['ID'] },
-    token: Token
+    { accessToken }: { accessToken: Token }
   ): Promise<JobOfferResponse> => {
-    if (!token) {
+    if (!accessToken) {
       throw new AuthenticationError(globalC.INVALID_AUTHENTICATION_TOKEN);
     }
 
@@ -126,9 +126,9 @@ const jobOfferMutations = {
         contractType,
       },
     }: { id: Scalars['ID']; input: UpdateJobOfferInput },
-    token: Token
+    { accessToken }: { accessToken: Token }
   ): Promise<JobOfferResponse> => {
-    if (!token) {
+    if (!accessToken) {
       throw new AuthenticationError(globalC.INVALID_AUTHENTICATION_TOKEN);
     }
 

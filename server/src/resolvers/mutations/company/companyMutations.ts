@@ -27,9 +27,9 @@ const companyMutations = {
     {
       input: { name, address, employeesNumber, logo },
     }: { input: CreateCompanyInput },
-    token: Token
+    { accessToken }: { accessToken: Token }
   ): Promise<CompanyResponse> => {
-    if (!token) {
+    if (!accessToken) {
       throw new AuthenticationError(globalC.INVALID_AUTHENTICATION_TOKEN);
     }
 
@@ -37,6 +37,17 @@ const companyMutations = {
     let company: CompanyType;
 
     try {
+      const isCompanyInDatabase = await Company.exists({ name });
+
+      if (isCompanyInDatabase) {
+        return {
+          code: 409,
+          success: false,
+          message: C.NOT_UNIQUE_COMPANY_NAME,
+          company: null,
+        };
+      }
+
       company = await Company.create({
         name,
         address,
@@ -61,9 +72,9 @@ const companyMutations = {
   deleteCompany: async (
     _parent: unknown,
     { id }: { id: Scalars['ID'] },
-    token: Token
+    { accessToken }: { accessToken: Token }
   ): Promise<CompanyResponse> => {
-    if (!token) {
+    if (!accessToken) {
       throw new AuthenticationError(globalC.INVALID_AUTHENTICATION_TOKEN);
     }
 
@@ -101,9 +112,9 @@ const companyMutations = {
       id,
       input: { name, address, employeesNumber, logo },
     }: { id: Scalars['ID']; input: UpdateCompanyInput },
-    token: Token
+    { accessToken }: { accessToken: Token }
   ): Promise<CompanyResponse> => {
-    if (!token) {
+    if (!accessToken) {
       throw new AuthenticationError(globalC.INVALID_AUTHENTICATION_TOKEN);
     }
 

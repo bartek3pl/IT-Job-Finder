@@ -220,9 +220,9 @@ const userMutations = {
   deleteUser: async (
     _parent: unknown,
     { id }: { id: Scalars['ID'] },
-    token: Token
+    { accessToken }: { accessToken: Token }
   ): Promise<UserResponse> => {
-    if (!token) {
+    if (!accessToken) {
       throw new AuthenticationError(globalC.INVALID_AUTHENTICATION_TOKEN);
     }
 
@@ -274,9 +274,9 @@ const userMutations = {
         emailNotification,
       },
     }: { id: Scalars['ID']; input: UpdateUserInput },
-    token: Token
+    { accessToken }: { accessToken: Token }
   ): Promise<UserResponse> => {
-    if (!token) {
+    if (!accessToken) {
       throw new AuthenticationError(globalC.INVALID_AUTHENTICATION_TOKEN);
     }
 
@@ -334,9 +334,9 @@ const userMutations = {
       userId,
       jobOfferId,
     }: { userId: Scalars['ID']; jobOfferId: Scalars['ID'] },
-    token: Token
+    { accessToken }: { accessToken: Token }
   ): Promise<UserFavouriteJobOffersResponse> => {
-    if (!token) {
+    if (!accessToken) {
       throw new AuthenticationError(globalC.INVALID_AUTHENTICATION_TOKEN);
     }
 
@@ -412,9 +412,9 @@ const userMutations = {
       userId,
       jobOfferId,
     }: { userId: Scalars['ID']; jobOfferId: Scalars['ID'] },
-    token: Token
+    { accessToken }: { accessToken: Token }
   ): Promise<UserFavouriteJobOffersResponse> => {
-    if (!token) {
+    if (!accessToken) {
       throw new AuthenticationError(globalC.INVALID_AUTHENTICATION_TOKEN);
     }
 

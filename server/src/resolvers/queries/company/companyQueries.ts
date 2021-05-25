@@ -29,9 +29,9 @@ const companyQueries = {
   getAllCompanies: async (
     _parent: unknown,
     _args: unknown,
-    token: Token
+    { accessToken }: { accessToken: Token }
   ): Promise<CompaniesResponse> => {
-    if (!token) {
+    if (!accessToken) {
       throw new AuthenticationError(globalC.INVALID_AUTHENTICATION_TOKEN);
     }
 
@@ -64,9 +64,9 @@ const companyQueries = {
   getCompanyById: async (
     _parent: unknown,
     { id }: { id: Scalars['ID'] },
-    token: Token
+    { accessToken }: { accessToken: Token }
   ): Promise<CompanyResponse> => {
-    if (!token) {
+    if (!accessToken) {
       throw new AuthenticationError(globalC.INVALID_AUTHENTICATION_TOKEN);
     }
 

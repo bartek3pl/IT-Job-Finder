@@ -16,6 +16,7 @@ import fileTypeDefs from './typeDefs/file';
 import tokenTypeDefs from './typeDefs/token';
 
 import resolvers from './resolvers';
+import { ClientRequest } from './types/shared';
 
 const typeDefs = [
   queryTypeDefs,
@@ -31,10 +32,18 @@ const typeDefs = [
   tokenTypeDefs,
 ];
 
-const context = async () => {
-  const token = true;
+const context = async ({ req }: { req: ClientRequest }) => {
+  const accessToken = req.headers.accesstoken || '';
+  const verifiedAccessToken = await resolvers.Mutation.verifyAccessToken(null, {
+    accessToken,
+  });
+  const isAccessTokenValid = verifiedAccessToken.success;
 
-  return token;
+  if (isAccessTokenValid) {
+    return { accessToken };
+  }
+
+  return { accessToken: null };
 };
 
 const server = new ApolloServer({
