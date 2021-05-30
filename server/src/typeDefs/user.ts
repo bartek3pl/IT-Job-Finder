@@ -48,11 +48,16 @@ const typeDefs = gql`
     user: User
   }
 
+  type UserResults implements Page {
+    pageInfo: PageInfo!
+    users: [User]
+  }
+
   type UsersResponse implements Response {
     code: Int!
     success: Boolean!
     message: String!
-    users: [User]
+    results: UserResults
   }
 
   type UserFavouriteJobOffersResponse implements Response {

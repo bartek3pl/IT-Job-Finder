@@ -10,12 +10,14 @@ import { Token } from '../../../types/shared';
 import C from './constants';
 import globalC from '../../../constants';
 import Company from '../../../models/company';
+import config from '../../../config';
+import { getPageInfo } from '../../../utils/pagination';
 
 const databaseErrorCompaniesResponse: CompaniesResponse = {
   code: 500,
   success: false,
   message: 'Internal database query error.',
-  companies: null,
+  results: null,
 };
 
 const databaseErrorCompanyResponse: CompanyResponse = {
@@ -28,24 +30,31 @@ const databaseErrorCompanyResponse: CompanyResponse = {
 const companyQueries = {
   getAllCompanies: async (
     _parent: unknown,
-    _args: unknown,
+    {
+      first = config.PAGE_SIZE,
+      offset = 0,
+    }: { first: Scalars['Int']; offset: Scalars['Int'] },
     { accessToken }: { accessToken: Token }
   ): Promise<CompaniesResponse> => {
     if (!accessToken) {
       throw new AuthenticationError(globalC.INVALID_AUTHENTICATION_TOKEN);
     }
 
+    const pageInfo = await getPageInfo(Company, first, offset);
     let companies: Array<CompanyType>;
 
     try {
-      companies = await Company.find({}).lean();
+      companies = await Company.find({}).skip(offset).limit(first).lean();
 
       if (!companies?.length) {
         return {
           code: 404,
           success: true,
           message: C.NO_COMPANIES_IN_DATABASE,
-          companies,
+          results: {
+            pageInfo,
+            companies,
+          },
         };
       }
     } catch (error) {
@@ -57,7 +66,10 @@ const companyQueries = {
       code: 200,
       success: true,
       message: C.COMPANIES_SUCCESSFULLY_FETCHED,
-      companies,
+      results: {
+        pageInfo,
+        companies,
+      },
     };
   },
 

@@ -1,6 +1,6 @@
 import { expect } from 'chai';
 
-import timestampToDateTime from '../../utils/converters';
+import { timestampToDateTime } from '../../utils/converters';
 
 describe('Converters', () => {
   describe('timestampToDateTime', () => {

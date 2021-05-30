@@ -32,11 +32,16 @@ const typeDefs = gql`
     jobOffer: JobOffer
   }
 
+  type JobOfferResults implements Page {
+    pageInfo: PageInfo!
+    jobOffers: [JobOffer]
+  }
+
   type JobOffersResponse implements Response {
     code: Int!
     success: Boolean!
     message: String!
-    jobOffers: [JobOffer]
+    results: JobOfferResults
   }
 
   "Full details about posted job offer"

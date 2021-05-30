@@ -14,6 +14,7 @@ import jobOfferTypeDefs from './typeDefs/jobOffer';
 import companyTypeDefs from './typeDefs/company';
 import fileTypeDefs from './typeDefs/file';
 import tokenTypeDefs from './typeDefs/token';
+import paginationTypeDefs from './typeDefs/pagination';
 
 import resolvers from './resolvers';
 import { ClientRequest } from './types/shared';
@@ -30,6 +31,7 @@ const typeDefs = [
   companyTypeDefs,
   fileTypeDefs,
   tokenTypeDefs,
+  paginationTypeDefs,
 ];
 
 const context = async ({ req }: { req: ClientRequest }) => {

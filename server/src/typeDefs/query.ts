@@ -15,7 +15,7 @@ const typeDefs = gql`
     """
     Gets all job offers.
     """
-    getAllJobOffers: JobOffersResponse
+    getAllJobOffers(first: Int, offset: Int): JobOffersResponse
 
     """
     Gets one job offer by job offer ID.

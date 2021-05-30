@@ -22,11 +22,16 @@ const typeDefs = gql`
     company: Company
   }
 
+  type CompanyResults implements Page {
+    pageInfo: PageInfo!
+    companies: [Company]
+  }
+
   type CompaniesResponse implements Response {
     code: Int!
     success: Boolean!
     message: String!
-    companies: [Company]
+    results: CompanyResults
   }
 
   "Full details about company"

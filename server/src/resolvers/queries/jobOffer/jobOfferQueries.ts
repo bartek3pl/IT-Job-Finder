@@ -10,12 +10,14 @@ import { Token } from '../../../types/shared';
 import C from './constants';
 import globalC from '../../../constants';
 import JobOffer from '../../../models/jobOffer';
+import config from '../../../config';
+import { getPageInfo } from '../../../utils/pagination';
 
 const databaseErrorJobOffersResponse: JobOffersResponse = {
   code: 500,
   success: false,
   message: 'Internal database query error.',
-  jobOffers: null,
+  results: null,
 };
 
 const databaseErrorJobOfferResponse: JobOfferResponse = {
@@ -28,24 +30,31 @@ const databaseErrorJobOfferResponse: JobOfferResponse = {
 const userQueries = {
   getAllJobOffers: async (
     _parent: unknown,
-    _args: unknown,
+    {
+      first = config.PAGE_SIZE,
+      offset = 0,
+    }: { first: Scalars['Int']; offset: Scalars['Int'] },
     { accessToken }: { accessToken: Token }
   ): Promise<JobOffersResponse> => {
     if (!accessToken) {
       throw new AuthenticationError(globalC.INVALID_AUTHENTICATION_TOKEN);
     }
 
+    const pageInfo = await getPageInfo(JobOffer, first, offset);
     let jobOffers: Array<JobOfferType>;
 
     try {
-      jobOffers = await JobOffer.find({}).lean();
+      jobOffers = await JobOffer.find({}).skip(offset).limit(first).lean();
 
       if (!jobOffers?.length) {
         return {
           code: 404,
           success: true,
           message: C.NO_JOB_OFFERS_IN_DATABASE,
-          jobOffers,
+          results: {
+            pageInfo,
+            jobOffers,
+          },
         };
       }
     } catch (error) {
@@ -57,7 +66,10 @@ const userQueries = {
       code: 200,
       success: true,
       message: C.JOB_OFFERS_SUCCESSFULLY_FETCHED,
-      jobOffers,
+      results: {
+        pageInfo,
+        jobOffers,
+      },
     };
   },
 
