@@ -37,6 +37,18 @@ const typeDefs = gql`
     jobOffers: [JobOffer]
   }
 
+  input JobOfferSearch {
+    title: String
+    description: String
+    employer: CompanySearch
+    minSalary: Salary
+    maxSalary: Salary
+    skills: [String!]
+    experienceYears: Int
+    level: Level
+    contractType: ContractType
+  }
+
   type JobOffersResponse implements Response {
     code: Int!
     success: Boolean!

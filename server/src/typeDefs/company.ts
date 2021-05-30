@@ -34,6 +34,11 @@ const typeDefs = gql`
     results: CompanyResults
   }
 
+  input CompanySearch {
+    name: String
+    address: SearchAddress
+  }
+
   "Full details about company"
   type Company {
     _id: ID!

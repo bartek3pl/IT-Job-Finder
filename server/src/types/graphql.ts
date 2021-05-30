@@ -91,6 +91,11 @@ export type CompanyResults = Page & {
   companies?: Maybe<Array<Maybe<Company>>>;
 };
 
+export type CompanySearch = {
+  name?: Maybe<Scalars['String']>;
+  address?: Maybe<SearchAddress>;
+};
+
 /** Employment contract for the employee */
 export enum ContractType {
   Uop = 'UOP',
@@ -189,6 +194,18 @@ export type JobOfferResults = Page & {
   __typename?: 'JobOfferResults';
   pageInfo: PageInfo;
   jobOffers?: Maybe<Array<Maybe<JobOffer>>>;
+};
+
+export type JobOfferSearch = {
+  title?: Maybe<Scalars['String']>;
+  description?: Maybe<Scalars['String']>;
+  employer?: Maybe<CompanySearch>;
+  minSalary?: Maybe<Scalars['Salary']>;
+  maxSalary?: Maybe<Scalars['Salary']>;
+  skills?: Maybe<Array<Scalars['String']>>;
+  experienceYears?: Maybe<Scalars['Int']>;
+  level?: Maybe<Level>;
+  contractType?: Maybe<ContractType>;
 };
 
 export type JobOffersResponse = Response & {
@@ -332,20 +349,28 @@ export type PageInfo = {
 
 export type Query = {
   __typename?: 'Query';
-  /** Gets all users. */
+  /** Gets all offset-based paginated users. */
   getAllUsers?: Maybe<UsersResponse>;
   /** Gets one user by user ID. */
   getUserById?: Maybe<UserResponse>;
-  /** Gets all job offers. */
+  /** Gets all offset-based paginated job offers. */
   getAllJobOffers?: Maybe<JobOffersResponse>;
   /** Gets one job offer by job offer ID. */
   getJobOfferById?: Maybe<JobOfferResponse>;
   /** Gets all favourite job offers of chosen user. */
   getUserFavouriteJobOffers?: Maybe<JobOffersResponse>;
-  /** Gets all companies. */
+  /** Gets all offset-based paginated companies. */
   getAllCompanies?: Maybe<CompaniesResponse>;
   /** Gets one company by company ID. */
   getCompanyById?: Maybe<CompanyResponse>;
+};
+
+
+export type QueryGetAllUsersArgs = {
+  first?: Maybe<Scalars['Int']>;
+  offset?: Maybe<Scalars['Int']>;
+  sorting?: Maybe<Scalars['String']>;
+  search?: Maybe<UserSearch>;
 };
 
 
@@ -357,6 +382,8 @@ export type QueryGetUserByIdArgs = {
 export type QueryGetAllJobOffersArgs = {
   first?: Maybe<Scalars['Int']>;
   offset?: Maybe<Scalars['Int']>;
+  sorting?: Maybe<Scalars['String']>;
+  search?: Maybe<JobOfferSearch>;
 };
 
 
@@ -370,6 +397,14 @@ export type QueryGetUserFavouriteJobOffersArgs = {
 };
 
 
+export type QueryGetAllCompaniesArgs = {
+  first?: Maybe<Scalars['Int']>;
+  offset?: Maybe<Scalars['Int']>;
+  sorting?: Maybe<Scalars['String']>;
+  search?: Maybe<CompanySearch>;
+};
+
+
 export type QueryGetCompanyByIdArgs = {
   id: Scalars['ID'];
 };
@@ -380,6 +415,11 @@ export type Response = {
   message: Scalars['String'];
 };
 
+
+export type SearchAddress = {
+  country?: Maybe<Scalars['String']>;
+  city?: Maybe<Scalars['String']>;
+};
 
 /** Full JWT token payload details. */
 export type Token = {
@@ -483,6 +523,21 @@ export type UserResults = Page & {
   __typename?: 'UserResults';
   pageInfo: PageInfo;
   users?: Maybe<Array<Maybe<User>>>;
+};
+
+export type UserSearch = {
+  login?: Maybe<Scalars['String']>;
+  firstName?: Maybe<Scalars['String']>;
+  lastName?: Maybe<Scalars['String']>;
+  email?: Maybe<Scalars['Email']>;
+  age?: Maybe<Scalars['Int']>;
+  gender?: Maybe<Gender>;
+  address?: Maybe<SearchAddress>;
+  skills?: Maybe<Array<Scalars['String']>>;
+  experienceYears?: Maybe<Scalars['Int']>;
+  level?: Maybe<Level>;
+  minSalary?: Maybe<Scalars['Salary']>;
+  maxSalary?: Maybe<Scalars['Salary']>;
 };
 
 export type UserTokenResponse = Response & {
@@ -593,6 +648,7 @@ export type ResolversTypes = {
   ID: ResolverTypeWrapper<Scalars['ID']>;
   CompanyResponse: ResolverTypeWrapper<CompanyResponse>;
   CompanyResults: ResolverTypeWrapper<CompanyResults>;
+  CompanySearch: CompanySearch;
   ContractType: ContractType;
   CreateCompanyInput: CreateCompanyInput;
   CreateJobOfferInput: CreateJobOfferInput;
@@ -605,6 +661,7 @@ export type ResolversTypes = {
   JobOffer: ResolverTypeWrapper<JobOffer>;
   JobOfferResponse: ResolverTypeWrapper<JobOfferResponse>;
   JobOfferResults: ResolverTypeWrapper<JobOfferResults>;
+  JobOfferSearch: JobOfferSearch;
   JobOffersResponse: ResolverTypeWrapper<JobOffersResponse>;
   Level: Level;
   LoginUserInput: LoginUserInput;
@@ -615,6 +672,7 @@ export type ResolversTypes = {
   Query: ResolverTypeWrapper<{}>;
   Response: ResolversTypes['AccessRefreshTokenResponse'] | ResolversTypes['AccessTokenResponse'] | ResolversTypes['CompaniesResponse'] | ResolversTypes['CompanyResponse'] | ResolversTypes['JobOfferResponse'] | ResolversTypes['JobOffersResponse'] | ResolversTypes['UserFavouriteJobOffersResponse'] | ResolversTypes['UserResponse'] | ResolversTypes['UserTokenResponse'] | ResolversTypes['UsersResponse'];
   Salary: ResolverTypeWrapper<Scalars['Salary']>;
+  SearchAddress: SearchAddress;
   Token: ResolverTypeWrapper<Token>;
   UpdateAddressInput: UpdateAddressInput;
   UpdateCompanyInput: UpdateCompanyInput;
@@ -625,6 +683,7 @@ export type ResolversTypes = {
   UserFavouriteJobOffersResponse: ResolverTypeWrapper<UserFavouriteJobOffersResponse>;
   UserResponse: ResolverTypeWrapper<UserResponse>;
   UserResults: ResolverTypeWrapper<UserResults>;
+  UserSearch: UserSearch;
   UserTokenResponse: ResolverTypeWrapper<UserTokenResponse>;
   UsersResponse: ResolverTypeWrapper<UsersResponse>;
 };
@@ -642,6 +701,7 @@ export type ResolversParentTypes = {
   ID: Scalars['ID'];
   CompanyResponse: CompanyResponse;
   CompanyResults: CompanyResults;
+  CompanySearch: CompanySearch;
   CreateCompanyInput: CreateCompanyInput;
   CreateJobOfferInput: CreateJobOfferInput;
   CreateUserInput: CreateUserInput;
@@ -652,6 +712,7 @@ export type ResolversParentTypes = {
   JobOffer: JobOffer;
   JobOfferResponse: JobOfferResponse;
   JobOfferResults: JobOfferResults;
+  JobOfferSearch: JobOfferSearch;
   JobOffersResponse: JobOffersResponse;
   LoginUserInput: LoginUserInput;
   Mutation: {};
@@ -661,6 +722,7 @@ export type ResolversParentTypes = {
   Query: {};
   Response: ResolversParentTypes['AccessRefreshTokenResponse'] | ResolversParentTypes['AccessTokenResponse'] | ResolversParentTypes['CompaniesResponse'] | ResolversParentTypes['CompanyResponse'] | ResolversParentTypes['JobOfferResponse'] | ResolversParentTypes['JobOffersResponse'] | ResolversParentTypes['UserFavouriteJobOffersResponse'] | ResolversParentTypes['UserResponse'] | ResolversParentTypes['UserTokenResponse'] | ResolversParentTypes['UsersResponse'];
   Salary: Scalars['Salary'];
+  SearchAddress: SearchAddress;
   Token: Token;
   UpdateAddressInput: UpdateAddressInput;
   UpdateCompanyInput: UpdateCompanyInput;
@@ -671,6 +733,7 @@ export type ResolversParentTypes = {
   UserFavouriteJobOffersResponse: UserFavouriteJobOffersResponse;
   UserResponse: UserResponse;
   UserResults: UserResults;
+  UserSearch: UserSearch;
   UserTokenResponse: UserTokenResponse;
   UsersResponse: UsersResponse;
 };
@@ -826,12 +889,12 @@ export interface PostalCodeScalarConfig extends GraphQLScalarTypeConfig<Resolver
 }
 
 export type QueryResolvers<ContextType = any, ParentType extends ResolversParentTypes['Query'] = ResolversParentTypes['Query']> = {
-  getAllUsers?: Resolver<Maybe<ResolversTypes['UsersResponse']>, ParentType, ContextType>;
+  getAllUsers?: Resolver<Maybe<ResolversTypes['UsersResponse']>, ParentType, ContextType, RequireFields<QueryGetAllUsersArgs, never>>;
   getUserById?: Resolver<Maybe<ResolversTypes['UserResponse']>, ParentType, ContextType, RequireFields<QueryGetUserByIdArgs, 'id'>>;
   getAllJobOffers?: Resolver<Maybe<ResolversTypes['JobOffersResponse']>, ParentType, ContextType, RequireFields<QueryGetAllJobOffersArgs, never>>;
   getJobOfferById?: Resolver<Maybe<ResolversTypes['JobOfferResponse']>, ParentType, ContextType, RequireFields<QueryGetJobOfferByIdArgs, 'id'>>;
   getUserFavouriteJobOffers?: Resolver<Maybe<ResolversTypes['JobOffersResponse']>, ParentType, ContextType, RequireFields<QueryGetUserFavouriteJobOffersArgs, 'id'>>;
-  getAllCompanies?: Resolver<Maybe<ResolversTypes['CompaniesResponse']>, ParentType, ContextType>;
+  getAllCompanies?: Resolver<Maybe<ResolversTypes['CompaniesResponse']>, ParentType, ContextType, RequireFields<QueryGetAllCompaniesArgs, never>>;
   getCompanyById?: Resolver<Maybe<ResolversTypes['CompanyResponse']>, ParentType, ContextType, RequireFields<QueryGetCompanyByIdArgs, 'id'>>;
 };
 

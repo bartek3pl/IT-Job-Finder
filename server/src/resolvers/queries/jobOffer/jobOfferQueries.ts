@@ -4,6 +4,7 @@ import {
   JobOfferResponse,
   JobOffersResponse,
   JobOffer as JobOfferType,
+  JobOfferSearch,
   Scalars,
 } from '../../../types/graphql';
 import { Token } from '../../../types/shared';
@@ -33,7 +34,37 @@ const userQueries = {
     {
       first = config.PAGE_SIZE,
       offset = 0,
-    }: { first: Scalars['Int']; offset: Scalars['Int'] },
+      sorting,
+      search: {
+        title,
+        description,
+        employer,
+        minSalary,
+        maxSalary,
+        skills,
+        experienceYears,
+        level,
+        contractType,
+      } = {
+        title: '',
+        description: '',
+        employer: {
+          name: '',
+          address: { country: '', city: '' },
+        },
+        minSalary: 0,
+        maxSalary: 50000,
+        skills: [],
+        experienceYears: null,
+        level: null,
+        contractType: null,
+      },
+    }: {
+      first: Scalars['Int'];
+      offset: Scalars['Int'];
+      sorting: Scalars['String'];
+      search: JobOfferSearch;
+    },
     { accessToken }: { accessToken: Token }
   ): Promise<JobOffersResponse> => {
     if (!accessToken) {
@@ -44,7 +75,47 @@ const userQueries = {
     let jobOffers: Array<JobOfferType>;
 
     try {
-      jobOffers = await JobOffer.find({}).skip(offset).limit(first).lean();
+      jobOffers = await JobOffer.find({
+        $and: [
+          title ? { title: { $regex: title, $options: 'i' } } : {},
+          description
+            ? { description: { $regex: description, $options: 'i' } }
+            : {},
+          employer?.name
+            ? { 'employer.name': { $regex: employer?.name, $options: 'i' } }
+            : {},
+          employer?.address?.country
+            ? {
+                'employer.address.country': {
+                  $regex: employer?.address?.country,
+                  $options: 'i',
+                },
+              }
+            : {},
+          employer?.address?.city
+            ? {
+                'employer.address.city': {
+                  $regex: employer?.address?.city,
+                  $options: 'i',
+                },
+              }
+            : {},
+          minSalary ? { minSalary: { $gte: minSalary } } : {},
+          maxSalary ? { maxSalary: { $lte: maxSalary } } : {},
+          skills?.length ? { skills: { $in: skills } } : {},
+          experienceYears !== 0
+            ? { experienceYears: { $lte: experienceYears } }
+            : {},
+          level ? { level: { $regex: level, $options: 'i' } } : {},
+          contractType
+            ? { contractType: { $regex: contractType, $options: 'i' } }
+            : {},
+        ],
+      })
+        .sort(sorting)
+        .skip(offset)
+        .limit(first)
+        .lean();
 
       if (!jobOffers?.length) {
         return {

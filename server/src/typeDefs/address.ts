@@ -10,6 +10,11 @@ const typeDefs = gql`
     apartmentNumber: Int
   }
 
+  input SearchAddress {
+    country: String
+    city: String
+  }
+
   "Full address details of user or company"
   type Address {
     country: String

@@ -4,6 +4,7 @@ import {
   CompanyResponse,
   CompaniesResponse,
   Company as CompanyType,
+  CompanySearch,
   Scalars,
 } from '../../../types/graphql';
 import { Token } from '../../../types/shared';
@@ -33,7 +34,17 @@ const companyQueries = {
     {
       first = config.PAGE_SIZE,
       offset = 0,
-    }: { first: Scalars['Int']; offset: Scalars['Int'] },
+      sorting,
+      search: { name, address } = {
+        name: '',
+        address: { country: '', city: '' },
+      },
+    }: {
+      first: Scalars['Int'];
+      offset: Scalars['Int'];
+      sorting: Scalars['String'];
+      search: CompanySearch;
+    },
     { accessToken }: { accessToken: Token }
   ): Promise<CompaniesResponse> => {
     if (!accessToken) {
@@ -44,7 +55,26 @@ const companyQueries = {
     let companies: Array<CompanyType>;
 
     try {
-      companies = await Company.find({}).skip(offset).limit(first).lean();
+      companies = await Company.find({
+        $and: [
+          name ? { name: { $regex: name, $options: 'i' } } : {},
+          address?.country
+            ? {
+                'address.country': {
+                  $regex: address?.country,
+                  $options: 'i',
+                },
+              }
+            : {},
+          address?.city
+            ? { 'address.city': { $regex: address?.city, $options: 'i' } }
+            : {},
+        ],
+      })
+        .sort(sorting)
+        .skip(offset)
+        .limit(first)
+        .lean();
 
       if (!companies?.length) {
         return {

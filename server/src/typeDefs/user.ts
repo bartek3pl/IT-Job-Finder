@@ -77,6 +77,21 @@ const typeDefs = gql`
     refreshToken: String
   }
 
+  input UserSearch {
+    login: String
+    firstName: String
+    lastName: String
+    email: Email
+    age: Int
+    gender: Gender
+    address: SearchAddress
+    skills: [String!]
+    experienceYears: Int
+    level: Level
+    minSalary: Salary
+    maxSalary: Salary
+  }
+
   "Full details about registered user"
   type User {
     _id: ID!

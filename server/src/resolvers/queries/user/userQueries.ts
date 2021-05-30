@@ -4,6 +4,7 @@ import {
   UserResponse,
   UsersResponse,
   User as UserType,
+  UserSearch,
   Scalars,
 } from '../../../types/graphql';
 import { Token } from '../../../types/shared';
@@ -33,7 +34,43 @@ const userQueries = {
     {
       first = config.PAGE_SIZE,
       offset = 0,
-    }: { first: Scalars['Int']; offset: Scalars['Int'] },
+      sorting,
+      search: {
+        login,
+        firstName,
+        lastName,
+        email,
+        age,
+        gender,
+        address,
+        skills,
+        experienceYears,
+        level,
+        minSalary,
+        maxSalary,
+      } = {
+        login: '',
+        firstName: '',
+        lastName: '',
+        email: '',
+        age: 0,
+        gender: null,
+        address: {
+          country: '',
+          city: '',
+        },
+        skills: [],
+        experienceYears: 0,
+        level: null,
+        minSalary: 0,
+        maxSalary: 50000,
+      },
+    }: {
+      first: Scalars['Int'];
+      offset: Scalars['Int'];
+      sorting: Scalars['String'];
+      search: UserSearch;
+    },
     { accessToken }: { accessToken: Token }
   ): Promise<UsersResponse> => {
     if (!accessToken) {
@@ -44,7 +81,43 @@ const userQueries = {
     let users: Array<UserType>;
 
     try {
-      users = await User.find({}).skip(offset).limit(first).lean();
+      users = await User.find({
+        $and: [
+          login ? { login: { $regex: login, $options: 'i' } } : {},
+          firstName ? { firstName: { $regex: firstName, $options: 'i' } } : {},
+          lastName ? { lastName: { $regex: lastName, $options: 'i' } } : {},
+          email ? { email: { $regex: email, $options: 'i' } } : {},
+          age ? { age: { $regex: age, $options: 'i' } } : {},
+          gender ? { gender: { $regex: gender, $options: 'i' } } : {},
+          address?.country
+            ? {
+                'address.country': {
+                  $regex: address?.country,
+                  $options: 'i',
+                },
+              }
+            : {},
+          address?.city
+            ? {
+                'address.city': {
+                  $regex: address?.city,
+                  $options: 'i',
+                },
+              }
+            : {},
+          skills?.length ? { skills: { $in: skills } } : {},
+          experienceYears !== 0
+            ? { experienceYears: { $lte: experienceYears } }
+            : {},
+          level ? { level: { $regex: level, $options: 'i' } } : {},
+          minSalary ? { minSalary: { $gte: minSalary } } : {},
+          maxSalary ? { maxSalary: { $lte: maxSalary } } : {},
+        ],
+      })
+        .sort(sorting)
+        .skip(offset)
+        .limit(first)
+        .lean();
 
       if (!users?.length) {
         return {

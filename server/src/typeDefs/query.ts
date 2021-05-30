@@ -3,9 +3,14 @@ import { gql } from 'apollo-server-express';
 const typeDefs = gql`
   type Query {
     """
-    Gets all users.
+    Gets all offset-based paginated users.
     """
-    getAllUsers: UsersResponse
+    getAllUsers(
+      first: Int
+      offset: Int
+      sorting: String
+      search: UserSearch
+    ): UsersResponse
 
     """
     Gets one user by user ID.
@@ -13,9 +18,14 @@ const typeDefs = gql`
     getUserById(id: ID!): UserResponse
 
     """
-    Gets all job offers.
+    Gets all offset-based paginated job offers.
     """
-    getAllJobOffers(first: Int, offset: Int): JobOffersResponse
+    getAllJobOffers(
+      first: Int
+      offset: Int
+      sorting: String
+      search: JobOfferSearch
+    ): JobOffersResponse
 
     """
     Gets one job offer by job offer ID.
@@ -28,9 +38,14 @@ const typeDefs = gql`
     getUserFavouriteJobOffers(id: ID!): JobOffersResponse
 
     """
-    Gets all companies.
+    Gets all offset-based paginated companies.
     """
-    getAllCompanies: CompaniesResponse
+    getAllCompanies(
+      first: Int
+      offset: Int
+      sorting: String
+      search: CompanySearch
+    ): CompaniesResponse
 
     """
     Gets one company by company ID.
