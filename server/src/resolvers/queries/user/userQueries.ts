@@ -60,10 +60,10 @@ const userQueries = {
           city: '',
         },
         skills: [],
-        experienceYears: 0,
+        experienceYears: null,
         level: null,
-        minSalary: 0,
-        maxSalary: 50000,
+        minSalary: null,
+        maxSalary: null,
       },
     }: {
       first: Scalars['Int'];
@@ -106,7 +106,7 @@ const userQueries = {
               }
             : {},
           skills?.length ? { skills: { $in: skills } } : {},
-          experienceYears !== 0
+          experienceYears || experienceYears === 0
             ? { experienceYears: { $lte: experienceYears } }
             : {},
           level ? { level: { $regex: level, $options: 'i' } } : {},

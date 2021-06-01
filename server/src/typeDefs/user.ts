@@ -103,14 +103,14 @@ const typeDefs = gql`
     age: Int
     gender: Gender
     address: Address
-    skills: [String!]
+    skills: [String]
     experienceYears: Int
     level: Level
     minSalary: Salary
     maxSalary: Salary
     githubLink: String
     linkedinLink: String
-    favouriteJobOffers: [JobOffer!]
+    favouriteJobOffers: [JobOffer]
     emailNotification: Boolean
     createdDateTime: DateTime!
     updatedDateTime: DateTime!

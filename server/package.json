@@ -74,7 +74,7 @@
     "mongoose": "^5.12.3",
     "postcode-validator": "^3.2.0",
     "ts-node": "^10.0.0",
-    "typescript": "^4.3.2"
+    "typescript": "^4.2.4"
   },
   "engines": {
     "node": "12.9.1"

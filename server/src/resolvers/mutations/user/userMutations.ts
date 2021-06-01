@@ -9,6 +9,7 @@ import {
   UserTokenResponse,
   User as UserType,
   JobOffer as JobOfferType,
+  Maybe,
   Scalars,
 } from '../../../types/graphql';
 import { Token } from '../../../types/shared';
@@ -341,7 +342,7 @@ const userMutations = {
     }
 
     let user: UserType;
-    let jobOffers: Array<JobOfferType>;
+    let jobOffers: Array<Maybe<JobOfferType>>;
 
     try {
       user = await User.findById(userId).lean();
@@ -419,7 +420,7 @@ const userMutations = {
     }
 
     let user: UserType;
-    let jobOffers: Array<JobOfferType>;
+    let jobOffers: Array<Maybe<JobOfferType>>;
 
     try {
       user = await User.findById(userId).lean();
