@@ -18,6 +18,7 @@ import paginationTypeDefs from './typeDefs/pagination';
 
 import resolvers from './resolvers';
 import { ClientRequest } from './types/shared';
+import config from './config';
 
 const typeDefs = [
   queryTypeDefs,
@@ -52,12 +53,12 @@ const server = new ApolloServer({
   typeDefs,
   resolvers,
   context,
-  debug: process.env.NODE_ENV === 'development',
+  debug: config.NODE_ENV === 'development',
 });
 
 const protocol = 'http';
 const url = 'localhost';
-const port = 8000;
+const port = config.PORT;
 const path = '/graphql';
 
 const app = express();

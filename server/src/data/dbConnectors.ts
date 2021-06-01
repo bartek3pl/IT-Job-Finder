@@ -1,9 +1,14 @@
 import mongoose from 'mongoose';
 import config from '../config';
 
+const URI_MONGO =
+  config.NODE_ENV === 'development'
+    ? config.URI_MONGO_DEV
+    : config.URI_MONGO_PROD;
+
 mongoose.Promise = global.Promise;
 mongoose
-  .connect(config.URI_MONGO, {
+  .connect(URI_MONGO, {
     useNewUrlParser: true,
     useUnifiedTopology: true,
     useCreateIndex: true,
