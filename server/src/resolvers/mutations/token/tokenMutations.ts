@@ -56,7 +56,7 @@ const tokenMutations = {
 
       jwt.verify(AUTHORIZATION_TOKEN[1], config.TOKEN_SECRET_JWT, (err) => {
         if (err) {
-          console.log(err);
+          console.error(err);
           invalidAccessTokenResponse = {
             code: 401,
             success: false,
@@ -114,6 +114,7 @@ const tokenMutations = {
 
       jwt.verify(REFRESH_TOKEN[1], config.TOKEN_SECRET_JWT, (err) => {
         if (err) {
+          console.error(err);
           invalidRefreshTokenResponse = {
             code: 401,
             success: false,
