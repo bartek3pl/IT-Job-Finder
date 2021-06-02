@@ -48,7 +48,7 @@ const typeDefs = gql`
     user: User
   }
 
-  type UserResults implements Page {
+  type UserResults implements Page @cacheControl(maxAge: 10) {
     pageInfo: PageInfo!
     users: [User]
   }
@@ -95,7 +95,7 @@ const typeDefs = gql`
   "Full details about registered user"
   type User {
     _id: ID!
-    login: String!
+    login: String! @cacheControl(maxAge: 3600, scope: PRIVATE)
     password: String!
     firstName: String
     lastName: String

@@ -57,7 +57,7 @@ const typeDefs = gql`
   }
 
   "Full details about posted job offer"
-  type JobOffer {
+  type JobOffer @cacheControl(maxAge: 3600) {
     _id: ID!
     title: String!
     description: String

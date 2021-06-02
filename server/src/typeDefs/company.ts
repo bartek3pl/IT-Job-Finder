@@ -40,7 +40,7 @@ const typeDefs = gql`
   }
 
   "Full details about company"
-  type Company {
+  type Company @cacheControl(maxAge: 3600) {
     _id: ID!
     name: String!
     address: Address!
