@@ -16,13 +16,13 @@ const jobOffer = new mongoose.Schema({
   minSalary: {
     type: Number,
     min: 0,
-    max: 50_000,
+    max: 100_000,
     required: false,
   },
   maxSalary: {
     type: Number,
     min: 0,
-    max: 50_000,
+    max: 100_000,
     required: false,
   },
   skills: [String],

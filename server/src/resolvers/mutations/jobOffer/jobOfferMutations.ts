@@ -51,7 +51,11 @@ const jobOfferMutations = {
         title,
         contractType,
         level,
+        minSalary,
+        maxSalary,
         'employer.name': employer.name,
+        'employer.address.country': employer.address?.country || null,
+        'employer.address.city': employer.address?.city || null,
       });
 
       if (isJobOfferInDatabase) {
