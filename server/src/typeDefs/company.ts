@@ -4,15 +4,15 @@ const typeDefs = gql`
   input CreateCompanyInput {
     name: String!
     address: UpdateAddressInput
-    employeesNumber: Int
-    logo: FileInput
+    employeesNumber: String
+    logo: String
   }
 
   input UpdateCompanyInput {
     name: String
     address: UpdateAddressInput
-    employeesNumber: Int
-    logo: FileInput
+    employeesNumber: String
+    logo: String
   }
 
   type CompanyResponse implements Response {
@@ -44,8 +44,8 @@ const typeDefs = gql`
     _id: ID!
     name: String!
     address: Address!
-    employeesNumber: Int
-    logo: File
+    employeesNumber: String
+    logo: String
     createdDateTime: DateTime!
     updatedDateTime: DateTime!
   }

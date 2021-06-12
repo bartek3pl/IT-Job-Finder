@@ -71,8 +71,8 @@ export type Company = {
   _id: Scalars['ID'];
   name: Scalars['String'];
   address: Address;
-  employeesNumber?: Maybe<Scalars['Int']>;
-  logo?: Maybe<File>;
+  employeesNumber?: Maybe<Scalars['String']>;
+  logo?: Maybe<Scalars['String']>;
   createdDateTime: Scalars['DateTime'];
   updatedDateTime: Scalars['DateTime'];
 };
@@ -107,16 +107,16 @@ export enum ContractType {
 export type CreateCompanyInput = {
   name: Scalars['String'];
   address?: Maybe<UpdateAddressInput>;
-  employeesNumber?: Maybe<Scalars['Int']>;
-  logo?: Maybe<FileInput>;
+  employeesNumber?: Maybe<Scalars['String']>;
+  logo?: Maybe<Scalars['String']>;
 };
 
 export type CreateJobOfferInput = {
   title: Scalars['String'];
   description?: Maybe<Scalars['String']>;
   employer: UpdateCompanyInput;
-  minSalary: Scalars['Salary'];
-  maxSalary: Scalars['Salary'];
+  minSalary?: Maybe<Scalars['Salary']>;
+  maxSalary?: Maybe<Scalars['Salary']>;
   skills: Array<Scalars['String']>;
   experienceYears?: Maybe<Scalars['Int']>;
   level?: Maybe<Level>;
@@ -172,8 +172,8 @@ export type JobOffer = {
   title: Scalars['String'];
   description?: Maybe<Scalars['String']>;
   employer: Company;
-  minSalary: Scalars['Salary'];
-  maxSalary: Scalars['Salary'];
+  minSalary?: Maybe<Scalars['Salary']>;
+  maxSalary?: Maybe<Scalars['Salary']>;
   skills: Array<Scalars['String']>;
   experienceYears?: Maybe<Scalars['Int']>;
   level?: Maybe<Level>;
@@ -444,8 +444,8 @@ export type UpdateAddressInput = {
 export type UpdateCompanyInput = {
   name?: Maybe<Scalars['String']>;
   address?: Maybe<UpdateAddressInput>;
-  employeesNumber?: Maybe<Scalars['Int']>;
-  logo?: Maybe<FileInput>;
+  employeesNumber?: Maybe<Scalars['String']>;
+  logo?: Maybe<Scalars['String']>;
 };
 
 export type UpdateJobOfferInput = {
@@ -782,8 +782,8 @@ export type CompanyResolvers<ContextType = any, ParentType extends ResolversPare
   _id?: Resolver<ResolversTypes['ID'], ParentType, ContextType>;
   name?: Resolver<ResolversTypes['String'], ParentType, ContextType>;
   address?: Resolver<ResolversTypes['Address'], ParentType, ContextType>;
-  employeesNumber?: Resolver<Maybe<ResolversTypes['Int']>, ParentType, ContextType>;
-  logo?: Resolver<Maybe<ResolversTypes['File']>, ParentType, ContextType>;
+  employeesNumber?: Resolver<Maybe<ResolversTypes['String']>, ParentType, ContextType>;
+  logo?: Resolver<Maybe<ResolversTypes['String']>, ParentType, ContextType>;
   createdDateTime?: Resolver<ResolversTypes['DateTime'], ParentType, ContextType>;
   updatedDateTime?: Resolver<ResolversTypes['DateTime'], ParentType, ContextType>;
   __isTypeOf?: IsTypeOfResolverFn<ParentType, ContextType>;
@@ -823,8 +823,8 @@ export type JobOfferResolvers<ContextType = any, ParentType extends ResolversPar
   title?: Resolver<ResolversTypes['String'], ParentType, ContextType>;
   description?: Resolver<Maybe<ResolversTypes['String']>, ParentType, ContextType>;
   employer?: Resolver<ResolversTypes['Company'], ParentType, ContextType>;
-  minSalary?: Resolver<ResolversTypes['Salary'], ParentType, ContextType>;
-  maxSalary?: Resolver<ResolversTypes['Salary'], ParentType, ContextType>;
+  minSalary?: Resolver<Maybe<ResolversTypes['Salary']>, ParentType, ContextType>;
+  maxSalary?: Resolver<Maybe<ResolversTypes['Salary']>, ParentType, ContextType>;
   skills?: Resolver<Array<ResolversTypes['String']>, ParentType, ContextType>;
   experienceYears?: Resolver<Maybe<ResolversTypes['Int']>, ParentType, ContextType>;
   level?: Resolver<Maybe<ResolversTypes['Level']>, ParentType, ContextType>;

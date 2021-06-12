@@ -17,13 +17,13 @@ const jobOffer = new mongoose.Schema({
     type: Number,
     min: 0,
     max: 50_000,
-    required: true,
+    required: false,
   },
   maxSalary: {
     type: Number,
     min: 0,
     max: 50_000,
-    required: true,
+    required: false,
   },
   skills: [String],
   experienceYears: {
@@ -35,12 +35,12 @@ const jobOffer = new mongoose.Schema({
   level: {
     type: String,
     required: false,
-    enum: ['junior', 'mid', 'senior', 'other'],
+    enum: ['JUNIOR', 'MID', 'SENIOR', 'OTHER'],
   },
   contractType: {
     type: String,
     required: false,
-    enum: ['uop', 'b2b', 'uz', 'other'],
+    enum: ['UOP', 'B2B', 'UZ', 'OTHER'],
   },
   createdDateTime: {
     type: String,

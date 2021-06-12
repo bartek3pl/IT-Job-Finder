@@ -1,7 +1,6 @@
 import mongoose from 'mongoose';
 
 import { address } from './address';
-import file from './file';
 
 const company = new mongoose.Schema({
   name: {
@@ -13,11 +12,13 @@ const company = new mongoose.Schema({
     required: true,
   },
   employeesNumber: {
-    type: Number,
+    type: String,
     required: false,
-    min: 0,
   },
-  logo: file,
+  logo: {
+    type: String,
+    required: false,
+  },
 });
 
 const Company = mongoose.model('company', company);

@@ -446,7 +446,7 @@
             "args": [],
             "type": {
               "kind": "SCALAR",
-              "name": "Int",
+              "name": "String",
               "ofType": null
             },
             "isDeprecated": false,
@@ -457,8 +457,8 @@
             "description": null,
             "args": [],
             "type": {
-              "kind": "OBJECT",
-              "name": "File",
+              "kind": "SCALAR",
+              "name": "String",
               "ofType": null
             },
             "isDeprecated": false,
@@ -747,7 +747,7 @@
             "description": null,
             "type": {
               "kind": "SCALAR",
-              "name": "Int",
+              "name": "String",
               "ofType": null
             },
             "defaultValue": null,
@@ -758,8 +758,8 @@
             "name": "logo",
             "description": null,
             "type": {
-              "kind": "INPUT_OBJECT",
-              "name": "FileInput",
+              "kind": "SCALAR",
+              "name": "String",
               "ofType": null
             },
             "defaultValue": null,
@@ -825,13 +825,9 @@
             "name": "minSalary",
             "description": null,
             "type": {
-              "kind": "NON_NULL",
-              "name": null,
-              "ofType": {
-                "kind": "SCALAR",
-                "name": "Salary",
-                "ofType": null
-              }
+              "kind": "SCALAR",
+              "name": "Salary",
+              "ofType": null
             },
             "defaultValue": null,
             "isDeprecated": false,
@@ -841,13 +837,9 @@
             "name": "maxSalary",
             "description": null,
             "type": {
-              "kind": "NON_NULL",
-              "name": null,
-              "ofType": {
-                "kind": "SCALAR",
-                "name": "Salary",
-                "ofType": null
-              }
+              "kind": "SCALAR",
+              "name": "Salary",
+              "ofType": null
             },
             "defaultValue": null,
             "isDeprecated": false,
@@ -1378,13 +1370,9 @@
             "description": null,
             "args": [],
             "type": {
-              "kind": "NON_NULL",
-              "name": null,
-              "ofType": {
-                "kind": "SCALAR",
-                "name": "Salary",
-                "ofType": null
-              }
+              "kind": "SCALAR",
+              "name": "Salary",
+              "ofType": null
             },
             "isDeprecated": false,
             "deprecationReason": null
@@ -1394,13 +1382,9 @@
             "description": null,
             "args": [],
             "type": {
-              "kind": "NON_NULL",
-              "name": null,
-              "ofType": {
-                "kind": "SCALAR",
-                "name": "Salary",
-                "ofType": null
-              }
+              "kind": "SCALAR",
+              "name": "Salary",
+              "ofType": null
             },
             "isDeprecated": false,
             "deprecationReason": null
@@ -3142,7 +3126,7 @@
             "description": null,
             "type": {
               "kind": "SCALAR",
-              "name": "Int",
+              "name": "String",
               "ofType": null
             },
             "defaultValue": null,
@@ -3153,8 +3137,8 @@
             "name": "logo",
             "description": null,
             "type": {
-              "kind": "INPUT_OBJECT",
-              "name": "FileInput",
+              "kind": "SCALAR",
+              "name": "String",
               "ofType": null
             },
             "defaultValue": null,

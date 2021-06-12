@@ -47,6 +47,22 @@ const jobOfferMutations = {
     let jobOffer: JobOfferType;
 
     try {
+      const isJobOfferInDatabase = await JobOffer.exists({
+        title,
+        contractType,
+        level,
+        'employer.name': employer.name,
+      });
+
+      if (isJobOfferInDatabase) {
+        return {
+          code: 409,
+          success: false,
+          message: C.JOB_OFFER_ALREADY_EXISTS,
+          jobOffer: null,
+        };
+      }
+
       jobOffer = await JobOffer.create({
         title,
         description,

@@ -39,7 +39,7 @@ const user = new mongoose.Schema({
   },
   gender: {
     type: String,
-    enum: ['man', 'woman', 'other'],
+    enum: ['MAN', 'WOMAN', 'OTHER'],
     required: false,
   },
   address: address,
@@ -53,7 +53,7 @@ const user = new mongoose.Schema({
   level: {
     type: String,
     required: false,
-    enum: ['junior', 'mid', 'senior', 'other'],
+    enum: ['JUNIOR', 'MID', 'SENIOR', 'OTHER'],
   },
   minSalary: {
     type: Number,

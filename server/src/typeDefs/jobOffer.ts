@@ -5,8 +5,8 @@ const typeDefs = gql`
     title: String!
     description: String
     employer: UpdateCompanyInput!
-    minSalary: Salary!
-    maxSalary: Salary!
+    minSalary: Salary
+    maxSalary: Salary
     skills: [String!]!
     experienceYears: Int
     level: Level
@@ -62,8 +62,8 @@ const typeDefs = gql`
     title: String!
     description: String
     employer: Company!
-    minSalary: Salary!
-    maxSalary: Salary!
+    minSalary: Salary
+    maxSalary: Salary
     skills: [String!]!
     experienceYears: Int
     level: Level
