@@ -343,6 +343,7 @@ export type Page = {
 export type PageInfo = {
   __typename?: 'PageInfo';
   totalCount: Scalars['Int'];
+  currentCount: Scalars['Int'];
   hasMore: Scalars['Boolean'];
 };
 
@@ -880,6 +881,7 @@ export type PageResolvers<ContextType = any, ParentType extends ResolversParentT
 
 export type PageInfoResolvers<ContextType = any, ParentType extends ResolversParentTypes['PageInfo'] = ResolversParentTypes['PageInfo']> = {
   totalCount?: Resolver<ResolversTypes['Int'], ParentType, ContextType>;
+  currentCount?: Resolver<ResolversTypes['Int'], ParentType, ContextType>;
   hasMore?: Resolver<ResolversTypes['Boolean'], ParentType, ContextType>;
   __isTypeOf?: IsTypeOfResolverFn<ParentType, ContextType>;
 };

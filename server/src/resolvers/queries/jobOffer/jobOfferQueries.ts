@@ -71,47 +71,48 @@ const userQueries = {
       throw new AuthenticationError(globalC.INVALID_AUTHENTICATION_TOKEN);
     }
 
-    const pageInfo = await getPageInfo(JobOffer, first, offset);
+    const query = {
+      $and: [
+        title ? { title: { $regex: title, $options: 'i' } } : {},
+        description
+          ? { description: { $regex: description, $options: 'i' } }
+          : {},
+        employer?.name
+          ? { 'employer.name': { $regex: employer?.name, $options: 'i' } }
+          : {},
+        employer?.address?.country
+          ? {
+              'employer.address.country': {
+                $regex: employer?.address?.country,
+                $options: 'i',
+              },
+            }
+          : {},
+        employer?.address?.city
+          ? {
+              'employer.address.city': {
+                $regex: employer?.address?.city,
+                $options: 'i',
+              },
+            }
+          : {},
+        minSalary ? { minSalary: { $gte: minSalary } } : {},
+        maxSalary ? { maxSalary: { $lte: maxSalary } } : {},
+        skills?.length ? { skills: { $in: skills } } : {},
+        experienceYears !== 0
+          ? { experienceYears: { $lte: experienceYears } }
+          : {},
+        level ? { level: { $regex: level, $options: 'i' } } : {},
+        contractType
+          ? { contractType: { $regex: contractType, $options: 'i' } }
+          : {},
+      ],
+    };
+    const pageInfo = await getPageInfo(JobOffer, query, first, offset);
     let jobOffers: Array<JobOfferType>;
 
     try {
-      jobOffers = await JobOffer.find({
-        $and: [
-          title ? { title: { $regex: title, $options: 'i' } } : {},
-          description
-            ? { description: { $regex: description, $options: 'i' } }
-            : {},
-          employer?.name
-            ? { 'employer.name': { $regex: employer?.name, $options: 'i' } }
-            : {},
-          employer?.address?.country
-            ? {
-                'employer.address.country': {
-                  $regex: employer?.address?.country,
-                  $options: 'i',
-                },
-              }
-            : {},
-          employer?.address?.city
-            ? {
-                'employer.address.city': {
-                  $regex: employer?.address?.city,
-                  $options: 'i',
-                },
-              }
-            : {},
-          minSalary ? { minSalary: { $gte: minSalary } } : {},
-          maxSalary ? { maxSalary: { $lte: maxSalary } } : {},
-          skills?.length ? { skills: { $in: skills } } : {},
-          experienceYears !== 0
-            ? { experienceYears: { $lte: experienceYears } }
-            : {},
-          level ? { level: { $regex: level, $options: 'i' } } : {},
-          contractType
-            ? { contractType: { $regex: contractType, $options: 'i' } }
-            : {},
-        ],
-      })
+      jobOffers = await JobOffer.find(query)
         .sort(sorting)
         .skip(offset)
         .limit(first)

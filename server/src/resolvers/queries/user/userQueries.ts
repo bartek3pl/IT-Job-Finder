@@ -77,47 +77,44 @@ const userQueries = {
       throw new AuthenticationError(globalC.INVALID_AUTHENTICATION_TOKEN);
     }
 
-    const pageInfo = await getPageInfo(User, first, offset);
+    const query = {
+      $and: [
+        login ? { login: { $regex: login, $options: 'i' } } : {},
+        firstName ? { firstName: { $regex: firstName, $options: 'i' } } : {},
+        lastName ? { lastName: { $regex: lastName, $options: 'i' } } : {},
+        email ? { email: { $regex: email, $options: 'i' } } : {},
+        age ? { age: { $regex: age, $options: 'i' } } : {},
+        gender ? { gender: { $regex: gender, $options: 'i' } } : {},
+        address?.country
+          ? {
+              'address.country': {
+                $regex: address?.country,
+                $options: 'i',
+              },
+            }
+          : {},
+        address?.city
+          ? {
+              'address.city': {
+                $regex: address?.city,
+                $options: 'i',
+              },
+            }
+          : {},
+        skills?.length ? { skills: { $in: skills } } : {},
+        experienceYears || experienceYears === 0
+          ? { experienceYears: { $lte: experienceYears } }
+          : {},
+        level ? { level: { $regex: level, $options: 'i' } } : {},
+        minSalary ? { minSalary: { $gte: minSalary } } : {},
+        maxSalary ? { maxSalary: { $lte: maxSalary } } : {},
+      ],
+    };
+    const pageInfo = await getPageInfo(User, query, first, offset);
     let users: Array<UserType>;
 
     try {
-      users = await User.find({
-        $and: [
-          login ? { login: { $regex: login, $options: 'i' } } : {},
-          firstName ? { firstName: { $regex: firstName, $options: 'i' } } : {},
-          lastName ? { lastName: { $regex: lastName, $options: 'i' } } : {},
-          email ? { email: { $regex: email, $options: 'i' } } : {},
-          age ? { age: { $regex: age, $options: 'i' } } : {},
-          gender ? { gender: { $regex: gender, $options: 'i' } } : {},
-          address?.country
-            ? {
-                'address.country': {
-                  $regex: address?.country,
-                  $options: 'i',
-                },
-              }
-            : {},
-          address?.city
-            ? {
-                'address.city': {
-                  $regex: address?.city,
-                  $options: 'i',
-                },
-              }
-            : {},
-          skills?.length ? { skills: { $in: skills } } : {},
-          experienceYears || experienceYears === 0
-            ? { experienceYears: { $lte: experienceYears } }
-            : {},
-          level ? { level: { $regex: level, $options: 'i' } } : {},
-          minSalary ? { minSalary: { $gte: minSalary } } : {},
-          maxSalary ? { maxSalary: { $lte: maxSalary } } : {},
-        ],
-      })
-        .sort(sorting)
-        .skip(offset)
-        .limit(first)
-        .lean();
+      users = await User.find().sort(sorting).skip(offset).limit(first).lean();
 
       if (!users?.length) {
         return {

@@ -51,26 +51,27 @@ const companyQueries = {
       throw new AuthenticationError(globalC.INVALID_AUTHENTICATION_TOKEN);
     }
 
-    const pageInfo = await getPageInfo(Company, first, offset);
+    const query = {
+      $and: [
+        name ? { name: { $regex: name, $options: 'i' } } : {},
+        address?.country
+          ? {
+              'address.country': {
+                $regex: address?.country,
+                $options: 'i',
+              },
+            }
+          : {},
+        address?.city
+          ? { 'address.city': { $regex: address?.city, $options: 'i' } }
+          : {},
+      ],
+    };
+    const pageInfo = await getPageInfo(Company, query, first, offset);
     let companies: Array<CompanyType>;
 
     try {
-      companies = await Company.find({
-        $and: [
-          name ? { name: { $regex: name, $options: 'i' } } : {},
-          address?.country
-            ? {
-                'address.country': {
-                  $regex: address?.country,
-                  $options: 'i',
-                },
-              }
-            : {},
-          address?.city
-            ? { 'address.city': { $regex: address?.city, $options: 'i' } }
-            : {},
-        ],
-      })
+      companies = await Company.find(query)
         .sort(sorting)
         .skip(offset)
         .limit(first)
