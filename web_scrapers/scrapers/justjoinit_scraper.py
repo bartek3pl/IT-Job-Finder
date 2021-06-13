@@ -5,13 +5,36 @@ import requests
 from typing import Union, Tuple, List
 from decouple import config
 from currency_converter import CurrencyConverter
-from authentication import fetch_access_token
+from requests.models import Response
+from authentication import Authentication
 
 logging.basicConfig(level=logging.DEBUG,
                     format='%(asctime)s | %(name)s | %(levelname)s | %(message)s')
 
 
 class JustJoinItScraper:
+
+    def __init__(self):
+        self.authentication = Authentication()
+        (access_token, refresh_token) = self.authentication.fetch_tokens()
+        self.access_token = access_token
+        self.refresh_token = refresh_token
+
+    def _handle_error(self, response: Response, status_code: int) -> None:
+        try:
+            error_message = response.json()["errors"][0]["message"]
+        except ValueError as e:
+            logging.error(str(e))
+            return
+        logging.error(
+            f"Can not create job offer, because server returned status code {status_code} with message: {error_message}")
+
+        if error_message == "Invalid authentication token.":
+            (access_token, refresh_token) = self.authentication.generate_tokens_by_refresh_token(
+                self.refresh_token)
+            self.access_token = access_token
+            self.refresh_token = refresh_token
+
     def _format_skills(self, skills: List[dict]) -> List[str]:
         return [skill["name"] for skill in skills]
 
@@ -75,7 +98,7 @@ class JustJoinItScraper:
             "contractType": contract_type
         }
 
-    def _create_job_offer(self, access_token: str, job_offer: dict) -> Union[dict, None]:
+    def _create_job_offer(self, job_offer: dict) -> Union[dict, None]:
         create_job_offer_query = """
           mutation createJobOffer($input: CreateJobOfferInput) {
             createJobOffer(input: $input) {
@@ -90,7 +113,7 @@ class JustJoinItScraper:
         """
         BASE_URL = config("DATABASE_URL")
         headers = {
-            "accessToken": access_token
+            "accessToken": self.access_token
         }
 
         query_input = self._get_create_job_offer_query_input(job_offer)
@@ -124,14 +147,10 @@ class JustJoinItScraper:
                 if success:
                     job_offer = data["jobOffer"]
                     return job_offer
+            else:
+                self._handle_error(response, status_code)
         else:
-            try:
-                error_message = response.json()["errors"][0]["message"]
-            except ValueError as e:
-                logging.error(str(e))
-                return
-            logging.error(
-                f"Can not create job offer, because server returned status code {status_code} with message: {error_message}")
+            self._handle_error(response, status_code)
 
     def _get_create_company_query_input(self, job_offer):
         employer_name = job_offer["company_name"]
@@ -152,7 +171,7 @@ class JustJoinItScraper:
             "logo": logo
         }
 
-    def _create_company(self, access_token: str, job_offer: dict) -> Union[dict, None]:
+    def _create_company(self, job_offer: dict) -> Union[dict, None]:
         create_company_query = """
           mutation createCompany($input: CreateCompanyInput) {
             createCompany(input: $input) {
@@ -167,7 +186,7 @@ class JustJoinItScraper:
         """
         BASE_URL = config("DATABASE_URL")
         headers = {
-            "accessToken": access_token
+            "accessToken": self.access_token
         }
 
         query_input = self._get_create_company_query_input(job_offer)
@@ -201,14 +220,10 @@ class JustJoinItScraper:
                 if success:
                     company = data["company"]
                     return company
+            else:
+                self._handle_errore(response, status_code)
         else:
-            try:
-                error_message = response.json()["errors"][0]["message"]
-            except ValueError as e:
-                logging.error(str(e))
-                return
-            logging.error(
-                f"Can not create company, because server returned status code {status_code} with message: {error_message}")
+            self._handle_error(response, status_code)
 
     def _fetch_job_offers(self) -> dict:
         BASE_URL = "https://justjoin.it/api/offers"
@@ -235,12 +250,11 @@ class JustJoinItScraper:
         return job_offers
 
     def create_all_job_offers_with_companies(self) -> None:
-        access_token = fetch_access_token()
         job_offers = self._fetch_job_offers()
 
         for job_offer in job_offers:
-            self._create_job_offer(access_token, job_offer)
-            self._create_company(access_token, job_offer)
+            self._create_job_offer(job_offer)
+            self._create_company(job_offer)
         else:
             logging.info(
                 f"All job offers and companies from justjoinit has been successfully fetched.")
