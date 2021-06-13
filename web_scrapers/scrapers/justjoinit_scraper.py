@@ -40,7 +40,7 @@ class JustJoinItScraper:
     def _format_address(self, address: str) -> str:
         return address.split(", ")[1]
 
-    def _get_update_job_offers_query_input(self, job_offer: dict) -> dict:
+    def _get_create_job_offer_query_input(self, job_offer: dict) -> dict:
         title = job_offer["title"]
         employer_name = job_offer["company_name"]
         employees_number = job_offer["company_size"]
@@ -93,7 +93,7 @@ class JustJoinItScraper:
             "accessToken": access_token
         }
 
-        query_input = self._get_update_job_offers_query_input(job_offer)
+        query_input = self._get_create_job_offer_query_input(job_offer)
 
         response = requests.post(BASE_URL, json={
             'query': create_job_offer_query,
@@ -133,6 +133,83 @@ class JustJoinItScraper:
             logging.error(
                 f"Can not create job offer, because server returned status code {status_code} with message: {error_message}")
 
+    def _get_create_company_query_input(self, job_offer):
+        employer_name = job_offer["company_name"]
+        employees_number = job_offer["company_size"]
+        logo = job_offer["company_logo_url"]
+        country = job_offer["country_code"]
+        city = self._format_address(job_offer["address_text"])
+        street = job_offer["street"]
+
+        return {
+            "name": employer_name,
+            "address": {
+                "country": country,
+                "city": city,
+                "street": street
+            },
+            "employeesNumber": employees_number,
+            "logo": logo
+        }
+
+    def _create_company(self, access_token: str, job_offer: dict) -> Union[dict, None]:
+        create_company_query = """
+          mutation createCompany($input: CreateCompanyInput) {
+            createCompany(input: $input) {
+              code,
+              message,
+              success,
+              company {
+                name
+              }
+            }
+          }
+        """
+        BASE_URL = config("DATABASE_URL")
+        headers = {
+            "accessToken": access_token
+        }
+
+        query_input = self._get_create_company_query_input(job_offer)
+
+        response = requests.post(BASE_URL, json={
+            'query': create_company_query,
+            'variables': {
+                "input": query_input
+            }},
+            headers=headers
+        )
+        status_code = response.status_code
+        if status_code == 200:
+            try:
+                data = response.json()["data"]["createCompany"]
+            except ValueError as e:
+                logging.error(str(e))
+                return
+            except KeyError as e:
+                logging.error(f"There is no such field as {str(e)}")
+                return
+
+            if data:
+                success = data["success"]
+                message = data["message"]
+                status_code = data["code"]
+
+                logging.info(
+                    f"status code: {status_code} | message: {message}")
+
+                if success:
+                    company = data["company"]
+                    return company
+        else:
+            try:
+                error_message = response.json()["errors"][0]["message"]
+            except ValueError as e:
+                logging.error(str(e))
+                return
+            logging.error(
+                f"Can not create company, because server returned status code {status_code} with message: {error_message}")
+
     def _fetch_job_offers(self) -> dict:
         BASE_URL = "https://justjoin.it/api/offers"
         headers = {
@@ -157,16 +234,17 @@ class JustJoinItScraper:
 
         return job_offers
 
-    def create_all_job_offers(self) -> None:
+    def create_all_job_offers_with_companies(self) -> None:
         access_token = fetch_access_token()
         job_offers = self._fetch_job_offers()
 
         for job_offer in job_offers:
             self._create_job_offer(access_token, job_offer)
+            self._create_company(access_token, job_offer)
         else:
             logging.info(
-                f"All job offers from justjoinit has been successfully fetched.")
+                f"All job offers and companies from justjoinit has been successfully fetched.")
 
 
 just_join_it_scraper = JustJoinItScraper()
-just_join_it_scraper.create_all_job_offers()
+just_join_it_scraper.create_all_job_offers_with_companies()
