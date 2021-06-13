@@ -1,0 +1,16 @@
+{
+  "compilerOptions": {
+    "outDir": "dist",
+    "target": "es6",
+    "module": "commonjs", 
+    "lib": [ "dom", "es6" ],
+    "rootDir": "src",
+    "jsx": "react",
+    "removeComments": true,
+    "strict": true,
+    "forceConsistentCasingInFileNames": true,
+    "esModuleInterop": true,
+    "skipLibCheck": true,
+  },
+  "exclude": [ "node_modules" ]
+}
