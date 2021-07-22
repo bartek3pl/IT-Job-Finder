@@ -2,6 +2,8 @@ import mongoose from 'mongoose';
 
 import { address } from './address';
 import { jobOffer } from './jobOffer';
+import { levels, genders } from './helpers/enums';
+import C from './helpers/constants';
 
 const user = new mongoose.Schema({
   login: {
@@ -39,7 +41,7 @@ const user = new mongoose.Schema({
   },
   gender: {
     type: String,
-    enum: ['MAN', 'WOMAN', 'OTHER'],
+    enum: genders,
     required: false,
   },
   address: address,
@@ -50,32 +52,32 @@ const user = new mongoose.Schema({
     min: 0,
     max: 100,
   },
-  level: {
-    type: String,
+  levels: {
+    type: [String],
     required: false,
-    enum: ['JUNIOR', 'MID', 'SENIOR', 'OTHER'],
+    enum: levels,
   },
   minSalary: {
     type: Number,
-    min: 0,
-    max: 50_000,
+    min: C.minSalary,
+    max: C.maxSalary,
     required: false,
   },
   maxSalary: {
     type: Number,
-    min: 0,
-    max: 50_000,
+    min: C.minSalary,
+    max: C.maxSalary,
     required: false,
   },
   githubLink: {
     type: String,
     required: false,
-    maxLength: 2048,
+    maxLength: C.linkMaxLength,
   },
   linkedinLink: {
     type: String,
     required: false,
-    maxLength: 2048,
+    maxLength: C.linkMaxLength,
   },
   favouriteJobOffers: [jobOffer],
   emailNotification: {

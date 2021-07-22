@@ -10,6 +10,7 @@ import {
 import { Token } from '../../../types/shared';
 import C from './constants';
 import globalC from '../../../constants';
+import modelC from '../../../models/helpers/constants';
 import JobOffer from '../../../models/jobOffer';
 import config from '../../../config';
 import { getPageInfo } from '../../../utils/pagination';
@@ -43,7 +44,7 @@ const userQueries = {
         maxSalary,
         skills,
         experienceYears,
-        level,
+        levels,
         contractType,
       } = {
         title: '',
@@ -52,11 +53,11 @@ const userQueries = {
           name: '',
           address: { country: '', city: '' },
         },
-        minSalary: 0,
-        maxSalary: 50000,
+        minSalary: modelC.minSalary,
+        maxSalary: modelC.maxSalary,
         skills: [],
         experienceYears: null,
-        level: null,
+        levels: null,
         contractType: null,
       },
     }: {
@@ -102,7 +103,7 @@ const userQueries = {
         experienceYears !== 0
           ? { experienceYears: { $lte: experienceYears } }
           : {},
-        level ? { level: { $regex: level, $options: 'i' } } : {},
+        levels ? { levels: { $in: levels } } : {},
         contractType
           ? { contractType: { $regex: contractType, $options: 'i' } }
           : {},

@@ -45,7 +45,7 @@ const userQueries = {
         address,
         skills,
         experienceYears,
-        level,
+        levels,
         minSalary,
         maxSalary,
       } = {
@@ -61,7 +61,7 @@ const userQueries = {
         },
         skills: [],
         experienceYears: null,
-        level: null,
+        levels: null,
         minSalary: null,
         maxSalary: null,
       },
@@ -105,7 +105,7 @@ const userQueries = {
         experienceYears || experienceYears === 0
           ? { experienceYears: { $lte: experienceYears } }
           : {},
-        level ? { level: { $regex: level, $options: 'i' } } : {},
+        levels ? { levels: { $in: levels } } : {},
         minSalary ? { minSalary: { $gte: minSalary } } : {},
         maxSalary ? { maxSalary: { $lte: maxSalary } } : {},
       ],

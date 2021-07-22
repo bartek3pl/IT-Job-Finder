@@ -2,27 +2,28 @@ import { ValidationError } from 'apollo-server-errors';
 import { expect } from 'chai';
 
 import validateSalary from '../../../validators/scalars/validateSalary';
+import C from '../../../models/helpers/constants';
 
 describe('SalaryValidator', () => {
   const testCases = [
     {
-      value: 8000,
-      expected: 8000,
+      value: C.maxSalary / 2,
+      expected: C.maxSalary / 2,
       msg: 'valid salary',
     },
     {
-      value: -1,
+      value: C.minSalary - 1,
       expected: null,
-      msg: 'negative salary',
+      msg: 'too less salary',
     },
     {
-      value: 50001,
+      value: C.maxSalary + 1,
       expected: null,
       msg: 'too much salary',
     },
     {
-      value: 5000.42,
-      expected: 5000,
+      value: C.maxSalary - 0.64,
+      expected: C.maxSalary - 1,
       msg: 'float salary',
     },
   ];

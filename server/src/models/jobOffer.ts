@@ -1,6 +1,8 @@
 import mongoose from 'mongoose';
 
 import { company } from './company';
+import { levels, contractTypes } from './helpers/enums';
+import C from './helpers/constants';
 
 const jobOffer = new mongoose.Schema({
   title: {
@@ -15,14 +17,14 @@ const jobOffer = new mongoose.Schema({
   employer: company,
   minSalary: {
     type: Number,
-    min: 0,
-    max: 100_000,
+    min: C.minSalary,
+    max: C.maxSalary,
     required: false,
   },
   maxSalary: {
     type: Number,
-    min: 0,
-    max: 100_000,
+    min: C.minSalary,
+    max: C.maxSalary,
     required: false,
   },
   skills: [String],
@@ -32,15 +34,15 @@ const jobOffer = new mongoose.Schema({
     min: 0,
     max: 100,
   },
-  level: {
-    type: String,
+  levels: {
+    type: [String],
     required: false,
-    enum: ['JUNIOR', 'MID', 'SENIOR', 'OTHER'],
+    enum: levels,
   },
   contractType: {
     type: String,
     required: false,
-    enum: ['UOP', 'B2B', 'UZ', 'OTHER'],
+    enum: contractTypes,
   },
   createdDateTime: {
     type: String,

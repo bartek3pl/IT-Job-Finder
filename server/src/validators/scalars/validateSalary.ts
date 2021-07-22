@@ -1,8 +1,9 @@
 import { ValidationError, UserInputError } from 'apollo-server-express';
+import C from '../../models/helpers/constants';
 
 const isValidSalary = (value: number) => {
-  const minAmount = 0;
-  const maxAmount = 50_000;
+  const minAmount = C.minSalary;
+  const maxAmount = C.maxSalary;
   const isValueValid =
     Number.isInteger(value) && value >= minAmount && value <= maxAmount;
 

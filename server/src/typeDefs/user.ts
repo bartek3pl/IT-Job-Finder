@@ -17,7 +17,7 @@ const typeDefs = gql`
     address: UpdateAddressInput
     skills: [String!]
     experienceYears: Int
-    level: Level
+    levels: [Level]
     minSalary: Salary
     maxSalary: Salary
     githubLink: String
@@ -33,7 +33,7 @@ const typeDefs = gql`
     address: UpdateAddressInput
     skills: [String!]
     experienceYears: Int
-    level: Level
+    levels: [Level]
     minSalary: Salary
     maxSalary: Salary
     githubLink: String
@@ -87,7 +87,7 @@ const typeDefs = gql`
     address: SearchAddress
     skills: [String!]
     experienceYears: Int
-    level: Level
+    levels: [Level]
     minSalary: Salary
     maxSalary: Salary
   }
@@ -105,7 +105,7 @@ const typeDefs = gql`
     address: Address
     skills: [String]
     experienceYears: Int
-    level: Level
+    levels: [Level]
     minSalary: Salary
     maxSalary: Salary
     githubLink: String

@@ -119,7 +119,7 @@ export type CreateJobOfferInput = {
   maxSalary?: Maybe<Scalars['Salary']>;
   skills: Array<Scalars['String']>;
   experienceYears?: Maybe<Scalars['Int']>;
-  level?: Maybe<Level>;
+  levels?: Maybe<Array<Maybe<Level>>>;
   contractType?: Maybe<ContractType>;
 };
 
@@ -134,7 +134,7 @@ export type CreateUserInput = {
   address?: Maybe<UpdateAddressInput>;
   skills?: Maybe<Array<Scalars['String']>>;
   experienceYears?: Maybe<Scalars['Int']>;
-  level?: Maybe<Level>;
+  levels?: Maybe<Array<Maybe<Level>>>;
   minSalary?: Maybe<Scalars['Salary']>;
   maxSalary?: Maybe<Scalars['Salary']>;
   githubLink?: Maybe<Scalars['String']>;
@@ -176,7 +176,7 @@ export type JobOffer = {
   maxSalary?: Maybe<Scalars['Salary']>;
   skills: Array<Scalars['String']>;
   experienceYears?: Maybe<Scalars['Int']>;
-  level?: Maybe<Level>;
+  levels?: Maybe<Array<Maybe<Level>>>;
   contractType?: Maybe<ContractType>;
   createdDateTime: Scalars['DateTime'];
   updatedDateTime: Scalars['DateTime'];
@@ -204,7 +204,7 @@ export type JobOfferSearch = {
   maxSalary?: Maybe<Scalars['Salary']>;
   skills?: Maybe<Array<Scalars['String']>>;
   experienceYears?: Maybe<Scalars['Int']>;
-  level?: Maybe<Level>;
+  levels?: Maybe<Array<Maybe<Level>>>;
   contractType?: Maybe<ContractType>;
 };
 
@@ -218,9 +218,11 @@ export type JobOffersResponse = Response & {
 
 /** Expected experience of the employee */
 export enum Level {
+  Trainee = 'TRAINEE',
   Junior = 'JUNIOR',
   Mid = 'MID',
   Senior = 'SENIOR',
+  Expert = 'EXPERT',
   Other = 'OTHER'
 }
 
@@ -457,7 +459,7 @@ export type UpdateJobOfferInput = {
   maxSalary?: Maybe<Scalars['Salary']>;
   skills?: Maybe<Array<Scalars['String']>>;
   experienceYears?: Maybe<Scalars['Int']>;
-  level?: Maybe<Level>;
+  levels?: Maybe<Array<Maybe<Level>>>;
   contractType?: Maybe<ContractType>;
 };
 
@@ -469,7 +471,7 @@ export type UpdateUserInput = {
   address?: Maybe<UpdateAddressInput>;
   skills?: Maybe<Array<Scalars['String']>>;
   experienceYears?: Maybe<Scalars['Int']>;
-  level?: Maybe<Level>;
+  levels?: Maybe<Array<Maybe<Level>>>;
   minSalary?: Maybe<Scalars['Salary']>;
   maxSalary?: Maybe<Scalars['Salary']>;
   githubLink?: Maybe<Scalars['String']>;
@@ -492,7 +494,7 @@ export type User = {
   address?: Maybe<Address>;
   skills?: Maybe<Array<Maybe<Scalars['String']>>>;
   experienceYears?: Maybe<Scalars['Int']>;
-  level?: Maybe<Level>;
+  levels?: Maybe<Array<Maybe<Level>>>;
   minSalary?: Maybe<Scalars['Salary']>;
   maxSalary?: Maybe<Scalars['Salary']>;
   githubLink?: Maybe<Scalars['String']>;
@@ -536,7 +538,7 @@ export type UserSearch = {
   address?: Maybe<SearchAddress>;
   skills?: Maybe<Array<Scalars['String']>>;
   experienceYears?: Maybe<Scalars['Int']>;
-  level?: Maybe<Level>;
+  levels?: Maybe<Array<Maybe<Level>>>;
   minSalary?: Maybe<Scalars['Salary']>;
   maxSalary?: Maybe<Scalars['Salary']>;
 };
@@ -828,7 +830,7 @@ export type JobOfferResolvers<ContextType = any, ParentType extends ResolversPar
   maxSalary?: Resolver<Maybe<ResolversTypes['Salary']>, ParentType, ContextType>;
   skills?: Resolver<Array<ResolversTypes['String']>, ParentType, ContextType>;
   experienceYears?: Resolver<Maybe<ResolversTypes['Int']>, ParentType, ContextType>;
-  level?: Resolver<Maybe<ResolversTypes['Level']>, ParentType, ContextType>;
+  levels?: Resolver<Maybe<Array<Maybe<ResolversTypes['Level']>>>, ParentType, ContextType>;
   contractType?: Resolver<Maybe<ResolversTypes['ContractType']>, ParentType, ContextType>;
   createdDateTime?: Resolver<ResolversTypes['DateTime'], ParentType, ContextType>;
   updatedDateTime?: Resolver<ResolversTypes['DateTime'], ParentType, ContextType>;
@@ -937,7 +939,7 @@ export type UserResolvers<ContextType = any, ParentType extends ResolversParentT
   address?: Resolver<Maybe<ResolversTypes['Address']>, ParentType, ContextType>;
   skills?: Resolver<Maybe<Array<Maybe<ResolversTypes['String']>>>, ParentType, ContextType>;
   experienceYears?: Resolver<Maybe<ResolversTypes['Int']>, ParentType, ContextType>;
-  level?: Resolver<Maybe<ResolversTypes['Level']>, ParentType, ContextType>;
+  levels?: Resolver<Maybe<Array<Maybe<ResolversTypes['Level']>>>, ParentType, ContextType>;
   minSalary?: Resolver<Maybe<ResolversTypes['Salary']>, ParentType, ContextType>;
   maxSalary?: Resolver<Maybe<ResolversTypes['Salary']>, ParentType, ContextType>;
   githubLink?: Resolver<Maybe<ResolversTypes['String']>, ParentType, ContextType>;

@@ -18,8 +18,9 @@ class JustJoinItScraper(BaseScraper):
     def _format_skills(self, skills: List[dict]) -> List[str]:
         return [skill["name"] for skill in skills]
 
-    def _format_experience_level(self, experience_level: str) -> str:
-        return experience_level.upper() if experience_level.lower() in ['junior', 'mid', 'senior'] else 'OTHER'
+    def _format_experience_level(self, experience_level: str) -> List[str]:
+        return [experience_level.upper()] if experience_level.lower() in [
+            'trainee', 'junior', 'mid', 'senior', 'expert'] else 'OTHER'
 
     def _format_contract_type(self, contract_type: str) -> str:
         return {
@@ -54,7 +55,7 @@ class JustJoinItScraper(BaseScraper):
         (min_salary, max_salary) = self._convert_salary(
             job_offer["employment_types"][0]["salary"])
         skills = self._format_skills(job_offer["skills"])
-        experience_level = self._format_experience_level(
+        levels = self._format_experience_level(
             job_offer["experience_level"])
         contract_type = self._format_contract_type(
             job_offer["employment_types"][0]["type"])
@@ -74,7 +75,7 @@ class JustJoinItScraper(BaseScraper):
             "minSalary": min_salary,
             "maxSalary": max_salary,
             "skills": skills,
-            "level": experience_level,
+            "levels": levels,
             "contractType": contract_type
         }
 

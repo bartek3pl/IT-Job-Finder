@@ -882,12 +882,16 @@
             "deprecationReason": null
           },
           {
-            "name": "level",
+            "name": "levels",
             "description": null,
             "type": {
-              "kind": "ENUM",
-              "name": "Level",
-              "ofType": null
+              "kind": "LIST",
+              "name": null,
+              "ofType": {
+                "kind": "ENUM",
+                "name": "Level",
+                "ofType": null
+              }
             },
             "defaultValue": null,
             "isDeprecated": false,
@@ -1057,12 +1061,16 @@
             "deprecationReason": null
           },
           {
-            "name": "level",
+            "name": "levels",
             "description": null,
             "type": {
-              "kind": "ENUM",
-              "name": "Level",
-              "ofType": null
+              "kind": "LIST",
+              "name": null,
+              "ofType": {
+                "kind": "ENUM",
+                "name": "Level",
+                "ofType": null
+              }
             },
             "defaultValue": null,
             "isDeprecated": false,
@@ -1426,13 +1434,17 @@
             "deprecationReason": null
           },
           {
-            "name": "level",
+            "name": "levels",
             "description": null,
             "args": [],
             "type": {
-              "kind": "ENUM",
-              "name": "Level",
-              "ofType": null
+              "kind": "LIST",
+              "name": null,
+              "ofType": {
+                "kind": "ENUM",
+                "name": "Level",
+                "ofType": null
+              }
             },
             "isDeprecated": false,
             "deprecationReason": null
@@ -1712,12 +1724,16 @@
             "deprecationReason": null
           },
           {
-            "name": "level",
+            "name": "levels",
             "description": null,
             "type": {
-              "kind": "ENUM",
-              "name": "Level",
-              "ofType": null
+              "kind": "LIST",
+              "name": null,
+              "ofType": {
+                "kind": "ENUM",
+                "name": "Level",
+                "ofType": null
+              }
             },
             "defaultValue": null,
             "isDeprecated": false,
@@ -1826,6 +1842,12 @@
         "interfaces": null,
         "enumValues": [
           {
+            "name": "TRAINEE",
+            "description": null,
+            "isDeprecated": false,
+            "deprecationReason": null
+          },
+          {
             "name": "JUNIOR",
             "description": null,
             "isDeprecated": false,
@@ -1839,6 +1861,12 @@
           },
           {
             "name": "SENIOR",
+            "description": null,
+            "isDeprecated": false,
+            "deprecationReason": null
+          },
+          {
+            "name": "EXPERT",
             "description": null,
             "isDeprecated": false,
             "deprecationReason": null
@@ -3265,12 +3293,16 @@
             "deprecationReason": null
           },
           {
-            "name": "level",
+            "name": "levels",
             "description": null,
             "type": {
-              "kind": "ENUM",
-              "name": "Level",
-              "ofType": null
+              "kind": "LIST",
+              "name": null,
+              "ofType": {
+                "kind": "ENUM",
+                "name": "Level",
+                "ofType": null
+              }
             },
             "defaultValue": null,
             "isDeprecated": false,
@@ -3392,12 +3424,16 @@
             "deprecationReason": null
           },
           {
-            "name": "level",
+            "name": "levels",
             "description": null,
             "type": {
-              "kind": "ENUM",
-              "name": "Level",
-              "ofType": null
+              "kind": "LIST",
+              "name": null,
+              "ofType": {
+                "kind": "ENUM",
+                "name": "Level",
+                "ofType": null
+              }
             },
             "defaultValue": null,
             "isDeprecated": false,
@@ -3636,13 +3672,17 @@
             "deprecationReason": null
           },
           {
-            "name": "level",
+            "name": "levels",
             "description": null,
             "args": [],
             "type": {
-              "kind": "ENUM",
-              "name": "Level",
-              "ofType": null
+              "kind": "LIST",
+              "name": null,
+              "ofType": {
+                "kind": "ENUM",
+                "name": "Level",
+                "ofType": null
+              }
             },
             "isDeprecated": false,
             "deprecationReason": null
@@ -4103,12 +4143,16 @@
             "deprecationReason": null
           },
           {
-            "name": "level",
+            "name": "levels",
             "description": null,
             "type": {
-              "kind": "ENUM",
-              "name": "Level",
-              "ofType": null
+              "kind": "LIST",
+              "name": null,
+              "ofType": {
+                "kind": "ENUM",
+                "name": "Level",
+                "ofType": null
+              }
             },
             "defaultValue": null,
             "isDeprecated": false,

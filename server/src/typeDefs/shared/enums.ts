@@ -3,9 +3,11 @@ import { gql } from 'apollo-server-express';
 const typeDefs = gql`
   "Expected experience of the employee"
   enum Level {
+    TRAINEE
     JUNIOR
     MID
     SENIOR
+    EXPERT
     OTHER
   }
 

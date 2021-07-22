@@ -33,7 +33,7 @@ const jobOfferMutations = {
         maxSalary,
         skills,
         experienceYears,
-        level,
+        levels,
         contractType,
       },
     }: { input: CreateJobOfferInput },
@@ -50,7 +50,7 @@ const jobOfferMutations = {
       const isJobOfferInDatabase = await JobOffer.exists({
         title,
         contractType,
-        level,
+        levels,
         minSalary,
         maxSalary,
         'employer.name': employer.name,
@@ -75,7 +75,7 @@ const jobOfferMutations = {
         maxSalary,
         skills,
         experienceYears,
-        level,
+        levels,
         contractType,
         createdDateTime,
         updatedDateTime: createdDateTime,
@@ -142,7 +142,7 @@ const jobOfferMutations = {
         maxSalary,
         skills,
         experienceYears,
-        level,
+        levels,
         contractType,
       },
     }: { id: Scalars['ID']; input: UpdateJobOfferInput },
@@ -176,7 +176,7 @@ const jobOfferMutations = {
       let updatedMaxSalary = maxSalary;
       let updatedSkills = skills;
       let updatedExperienceYears = experienceYears;
-      let updatedLevel = level;
+      let updatedLevels = levels;
       let updatedContractType = contractType;
 
       if (isNullish(updatedTitle)) {
@@ -200,8 +200,8 @@ const jobOfferMutations = {
       if (isNullish(updatedExperienceYears)) {
         updatedExperienceYears = jobOffer.experienceYears;
       }
-      if (isNullish(updatedLevel)) {
-        updatedLevel = jobOffer.level;
+      if (isNullish(updatedLevels)) {
+        updatedLevels = jobOffer.levels;
       }
       if (isNullish(updatedContractType)) {
         updatedContractType = jobOffer.contractType;
@@ -217,7 +217,7 @@ const jobOfferMutations = {
           maxSalary: updatedMaxSalary,
           skills: updatedSkills,
           experienceYears: updatedExperienceYears,
-          level: updatedLevel,
+          levels: updatedLevels,
           contractType: updatedContractType,
           updatedDateTime,
         },

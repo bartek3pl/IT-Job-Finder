@@ -18,13 +18,10 @@ class NoFluffJobsScraper(BaseScraper):
     def _format_skills(self, skill: str) -> List[str]:
         return [skill]
 
-    def _format_experience_level(self, experience_level: str) -> str:
-        if experience_level.lower() in ['junior', 'mid', 'senior']:
-            return experience_level.upper()
-        elif experience_level == 'Trainee':
-            return 'JUNIOR'
-        else:
-            return 'OTHER'
+    def _format_experience_level(self, experience_levels: List[str]) -> List[str]:
+        return [experience_level.upper()
+                if experience_level.lower() in ['trainee', 'junior', 'mid', 'senior', 'expert'] else 'OTHER'
+                for experience_level in experience_levels]
 
     def _format_contract_type(self, contract_type: str) -> str:
         return {
@@ -55,7 +52,7 @@ class NoFluffJobsScraper(BaseScraper):
         min_salary = None
         max_salary = None
         skills = []
-        experience_level = None
+        levels = []
         contract_type = None
 
         try:
@@ -100,8 +97,7 @@ class NoFluffJobsScraper(BaseScraper):
             pass
 
         try:
-            experience_level = self._format_experience_level(
-                job_offer["seniority"][0])
+            levels = self._format_experience_level(job_offer["seniority"])
         except KeyError:
             pass
 
@@ -125,7 +121,7 @@ class NoFluffJobsScraper(BaseScraper):
             "minSalary": min_salary,
             "maxSalary": max_salary,
             "skills": skills,
-            "level": experience_level,
+            "levels": levels,
             "contractType": contract_type
         }
 
