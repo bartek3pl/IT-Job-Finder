@@ -1,90 +1,138 @@
 import React, {
   FC,
-  useState,
-  useEffect,
+  ReactElement,
   cloneElement,
-  Children,
   isValidElement,
+  useState,
 } from 'react';
 import styled from 'styled-components';
+import { MdVisibility, MdVisibilityOff } from 'react-icons/md';
 
 import color from '@styles/colors';
-import shadow from '@styles/shadows';
+import { ICON_SIZE } from '@utils/constants/constants';
 
 interface TextFieldProps {
-  name?: string;
+  type?: string;
+  alt?: string;
   disabled?: boolean;
-  onClick?: () => void;
-  backgroundColor?: string;
-  iconSize?: number;
-  color?: string;
+  placeholder?: string;
+  value?: string;
+  icon?: ReactElement;
+  name?: string;
+  handleChange?: () => void;
 }
 
-type StyledTextFieldProps = Pick<TextFieldProps, 'backgroundColor' | 'color'>;
+const StyledButtonWrapper = styled.div`
+  position: relative;
+  display: inline-block;
+  width: 100%;
+`;
 
-const StyledTextField = styled.button<StyledTextFieldProps>``;
+const StyledTextField = styled.input<TextFieldProps>`
+  display: inline-block;
+  width: 100%;
+  height: 140px;
+  padding: 21px 60px;
+  border: none;
+  border-radius: 40px;
+  background-color: ${color.lightgray};
+  font-size: 35px;
+  color: ${color.primary};
+
+  &::placeholder {
+    color: ${color.inputPlaceholder};
+    font-size: 36px;
+  }
+`;
+
+const IconWrapper = styled.span`
+  position: absolute;
+  top: 30px;
+  right: 50px;
+`;
 
 const TextField: FC<TextFieldProps> = ({
-  name,
+  type,
+  alt,
   disabled,
-  onClick,
-  backgroundColor,
-  color,
-  iconSize,
-  children,
+  placeholder,
+  value,
+  icon,
+  name,
+  handleChange,
 }) => {
-  const [isButtonClicked, setIsButtonClicked] = useState(false);
+  const [isPasswordVisible, setIsPasswordVisible] = useState(false);
+  const [textFieldType, setTextFieldType] = useState(type);
 
-  useEffect(() => {
-    return () => {
-      setIsButtonClicked(false);
-    };
-  }, []);
-
-  const handleClick = () => {
-    setIsButtonClicked(true);
-    if (onClick) {
-      onClick();
+  const togglePasswordVisibility = () => {
+    if (type === 'password') {
+      setIsPasswordVisible(!isPasswordVisible);
+      setTextFieldType(textFieldType === 'password' ? 'text' : 'password');
     }
   };
 
-  const isAllowedKeyPressed = (pressedKey: string) => {
-    const allowedKeys = ['Enter', 'Space'];
-    return allowedKeys.includes(pressedKey);
+  const getIconWithProps = (pureIcon?: ReactElement) => {
+    if (isValidElement(pureIcon)) {
+      return cloneElement(pureIcon, {
+        size: ICON_SIZE,
+        color: color.inputPlaceholder,
+      });
+    }
+    return pureIcon;
   };
 
-  const handleKeyDown = (event: { key: string }) => {
-    console.log('dupa');
-    const pressedKey = event.key;
-    const allowedKeyPressed = isAllowedKeyPressed(pressedKey);
-    if (allowedKeyPressed) {
-      handleClick();
+  const getPasswordIcon = () => {
+    if (isPasswordVisible) {
+      return <MdVisibility />;
     }
+    return <MdVisibilityOff />;
+  };
+
+  const selectIcon = () => {
+    let iconWithProps = getIconWithProps(icon);
+    if (type === 'password') {
+      const passwordIcon = getPasswordIcon();
+      iconWithProps = getIconWithProps(passwordIcon);
+    }
+    return iconWithProps;
+  };
+
+  const renderIconComponent = () => {
+    const selectedIcon = selectIcon();
+    return (
+      <IconWrapper onClick={togglePasswordVisibility}>
+        {selectedIcon}
+      </IconWrapper>
+    );
   };
 
   return (
-    <StyledTextField
-      type="button"
-      name={name}
-      disabled={disabled}
-      onClick={handleClick}
-      onKeyDown={handleKeyDown}
-      aria-pressed={isButtonClicked}
-      backgroundColor={backgroundColor}
-      color={color}
-    >
-      {children}
-    </StyledTextField>
+    <StyledButtonWrapper>
+      <StyledTextField
+        type={textFieldType}
+        alt={alt}
+        autoComplete="on"
+        disabled={disabled}
+        placeholder={placeholder}
+        value={value}
+        name={name}
+        aria-label={name}
+        onChange={handleChange}
+      />
+      {renderIconComponent()}
+    </StyledButtonWrapper>
   );
 };
 
 TextField.defaultProps = {
-  name: '',
+  type: 'text',
+  alt: '',
   disabled: false,
-  onClick: () => {},
-  backgroundColor: color.contrast,
-  color: color.white,
-  iconSize: BUTTON_ICON_SIZE,
+  placeholder: '',
+  value: '',
+  icon: undefined,
+  name: '',
+  handleChange: () => {},
 };
 
 export default TextField;

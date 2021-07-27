@@ -2,7 +2,14 @@
   margin: 0;
   padding: 0;
   box-sizing: border-box;
+  list-style-type: none;
+  text-decoration: none;
   font-family: 'DM Sans', sans-serif;
   font-weight: 400;
   font-size: 16px;
+}
+
+@font-face {
+  font-family: 'DM Sans', sans-serif;
+  src: url('./assets/fonts/DMSans-Regular.ttf') format('truetype');
 }

@@ -10,11 +10,12 @@ import styled from 'styled-components';
 
 import color from '@styles/colors';
 import shadow from '@styles/shadows';
+import { ICON_SIZE } from '@utils/constants/constants';
 
 interface ButtonProps {
   name?: string;
   disabled?: boolean;
-  onClick?: () => void;
+  handleClick?: () => void;
   backgroundColor?: string;
   iconSize?: number;
   color?: string;
@@ -32,7 +33,7 @@ const StyledButton = styled.button<StyledButtonProps>`
   color: ${({ color }) => color};
   width: 140px;
   height: 140px;
-  border-radius: 24%;
+  border-radius: 40px;
   border: ${({ flat }) => (flat ? `2px ${color.lightgray} solid` : 'none')};
   padding: 10px;
   font-size: 20px;
@@ -44,15 +45,12 @@ const StyledButton = styled.button<StyledButtonProps>`
   }
 `;
 
-const BUTTON_ICON_SIZE = 78;
-
 const Button: FC<ButtonProps> = ({
   name,
   disabled,
-  onClick,
+  handleClick,
   backgroundColor,
   color,
-  iconSize,
   flat,
   children,
 }) => {
@@ -64,16 +62,16 @@ const Button: FC<ButtonProps> = ({
     };
   }, []);
 
-  const handleClick = () => {
+  const handleClickAndSetButton = () => {
     setIsButtonClicked(true);
-    if (onClick) {
-      onClick();
+    if (handleClick) {
+      handleClick();
     }
   };
 
   const childrenWithProps = Children.map(children, (child) => {
     if (isValidElement(child)) {
-      return cloneElement(child, { size: iconSize });
+      return cloneElement(child, { size: ICON_SIZE });
     }
     return child;
   });
@@ -83,7 +81,7 @@ const Button: FC<ButtonProps> = ({
       type="button"
       name={name}
       disabled={disabled}
-      onClick={handleClick}
+      onClick={handleClickAndSetButton}
       aria-pressed={isButtonClicked}
       backgroundColor={backgroundColor}
       color={color}
@@ -97,10 +95,9 @@ const Button: FC<ButtonProps> = ({
 Button.defaultProps = {
   name: '',
   disabled: false,
-  onClick: () => {},
+  handleClick: () => {},
   backgroundColor: color.contrast,
   color: color.white,
-  iconSize: BUTTON_ICON_SIZE,
   flat: false,
 };
 
