@@ -19,6 +19,8 @@ interface ButtonProps {
   backgroundColor?: string;
   iconSize?: number;
   color?: string;
+  horizontalPadding?: number;
+  verticalPadding?: number;
   flat?: boolean;
 }
 
@@ -33,7 +35,7 @@ const StyledButton = styled.button<StyledButtonProps>`
   color: ${({ color }) => color};
   width: 140px;
   height: 140px;
-  border-radius: 40px;
+  border-radius: 45px;
   border: ${({ flat }) => (flat ? `2px ${color.lightgray} solid` : 'none')};
   padding: 10px;
   font-size: 20px;
@@ -56,11 +58,9 @@ const Button: FC<ButtonProps> = ({
 }) => {
   const [isButtonClicked, setIsButtonClicked] = useState(false);
 
-  useEffect(() => {
-    return () => {
+  useEffect(() => () => {
       setIsButtonClicked(false);
-    };
-  }, []);
+    }, []);
 
   const handleClickAndSetButton = () => {
     setIsButtonClicked(true);

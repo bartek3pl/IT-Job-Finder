@@ -7,8 +7,7 @@ import {
 } from 'react-router-dom';
 import routes from './routesStrings';
 
-const Routes: React.FC = () => {
-  return (
+const Routes: React.FC = () => (
     <Router>
       <Switch>
         <Route path={routes.registration}>
@@ -18,6 +17,5 @@ const Routes: React.FC = () => {
       </Switch>
     </Router>
   );
-};
 
 export default Routes;

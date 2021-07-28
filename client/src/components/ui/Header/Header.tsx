@@ -2,12 +2,10 @@ import React, { FC } from 'react';
 import styled from 'styled-components';
 
 const StyledHeader = styled.h1`
-  font-size: 70px;
-  font-weight: 500;
+  font-size: 62px;
+  font-weight: 600;
 `;
 
-const Header: FC = ({ children }) => {
-  return <StyledHeader>{children}</StyledHeader>;
-};
+const Header: FC = ({ children }) => <StyledHeader>{children}</StyledHeader>;
 
 export default Header;

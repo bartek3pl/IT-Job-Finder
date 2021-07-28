@@ -4,9 +4,10 @@ import React, {
   cloneElement,
   isValidElement,
   useState,
+  FormEvent,
 } from 'react';
 import styled from 'styled-components';
-import { MdVisibility, MdVisibilityOff } from 'react-icons/md';
+import { FiEye, FiEyeOff } from 'react-icons/fi';
 
 import color from '@styles/colors';
 import { ICON_SIZE } from '@utils/constants/constants';
@@ -19,7 +20,7 @@ interface TextFieldProps {
   value?: string;
   icon?: ReactElement;
   name?: string;
-  handleChange?: () => void;
+  handleChange?: (event: FormEvent<HTMLInputElement>) => void;
 }
 
 const StyledButtonWrapper = styled.div`
@@ -34,7 +35,7 @@ const StyledTextField = styled.input<TextFieldProps>`
   height: 140px;
   padding: 21px 60px;
   border: none;
-  border-radius: 40px;
+  border-radius: 45px;
   background-color: ${color.lightgray};
   font-size: 35px;
   color: ${color.primary};
@@ -47,8 +48,8 @@ const StyledTextField = styled.input<TextFieldProps>`
 
 const IconWrapper = styled.span`
   position: absolute;
-  top: 30px;
-  right: 50px;
+  top: 42px;
+  right: 54px;
 `;
 
 const TextField: FC<TextFieldProps> = ({
@@ -83,9 +84,9 @@ const TextField: FC<TextFieldProps> = ({
 
   const getPasswordIcon = () => {
     if (isPasswordVisible) {
-      return <MdVisibility />;
+      return <FiEye />;
     }
-    return <MdVisibilityOff />;
+    return <FiEyeOff />;
   };
 
   const selectIcon = () => {

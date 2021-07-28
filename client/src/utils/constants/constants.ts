@@ -1,3 +1,3 @@
-export const ICON_SIZE = 78;
+export const ICON_SIZE = 60;
 
-export const GLOBAL_PADDING = '50px';
+export const GLOBAL_PADDING = '60px';

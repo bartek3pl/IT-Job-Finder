@@ -1,6 +1,6 @@
 import React, { FC } from 'react';
 import { useHistory } from 'react-router-dom';
-import { MdArrowBack } from 'react-icons/md';
+import { FiArrowLeft } from 'react-icons/fi';
 import styled from 'styled-components';
 
 import color from '@styles/colors';
@@ -11,10 +11,10 @@ const StyledBackButton = styled.button`
   position: absolute;
   top: ${GLOBAL_PADDING};
   left: ${GLOBAL_PADDING};
-  border-radius: 20px;
+  border-radius: 23px;
   border: none;
-  width: 80px;
-  height: 80px;
+  width: 90px;
+  height: 90px;
   background-color: ${color.lightgray};
   z-index: 999;
   transition: transform 0.2s ease-out;
@@ -33,7 +33,7 @@ const BackButton: FC = () => {
 
   return (
     <StyledBackButton onClick={handleClick}>
-      <MdArrowBack size={60} color={color.primary} />
+      <FiArrowLeft size={60} color={color.primary} />
     </StyledBackButton>
   );
 };
