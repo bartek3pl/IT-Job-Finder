@@ -32,26 +32,26 @@ const TextButtonWrapper = styled.div`
 `;
 
 const StarterPage: FC = () => (
-    <StyledStarterPage>
-      <img src={starterImage} alt="starter image" />
+  <StyledStarterPage>
+    <img src={starterImage} alt="starter image" />
 
-      <StarterInfoWrapper>
-        <Header>Find a perfect job match</Header>
-        <Subheader>
-          Finding your dream job is now much easier and faster like never before
-        </Subheader>
-        <TextButtonWrapper>
-          <TextButton
-            name="let's get started"
-            size={40}
-            icon={<FiArrowRight />}
-            fullWidth
-          >
-            Let's Get Started
-          </TextButton>
-        </TextButtonWrapper>
-      </StarterInfoWrapper>
-    </StyledStarterPage>
-  );
+    <StarterInfoWrapper>
+      <Header>Find a perfect job match</Header>
+      <Subheader>
+        Finding your dream job is now much easier and faster like never before
+      </Subheader>
+      <TextButtonWrapper>
+        <TextButton
+          name="let's get started"
+          size={40}
+          icon={<FiArrowRight />}
+          fullWidth
+        >
+          Let's Get Started
+        </TextButton>
+      </TextButtonWrapper>
+    </StarterInfoWrapper>
+  </StyledStarterPage>
+);
 
 export default StarterPage;
