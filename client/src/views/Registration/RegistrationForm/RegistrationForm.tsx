@@ -4,7 +4,7 @@ import { useHistory } from 'react-router-dom';
 import { FiArrowRight, FiUser, FiMail } from 'react-icons/fi';
 import styled from 'styled-components';
 
-import { CREATE_USER } from '@api/user/mutations/mutations';
+import { CREATE_USER } from '@api/user/mutations';
 import { REGISTRATION } from '@utils/constants/constants';
 import {
   validateLogin,

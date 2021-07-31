@@ -1,28 +1,31 @@
-class AuthenticationService {
-  private ACCESS_TOKEN = 'accessToken';
-  private REFRESH_TOKEN = 'refreshToken';
-  private USER_ID = 'userId';
+import {
+  ACCESS_TOKEN,
+  REFRESH_TOKEN,
+  USER_ID,
+} from '@utils/constants/constants';
 
-  getAccessToken = () => localStorage.getItem(this.ACCESS_TOKEN);
+class AuthenticationService {
+  getAccessToken = () => localStorage.getItem(ACCESS_TOKEN);
 
   private setAccessToken = (accessToken: string) =>
-    localStorage.setItem(this.ACCESS_TOKEN, accessToken);
+    localStorage.setItem(ACCESS_TOKEN, accessToken);
 
-  private deleteAccessToken = () => localStorage.removeItem(this.ACCESS_TOKEN);
+  private deleteAccessToken = () => localStorage.removeItem(ACCESS_TOKEN);
 
-  getRefreshToken = () => localStorage.getItem(this.REFRESH_TOKEN);
+  getRefreshToken = () => localStorage.getItem(REFRESH_TOKEN);
 
   private setRefreshToken = (refreshToken: string) =>
-    localStorage.setItem(this.REFRESH_TOKEN, refreshToken);
+    localStorage.setItem(REFRESH_TOKEN, refreshToken);
 
-  private deleteRefreshToken = () => localStorage.getItem(this.REFRESH_TOKEN);
+  private deleteRefreshToken = () => localStorage.getItem(REFRESH_TOKEN);
 
-  getUserId = () => localStorage.getItem(this.USER_ID);
+  getUserId = () => localStorage.getItem(USER_ID);
 
-  private setUserId = (userId: string) =>
-    localStorage.setItem(this.USER_ID, userId);
+  private setUserId = (userId: string) => localStorage.setItem(USER_ID, userId);
 
-  private deleteUserId = () => localStorage.removeItem(this.USER_ID);
+  private deleteUserId = () => localStorage.removeItem(USER_ID);
+
+  getBearerAccessToken = () => `Bearer ${this.getAccessToken()}`;
 
   login = (accessToken: string, refreshToken: string, userId: string) => {
     this.setAccessToken(accessToken);

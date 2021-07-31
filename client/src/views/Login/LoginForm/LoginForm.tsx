@@ -4,7 +4,7 @@ import { useHistory } from 'react-router-dom';
 import { FiArrowRight, FiUser } from 'react-icons/fi';
 import styled from 'styled-components';
 
-import { LOGIN as USER_LOGIN } from '@api/user/mutations/mutations';
+import { LOGIN as USER_LOGIN } from '@api/user/mutations';
 import { REGISTRATION } from '@utils/constants/constants';
 import { validateLogin, validatePassword } from '@utils/helpers/validators';
 import AuthenticationService from '@services/authenticationService/authenticationService';

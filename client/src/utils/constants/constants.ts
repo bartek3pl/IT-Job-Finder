@@ -10,3 +10,9 @@ export const REGISTRATION = {
   CONFIRM_PASSWORD_VALIDATION:
     'Confirmation password should be the same as password.',
 };
+
+export const ACCESS_TOKEN = 'accessToken';
+
+export const REFRESH_TOKEN = 'refreshToken';
+
+export const USER_ID = 'userId';
