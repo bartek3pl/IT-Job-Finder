@@ -10,6 +10,7 @@ import routes from './routesStrings';
 import StarterPage from '@views/Starter/StarterPage';
 import RegistrationPage from '@views/Registration/RegistrationPage/RegistrationPage';
 import LoginPage from '@views/Login/LoginPage/LoginPage';
+import JobOffersPage from '@views/JobOffers/JobOffersPage/JobOffersPage';
 
 const Routes: FC = () => (
   <Router>
@@ -17,7 +18,8 @@ const Routes: FC = () => (
       <Route exact path={routes.starter} component={StarterPage} />
       <Route exact path={routes.registration} component={RegistrationPage} />
       <Route exact path={routes.login} component={LoginPage} />
-      <Redirect to={routes.starter} />
+      <Route exact path={routes.jobOffers} component={JobOffersPage} />
+      <Redirect to={routes.login} />
     </Switch>
   </Router>
 );

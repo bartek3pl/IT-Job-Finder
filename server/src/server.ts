@@ -57,7 +57,7 @@ const server = new ApolloServer({
 });
 
 const protocol = 'http';
-const url = 'localhost';
+const url = config.URL || 'localhost';
 const port = config.PORT;
 const path = '/graphql';
 

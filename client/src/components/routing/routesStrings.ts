@@ -3,4 +3,5 @@ export default {
   starter: '/starter',
   registration: '/registration',
   login: '/login',
+  jobOffers: '/jobOffers',
 };
