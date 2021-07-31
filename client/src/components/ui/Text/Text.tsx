@@ -8,7 +8,7 @@ interface TextProps {
 
 type StyledText = Pick<TextProps, 'size' | 'weight'>;
 
-const StyledText = styled.p<StyledText>`
+const StyledText = styled.span<StyledText>`
   font-size: ${({ size }) => `${size}px`};
   font-weight: ${({ weight }) => weight};
 `;

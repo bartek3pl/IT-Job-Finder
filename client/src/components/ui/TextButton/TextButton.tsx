@@ -33,6 +33,7 @@ type StyledTextButtonProps = Pick<
   | 'horizontalPadding'
   | 'verticalPadding'
   | 'fullWidth'
+  | 'disabled'
 >;
 
 const StyledTextButton = styled.button<StyledTextButtonProps>`
@@ -49,10 +50,11 @@ const StyledTextButton = styled.button<StyledTextButtonProps>`
   padding: ${({ verticalPadding, horizontalPadding }) =>
     `${verticalPadding}px ${horizontalPadding}px`};
   box-shadow: ${shadow['shadow-2']};
+  opacity: ${({ disabled }) => (disabled ? '40%' : '100%')};
   transition: transform 0.2s ease-out;
 
   &:active {
-    transform: scale(0.9);
+    transform: ${({ disabled }) => (disabled ? '' : 'scale(0.9)')};
   }
 `;
 
@@ -71,9 +73,12 @@ const TextButton: FC<TextButtonProps> = ({
 }) => {
   const [isButtonClicked, setIsButtonClicked] = useState(false);
 
-  useEffect(() => () => {
+  useEffect(
+    () => () => {
       setIsButtonClicked(false);
-    }, []);
+    },
+    []
+  );
 
   const handleClickAndSetButton = () => {
     setIsButtonClicked(true);

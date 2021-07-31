@@ -1,30 +1,36 @@
 import React, { FC } from 'react';
 import styled from 'styled-components';
 import { FiArrowRight } from 'react-icons/fi';
+import { Link } from 'react-router-dom';
 
-import starterImage from '@assets/starter.svg';
 import { GLOBAL_PADDING } from '@utils/constants/constants';
+import starterImage from '@assets/starter.svg';
+import shadow from '@styles/shadows';
 import colors from '@styles/colors';
+import routes from '@components/routing/routesStrings';
 import Header from '@components/ui/Header/Header';
 import Subheader from '@components/ui/Subheader/Subheader';
 import TextButton from '@components/ui/TextButton/TextButton';
 
 const StyledStarterPage = styled.div`
-  height: 100vh;
-  width: 100%;
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+  height: 100%;
   background-color: ${colors.lightgray};
 `;
 
+const StarterImage = styled.img`
+  width: 100%;
+  margin-top: 10%;
+`;
+
 const StarterInfoWrapper = styled.div`
-  display: flex;
-  flex-direction: column;
-  position: absolute;
-  bottom: 0;
   background-color: ${colors.white};
   border-top-left-radius: 90px;
   border-top-right-radius: 90px;
   padding: 125px ${GLOBAL_PADDING};
-  gap: 30px;
+  box-shadow: ${shadow['shadow-1']};
 `;
 
 const TextButtonWrapper = styled.div`
@@ -33,7 +39,7 @@ const TextButtonWrapper = styled.div`
 
 const StarterPage: FC = () => (
   <StyledStarterPage>
-    <img src={starterImage} alt="starter image" />
+    <StarterImage src={starterImage} alt="starter image" />
 
     <StarterInfoWrapper>
       <Header>Find a perfect job match</Header>
@@ -41,14 +47,16 @@ const StarterPage: FC = () => (
         Finding your dream job is now much easier and faster like never before
       </Subheader>
       <TextButtonWrapper>
-        <TextButton
-          name="let's get started"
-          size={40}
-          icon={<FiArrowRight />}
-          fullWidth
-        >
-          Let's Get Started
-        </TextButton>
+        <Link to={routes.registration}>
+          <TextButton
+            name="let's get started"
+            size={40}
+            icon={<FiArrowRight />}
+            fullWidth
+          >
+            Let's Get Started
+          </TextButton>
+        </Link>
       </TextButtonWrapper>
     </StarterInfoWrapper>
   </StyledStarterPage>

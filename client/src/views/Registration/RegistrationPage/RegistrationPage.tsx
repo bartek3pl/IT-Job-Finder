@@ -1,19 +1,22 @@
 import React, { FC } from 'react';
 import styled from 'styled-components';
+import { Link } from 'react-router-dom';
 
 import { GLOBAL_PADDING } from '@utils/constants/constants';
 import colors from '@styles/colors';
+import routes from '@components/routing/routesStrings';
 import Header from '@components/ui/Header/Header';
 import Subheader from '@components/ui/Subheader/Subheader';
 import BackButton from '@components/ui/BackButton/BackButton';
 import Text from '@components/ui/Text/Text';
 import Dot from '@components/ui/Dot/Dot';
-import RegistrationForm from '@views/Registration/RegistrationForm/RegistrationForm';
 import TextButton from '@components/ui/TextButton/TextButton';
+import RegistrationForm from '@views/Registration/RegistrationForm/RegistrationForm';
 
 const StyledRegistrationPage = styled.div`
-  margin-top: 160px;
   padding: ${GLOBAL_PADDING};
+  padding-top: 210px;
+  background-color: ${colors.white};
 `;
 
 const SubheaderWrapper = styled.div`
@@ -33,29 +36,23 @@ const TextButtonWrapper = styled.div`
   margin-top: 45px;
 `;
 
-const TermsAndConditionsWrapper = styled.div`
-  display: flex;
-  justify-content: center;
-  margin-top: 90px;
-  text-align: center;
-`;
-
 const RegistrationPage: FC = () => (
-    <StyledRegistrationPage>
-      <BackButton />
-      <Header>Register Account</Header>
-      <SubheaderWrapper>
-        <Subheader>Fill your details or continue with social media</Subheader>
-      </SubheaderWrapper>
+  <StyledRegistrationPage>
+    <BackButton />
+    <Header>Register Account</Header>
+    <SubheaderWrapper>
+      <Subheader>Fill your details or continue with social media</Subheader>
+    </SubheaderWrapper>
 
-      <RegistrationForm />
+    <RegistrationForm />
 
-      <GoToLoginPageWrapper>
-        <Dot />
-        <Text size={32}>Or go to the login page</Text>
-        <Dot />
-      </GoToLoginPageWrapper>
-      <TextButtonWrapper>
+    <GoToLoginPageWrapper>
+      <Dot />
+      <Text size={32}>Or go to the login page</Text>
+      <Dot />
+    </GoToLoginPageWrapper>
+    <TextButtonWrapper>
+      <Link to={routes.login}>
         <TextButton
           name="login"
           backgroundColor={colors.primary}
@@ -64,16 +61,9 @@ const RegistrationPage: FC = () => (
         >
           Login
         </TextButton>
-      </TextButtonWrapper>
-      <TermsAndConditionsWrapper>
-        <Text size={30}>
-          By continuing you confirm that you agree with our{' '}
-          <Text size={30} weight={600}>
-            Terms and Conditions
-          </Text>
-        </Text>
-      </TermsAndConditionsWrapper>
-    </StyledRegistrationPage>
-  );
+      </Link>
+    </TextButtonWrapper>
+  </StyledRegistrationPage>
+);
 
 export default RegistrationPage;

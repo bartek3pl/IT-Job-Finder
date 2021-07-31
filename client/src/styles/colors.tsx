@@ -8,6 +8,5 @@ export default {
   black: '#000000',
   lightgray: '#F3F4F8',
   inputPlaceholder: '#9694AC',
-
-  facebookBlue: '#4267B2',
+  error: '#FF0033',
 };

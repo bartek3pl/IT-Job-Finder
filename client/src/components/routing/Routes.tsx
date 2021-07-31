@@ -1,21 +1,25 @@
-import * as React from 'react';
+import React, { FC } from 'react';
 import {
   BrowserRouter as Router,
   Switch,
   Route,
   Redirect,
 } from 'react-router-dom';
-import routes from './routesStrings';
 
-const Routes: React.FC = () => (
-    <Router>
-      <Switch>
-        <Route path={routes.registration}>
-          <></>
-        </Route>
-        <Redirect to={routes.login} />
-      </Switch>
-    </Router>
-  );
+import routes from './routesStrings';
+import StarterPage from '@views/Starter/StarterPage';
+import RegistrationPage from '@views/Registration/RegistrationPage/RegistrationPage';
+import LoginPage from '@views/Login/LoginPage/LoginPage';
+
+const Routes: FC = () => (
+  <Router>
+    <Switch>
+      <Route exact path={routes.starter} component={StarterPage} />
+      <Route exact path={routes.registration} component={RegistrationPage} />
+      <Route exact path={routes.login} component={LoginPage} />
+      <Redirect to={routes.starter} />
+    </Switch>
+  </Router>
+);
 
 export default Routes;

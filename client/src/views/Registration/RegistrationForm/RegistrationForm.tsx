@@ -1,10 +1,20 @@
-import React, { FC, FormEvent, useState } from 'react';
-import styled from 'styled-components';
+import React, { FC, FormEvent, useState, useEffect } from 'react';
+import { useMutation } from '@apollo/client';
+import { useHistory } from 'react-router-dom';
 import { FiArrowRight, FiUser, FiMail } from 'react-icons/fi';
+import styled from 'styled-components';
 
-import { validateLogin, validatePassword } from '@utils/helpers/validators';
+import { CREATE_USER } from '@api/user/mutations/mutations';
+import { REGISTRATION } from '@utils/constants/constants';
+import {
+  validateLogin,
+  validateEmail,
+  validatePassword,
+} from '@utils/helpers/validators';
+import routes from '@components/routing/routesStrings';
 import Button from '@components/forms/Button/Button';
 import TextField from '@components/forms/TextField/TextField';
+import Spinner from '@components/ui/Spinner/Spinner';
 
 const TextFieldsWrapper = styled.div`
   margin-top: 60px;
@@ -14,15 +24,31 @@ const TextFieldsWrapper = styled.div`
 `;
 
 const ButtonWrapper = styled.div`
+  position: relative;
   margin-top: 60px;
   display: flex;
   justify-content: center;
+  align-items: center;
 `;
 
-const RegistrationPage: FC = () => {
+const RegistrationForm: FC = () => {
+  const history = useHistory();
+
   const [login, setLogin] = useState('');
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
+  const [confirmPassword, setConfirmPassword] = useState('');
+
+  const [createUser, { data, loading, error }] = useMutation(CREATE_USER);
+
+  useEffect(() => {
+    if (data && !loading && !error) {
+      const { createUser } = data || {};
+      if (createUser?.success) {
+        history.push(routes.login);
+      }
+    }
+  }, [data]);
 
   const handleLogin = (event: FormEvent<HTMLInputElement>) => {
     setLogin(event.currentTarget.value);
@@ -36,15 +62,48 @@ const RegistrationPage: FC = () => {
     setPassword(event.currentTarget.value);
   };
 
-  const isFormValid = () => validateLogin(login) && validatePassword(password);
+  const handleConfirmPassword = (event: FormEvent<HTMLInputElement>) => {
+    setConfirmPassword(event.currentTarget.value);
+  };
 
-  const showLoginError = () => login !== '' && !validateLogin(login);
+  const handleSubmit = async (event: FormEvent) => {
+    event.preventDefault();
+
+    try {
+      await createUser({
+        variables: { input: { login, email, password } },
+      });
+    } catch (error) {
+      console.error(error);
+    }
+  };
+
+  const isFormValid = () =>
+    validateLogin(login) &&
+    validateEmail(email) &&
+    validatePassword(password) &&
+    password === confirmPassword;
+
+  const showLoginError = () =>
+    login !== '' && !validateLogin(login) ? REGISTRATION.LOGIN_VALIDATION : '';
+
+  const showEmailError = () =>
+    email !== '' && !validateEmail(email) ? REGISTRATION.EMAIL_VALIDATION : '';
 
   const showPasswordError = () =>
-    password !== '' && !validatePassword(password);
+    password !== '' && !validatePassword(password)
+      ? REGISTRATION.PASSWORD_VALIDATION
+      : '';
+
+  const showConfirmPasswordError = () =>
+    password !== confirmPassword && confirmPassword !== ''
+      ? REGISTRATION.CONFIRM_PASSWORD_VALIDATION
+      : '';
+
+  const isButtonDisabled = !isFormValid() || loading;
 
   return (
-    <>
+    <form onSubmit={handleSubmit} noValidate autoComplete="on">
       <TextFieldsWrapper>
         <TextField
           type="text"
@@ -54,6 +113,7 @@ const RegistrationPage: FC = () => {
           icon={<FiUser />}
           value={login}
           handleChange={handleLogin}
+          error={showLoginError()}
         />
         <TextField
           type="email"
@@ -63,6 +123,7 @@ const RegistrationPage: FC = () => {
           icon={<FiMail />}
           value={email}
           handleChange={handleEmail}
+          error={showEmailError()}
         />
         <TextField
           type="password"
@@ -71,15 +132,26 @@ const RegistrationPage: FC = () => {
           placeholder="Password"
           value={password}
           handleChange={handlePassword}
+          error={showPasswordError()}
+        />
+        <TextField
+          type="password"
+          alt="confirm password"
+          name="confirm password"
+          placeholder="Confirm Password"
+          value={confirmPassword}
+          handleChange={handleConfirmPassword}
+          error={showConfirmPasswordError()}
         />
       </TextFieldsWrapper>
       <ButtonWrapper>
-        <Button>
+        <Button type="submit" disabled={isButtonDisabled}>
           <FiArrowRight />
         </Button>
+        {loading && <Spinner loading={loading} />}
       </ButtonWrapper>
-    </>
+    </form>
   );
 };
 
-export default RegistrationPage;
+export default RegistrationForm;

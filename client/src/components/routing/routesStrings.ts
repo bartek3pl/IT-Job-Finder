@@ -1,5 +1,6 @@
 export default {
-  default: '/',
+  base: '/',
+  starter: '/starter',
   registration: '/registration',
   login: '/login',
 };

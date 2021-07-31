@@ -12,8 +12,11 @@ import color from '@styles/colors';
 import shadow from '@styles/shadows';
 import { ICON_SIZE } from '@utils/constants/constants';
 
+type ButtonType = 'button' | 'submit' | 'reset';
+
 interface ButtonProps {
   name?: string;
+  type?: ButtonType;
   disabled?: boolean;
   handleClick?: () => void;
   backgroundColor?: string;
@@ -26,7 +29,7 @@ interface ButtonProps {
 
 type StyledButtonProps = Pick<
   ButtonProps,
-  'backgroundColor' | 'color' | 'flat'
+  'backgroundColor' | 'color' | 'flat' | 'disabled'
 >;
 
 const StyledButton = styled.button<StyledButtonProps>`
@@ -40,15 +43,17 @@ const StyledButton = styled.button<StyledButtonProps>`
   padding: 10px;
   font-size: 20px;
   box-shadow: ${({ flat }) => (flat ? 'none' : shadow['shadow-2'])};
+  opacity: ${({ disabled }) => (disabled ? '40%' : '100%')};
   transition: transform 0.2s ease-out;
 
   &:active {
-    transform: scale(0.9);
+    transform: ${({ disabled }) => (disabled ? '' : 'scale(0.9)')};
   }
 `;
 
 const Button: FC<ButtonProps> = ({
   name,
+  type,
   disabled,
   handleClick,
   backgroundColor,
@@ -58,9 +63,12 @@ const Button: FC<ButtonProps> = ({
 }) => {
   const [isButtonClicked, setIsButtonClicked] = useState(false);
 
-  useEffect(() => () => {
+  useEffect(
+    () => () => {
       setIsButtonClicked(false);
-    }, []);
+    },
+    []
+  );
 
   const handleClickAndSetButton = () => {
     setIsButtonClicked(true);
@@ -78,7 +86,7 @@ const Button: FC<ButtonProps> = ({
 
   return (
     <StyledButton
-      type="button"
+      type={type}
       name={name}
       disabled={disabled}
       onClick={handleClickAndSetButton}
@@ -94,6 +102,7 @@ const Button: FC<ButtonProps> = ({
 
 Button.defaultProps = {
   name: '',
+  type: 'button',
   disabled: false,
   handleClick: () => {},
   backgroundColor: color.contrast,
