@@ -20,7 +20,7 @@ interface ButtonProps {
   disabled?: boolean;
   handleClick?: () => void;
   backgroundColor?: string;
-  image?: string;
+  image?: string | null;
   iconSize?: number;
   color?: string;
   horizontalPadding?: number;
@@ -49,7 +49,7 @@ const StyledButton = styled.button<StyledButtonProps>`
   display: block;
   background-color: ${({ backgroundColor }) => backgroundColor};
   background-image: ${({ image }) => `url(${image})`};
-  background-size: 55%;
+  background-size: cover;
   background-repeat: no-repeat;
   background-position: center center;
   color: ${({ color }) => color};

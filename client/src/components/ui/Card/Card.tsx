@@ -1,5 +1,6 @@
 import React, { FC, useState, useEffect } from 'react';
 import styled from 'styled-components';
+import { AiFillHeart, AiOutlineHeart } from 'react-icons/ai';
 
 import color from '@styles/colors';
 import shadow from '@styles/shadows';
@@ -12,7 +13,7 @@ interface CardProps {
   jobTitle: string;
   salary?: string;
   location?: string;
-  logo?: string;
+  logo?: string | null;
   disabled?: boolean;
   handleClick?: () => void;
   backgroundColor?: string;
@@ -27,6 +28,7 @@ type StyledCardProps = Pick<
 >;
 
 const StyledCard = styled.button<StyledCardProps>`
+  position: relative;
   display: flex;
   flex-direction: column;
   text-align: left;
@@ -35,7 +37,7 @@ const StyledCard = styled.button<StyledCardProps>`
   box-shadow: ${({ flat }) => (flat ? 'none' : shadow['shadow-1'])};
   opacity: ${({ disabled }) => (disabled ? '40%' : '100%')};
   width: 556px;
-  min-height: 395px;
+  min-height: 434px;
   border-radius: 45px;
   padding: 50px 60px;
   font-size: 20px;
@@ -49,6 +51,14 @@ const StyledCard = styled.button<StyledCardProps>`
   box-shadow: ${({ flat, isFocused }) =>
     flat || isFocused ? 'none' : shadow['shadow-1']};
   color: ${({ color, isFocused }) => (isFocused ? colors.white : color)};
+`;
+
+const HeartWrapper = styled.button`
+  position: absolute;
+  top: 50px;
+  right: 60px;
+  border: none;
+  background: transparent;
 `;
 
 const CompanyWrapper = styled.div`
@@ -77,6 +87,7 @@ const Card: FC<CardProps> = ({
   disabled,
   handleClick,
 }) => {
+  const [isJobFavourite, setIsJobFavourite] = useState(false);
   const [isFocused, setIsFocused] = useState(false);
 
   useEffect(() => {
@@ -93,6 +104,11 @@ const Card: FC<CardProps> = ({
     setIsFocused(false);
   };
 
+  const toggleFavourite = () => {
+    setIsFocused(false);
+    setIsJobFavourite(!isJobFavourite);
+  };
+
   return (
     <StyledCard
       disabled={disabled}
@@ -104,6 +120,13 @@ const Card: FC<CardProps> = ({
       onFocus={handleFocus}
       onBlur={handleBlur}
     >
+      <HeartWrapper onClick={toggleFavourite}>
+        {isJobFavourite ? (
+          <AiFillHeart size={50} color={colors.contrast} />
+        ) : (
+          <AiOutlineHeart size={50} color={colors.contrast} />
+        )}
+      </HeartWrapper>
       <Button
         backgroundColor={colors.lightgray}
         color={color}
@@ -142,7 +165,6 @@ const Card: FC<CardProps> = ({
             {salary} {location ? '-' : ''}
           </Text>
         ) : null}
-
         {location ? (
           <Text
             size={28}

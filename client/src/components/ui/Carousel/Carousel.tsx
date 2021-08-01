@@ -1,3 +1,4 @@
+import { GLOBAL_PADDING } from '@utils/constants/constants';
 import React, { FC, Children, isValidElement, cloneElement } from 'react';
 import styled from 'styled-components';
 
@@ -5,7 +6,9 @@ const StyledCarousel = styled.div`
   display: grid;
   grid-gap: 20px;
   grid-template-columns: 0px;
-  margin-left: -${20}px;
+  padding-left: ${GLOBAL_PADDING};
+  margin-left: -${80}px;
+  margin-right: -${GLOBAL_PADDING};
   grid-auto-flow: column;
   overflow-x: scroll;
   scroll-snap-type: x proximity;

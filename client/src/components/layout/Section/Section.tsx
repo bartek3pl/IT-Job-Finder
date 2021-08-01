@@ -1,6 +1,8 @@
 import React, { FC } from 'react';
+import { useHistory } from 'react-router-dom';
 import styled from 'styled-components';
 
+import routes from '@components/routing/routesStrings';
 import colors from '@styles/colors';
 import Text from '@components/ui/Text/Text';
 
@@ -18,16 +20,29 @@ const SectionTextWrapper = styled.div`
   justify-content: space-between;
 `;
 
+const SecondaryTextWrapper = styled.button`
+  border: none;
+  background: transparent;
+`;
+
 const Section: FC<SectionProps> = ({ primaryText, secondaryText }) => {
+  const history = useHistory();
+
+  const handleClick = () => {
+    history.push(routes.all);
+  };
+
   return (
     <StyledSection>
       <SectionTextWrapper>
         <Text size={45} weight={600}>
           {primaryText}
         </Text>
-        <Text size={30} weight={500} color={colors.secondary}>
-          {secondaryText}
-        </Text>
+        <SecondaryTextWrapper onClick={handleClick}>
+          <Text size={30} weight={500} color={colors.secondary}>
+            {secondaryText}
+          </Text>
+        </SecondaryTextWrapper>
       </SectionTextWrapper>
     </StyledSection>
   );

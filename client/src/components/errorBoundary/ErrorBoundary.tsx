@@ -29,7 +29,7 @@ class ErrorBoundary extends Component<{}, ErrorBoundaryState> {
   componentDidCatch(error: Error) {
     const { hasError } = this.state;
     if (hasError) {
-      this.timeout = this.timer();
+      // this.timeout = this.timer();
     }
     console.error(error);
   }

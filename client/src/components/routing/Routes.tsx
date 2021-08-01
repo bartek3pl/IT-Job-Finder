@@ -11,7 +11,8 @@ import SecureRoute from './SecureRoute';
 import StarterPage from '@views/Starter/StarterPage';
 import RegistrationPage from '@views/Registration/RegistrationPage/RegistrationPage';
 import LoginPage from '@views/Login/LoginPage/LoginPage';
-import JobOffersPage from '@views/JobOffers/JobOffersPage/JobOffersPage';
+import JobOffersMainPage from '@views/JobOffers/JobOffersMainPage/JobOffersMainPage';
+import JobOffersAllPage from '@views/JobOffers/JobOffersAllPage/JobOffersAllPage';
 
 const Routes: FC = () => (
   <Router>
@@ -20,7 +21,10 @@ const Routes: FC = () => (
       <Route exact path={routes.registration} component={RegistrationPage} />
       <Route exact path={routes.login} component={LoginPage} />
       <SecureRoute path={routes.jobOffers}>
-        <JobOffersPage />
+        <JobOffersMainPage />
+      </SecureRoute>
+      <SecureRoute path={`${routes.jobOffers}${routes.all}`}>
+        <JobOffersAllPage />
       </SecureRoute>
       <Redirect to={routes.login} />
     </Switch>
