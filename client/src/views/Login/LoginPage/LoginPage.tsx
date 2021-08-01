@@ -7,7 +7,7 @@ import colors from '@styles/colors';
 import routes from '@components/routing/routesStrings';
 import Header from '@components/ui/Header/Header';
 import Subheader from '@components/ui/Subheader/Subheader';
-import BackButton from '@components/ui/BackButton/BackButton';
+import BackButton from '@components/ui/SideButtons/BackButton';
 import Text from '@components/ui/Text/Text';
 import Dot from '@components/ui/Dot/Dot';
 import TextButton from '@components/ui/TextButton/TextButton';
@@ -28,6 +28,7 @@ const GoToLoginPageWrapper = styled.div`
   margin-top: 65px;
   display: flex;
   justify-content: center;
+  align-items: center;
 `;
 
 const TextButtonWrapper = styled.div`
@@ -48,11 +49,13 @@ const LoginPage: FC = () => (
 
     <GoToLoginPageWrapper>
       <Dot />
-      <Text size={32}>Don&apos;t have account? Go to registration page.</Text>
+      <Text size={32} weight={500} color={colors.secondary}>
+        Don&apos;t have account? Go to registration page.
+      </Text>
       <Dot />
     </GoToLoginPageWrapper>
     <TextButtonWrapper>
-      <Link to={routes.login}>
+      <Link to={routes.registration}>
         <TextButton
           name="login"
           backgroundColor={colors.primary}

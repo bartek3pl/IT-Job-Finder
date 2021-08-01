@@ -7,7 +7,7 @@ import colors from '@styles/colors';
 import routes from '@components/routing/routesStrings';
 import Header from '@components/ui/Header/Header';
 import Subheader from '@components/ui/Subheader/Subheader';
-import BackButton from '@components/ui/BackButton/BackButton';
+import BackButton from '@components/ui/SideButtons/BackButton';
 import Text from '@components/ui/Text/Text';
 import Dot from '@components/ui/Dot/Dot';
 import TextButton from '@components/ui/TextButton/TextButton';
@@ -15,7 +15,7 @@ import RegistrationForm from '@views/Registration/RegistrationForm/RegistrationF
 
 const StyledRegistrationPage = styled.div`
   padding: ${GLOBAL_PADDING};
-  padding-top: 210px;
+  padding-top: 200px;
   background-color: ${colors.white};
 `;
 
@@ -48,7 +48,9 @@ const RegistrationPage: FC = () => (
 
     <GoToLoginPageWrapper>
       <Dot />
-      <Text size={32}>Or go to the login page</Text>
+      <Text size={32} weight={500} color={colors.secondary}>
+        Or go to the login page
+      </Text>
       <Dot />
     </GoToLoginPageWrapper>
     <TextButtonWrapper>

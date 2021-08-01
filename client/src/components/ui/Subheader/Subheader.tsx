@@ -7,6 +7,8 @@ const StyledSubHeader = styled.h2`
   line-height: 65px;
 `;
 
-const SubHeader: FC = ({ children }) => <StyledSubHeader>{children}</StyledSubHeader>;
+const SubHeader: FC = ({ children }) => (
+  <StyledSubHeader>{children}</StyledSubHeader>
+);
 
 export default SubHeader;

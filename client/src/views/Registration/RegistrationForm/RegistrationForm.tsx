@@ -12,8 +12,8 @@ import {
   validatePassword,
 } from '@utils/helpers/validators';
 import routes from '@components/routing/routesStrings';
-import Button from '@components/forms/Button/Button';
-import TextField from '@components/forms/TextField/TextField';
+import Button from '@components/ui/Button/Button';
+import TextField from '@components/ui/TextField/TextField';
 import Spinner from '@components/ui/Spinner/Spinner';
 
 const TextFieldsWrapper = styled.div`

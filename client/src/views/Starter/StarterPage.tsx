@@ -4,7 +4,7 @@ import { FiArrowRight } from 'react-icons/fi';
 import { Link } from 'react-router-dom';
 
 import { GLOBAL_PADDING } from '@utils/constants/constants';
-import starterImage from '@assets/starter.svg';
+import starterImage from '@assets/images/starter.svg';
 import shadow from '@styles/shadows';
 import colors from '@styles/colors';
 import routes from '@components/routing/routesStrings';
@@ -25,6 +25,10 @@ const StarterImage = styled.img`
   margin-top: 10%;
 `;
 
+const SubheaderWrapper = styled.div`
+  margin-top: 25px;
+`;
+
 const StarterInfoWrapper = styled.div`
   background-color: ${colors.white};
   border-top-left-radius: 90px;
@@ -34,7 +38,7 @@ const StarterInfoWrapper = styled.div`
 `;
 
 const TextButtonWrapper = styled.div`
-  margin-top: 65px;
+  margin-top: 80px;
 `;
 
 const StarterPage: FC = () => (
@@ -43,9 +47,11 @@ const StarterPage: FC = () => (
 
     <StarterInfoWrapper>
       <Header>Find a perfect job match</Header>
-      <Subheader>
-        Finding your dream job is now much easier and faster like never before
-      </Subheader>
+      <SubheaderWrapper>
+        <Subheader>
+          Finding your dream job is now much easier and faster like never before
+        </Subheader>
+      </SubheaderWrapper>
       <TextButtonWrapper>
         <Link to={routes.registration}>
           <TextButton

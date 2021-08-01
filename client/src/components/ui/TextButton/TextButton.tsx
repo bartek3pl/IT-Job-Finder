@@ -112,7 +112,9 @@ const TextButton: FC<TextButtonProps> = ({
       verticalPadding={verticalPadding}
       fullWidth={fullWidth}
     >
-      <Text size={size}>{children}</Text>
+      <Text size={size} color={color}>
+        {children}
+      </Text>
       {iconWithProps}
     </StyledTextButton>
   );

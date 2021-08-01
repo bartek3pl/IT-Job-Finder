@@ -9,8 +9,8 @@ import { REGISTRATION } from '@utils/constants/constants';
 import { validateLogin, validatePassword } from '@utils/helpers/validators';
 import AuthenticationService from '@services/authenticationService/authenticationService';
 import routes from '@components/routing/routesStrings';
-import Button from '@components/forms/Button/Button';
-import TextField from '@components/forms/TextField/TextField';
+import Button from '@components/ui/Button/Button';
+import TextField from '@components/ui/TextField/TextField';
 import Spinner from '@components/ui/Spinner/Spinner';
 
 const TextFieldsWrapper = styled.div`
