@@ -6,6 +6,7 @@ import {
   UpdateUserInput,
   UserResponse,
   UserFavouriteJobOffersResponse,
+  UserFavouriteJobOffersCheckResponse,
   UserTokenResponse,
   User as UserType,
   JobOffer as JobOfferType,
@@ -482,6 +483,80 @@ const userMutations = {
       message: userC.JOB_OFFER_SUCCESSFULLY_DELETED,
       user,
       jobOffers,
+    };
+  },
+
+  checkJobOfferUserFavourite: async (
+    _parent: unknown,
+    {
+      userId,
+      jobOfferId,
+    }: { userId: Scalars['ID']; jobOfferId: Scalars['ID'] },
+    { accessToken }: { accessToken: Token }
+  ): Promise<UserFavouriteJobOffersCheckResponse> => {
+    if (!accessToken) {
+      throw new AuthenticationError(globalC.INVALID_AUTHENTICATION_TOKEN);
+    }
+
+    let user: UserType;
+    let jobOffers: Array<Maybe<JobOfferType>>;
+
+    try {
+      user = await User.findById(userId).lean();
+
+      if (!user) {
+        return {
+          code: 404,
+          success: false,
+          message: userC.USER_NOT_EXISTS,
+          user: null,
+          jobOffers: [],
+          isFavourite: null,
+        };
+      }
+
+      const jobOffer = await JobOffer.findById(jobOfferId);
+
+      if (!jobOffer) {
+        return {
+          code: 404,
+          success: false,
+          message: jobOfferC.JOB_OFFER_NOT_EXISTS,
+          user: null,
+          jobOffers: [],
+          isFavourite: null,
+        };
+      }
+
+      const isJobOfferFavourite = await User.exists({
+        _id: userId,
+        'favouriteJobOffers._id': jobOfferId,
+      });
+
+      jobOffers = user.favouriteJobOffers ?? [];
+
+      if (!isJobOfferFavourite) {
+        return {
+          code: 200,
+          success: true,
+          message: userC.JOB_OFFER_NOT_FAVOURITE,
+          user,
+          jobOffers,
+          isFavourite: false,
+        };
+      }
+    } catch (error) {
+      console.error(error);
+      return databaseUserJobOffersErrorResponse;
+    }
+
+    return {
+      code: 200,
+      success: true,
+      message: userC.JOB_OFFER_FAVOURITE,
+      user,
+      jobOffers,
+      isFavourite: true,
     };
   },
 };

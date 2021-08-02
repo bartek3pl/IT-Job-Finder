@@ -68,6 +68,15 @@ const typeDefs = gql`
     jobOffers: [JobOffer]
   }
 
+  type UserFavouriteJobOffersCheckResponse implements Response {
+    code: Int!
+    success: Boolean!
+    message: String!
+    user: User
+    jobOffers: [JobOffer]
+    isFavourite: Boolean
+  }
+
   type UserTokenResponse implements Response {
     code: Int!
     success: Boolean!

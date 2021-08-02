@@ -1,24 +1,12 @@
-import React, {
-  FC,
-  useState,
-  useEffect,
-  cloneElement,
-  Children,
-  isValidElement,
-} from 'react';
+import React, { FC, cloneElement, Children, isValidElement } from 'react';
 import styled from 'styled-components';
 
 import color from '@styles/colors';
 import shadow from '@styles/shadows';
 import { ICON_SIZE } from '@utils/constants/constants';
 
-type ButtonType = 'button' | 'submit' | 'reset';
-
-interface ButtonProps {
+interface ImageProps {
   name?: string;
-  type?: ButtonType;
-  disabled?: boolean;
-  handleClick?: () => void;
   backgroundColor?: string;
   image?: string | null;
   iconSize?: number;
@@ -31,19 +19,18 @@ interface ButtonProps {
   borderRadius?: number;
 }
 
-type StyledButtonProps = Pick<
-  ButtonProps,
+type StyledImageProps = Pick<
+  ImageProps,
   | 'backgroundColor'
   | 'image'
   | 'color'
   | 'flat'
-  | 'disabled'
   | 'width'
   | 'height'
   | 'borderRadius'
 >;
 
-const StyledButton = styled.button<StyledButtonProps>`
+const StyledImage = styled.div<StyledImageProps>`
   display: block;
   background-color: ${({ backgroundColor }) => backgroundColor};
   background-image: ${({ image }) => `url(${image})`};
@@ -54,23 +41,14 @@ const StyledButton = styled.button<StyledButtonProps>`
   width: ${({ width }) => `${width}px`};
   height: ${({ height }) => `${height}px`};
   box-shadow: ${({ flat }) => (flat ? 'none' : shadow['shadow-2'])};
-  opacity: ${({ disabled }) => (disabled ? '40%' : '100%')};
   border: ${({ flat }) => (flat ? `2px ${color.lightgray} solid` : 'none')};
   border-radius: ${({ borderRadius }) => `${borderRadius}px`};
   padding: 10px;
   font-size: 20px;
-  transition: transform 0.2s ease-out;
-
-  &:active {
-    transform: ${({ disabled }) => (disabled ? '' : 'scale(0.9)')};
-  }
 `;
 
-const Button: FC<ButtonProps> = ({
+const Image: FC<ImageProps> = ({
   name,
-  type,
-  disabled,
-  handleClick,
   backgroundColor,
   color,
   flat,
@@ -80,22 +58,6 @@ const Button: FC<ButtonProps> = ({
   borderRadius,
   children,
 }) => {
-  const [isButtonClicked, setIsButtonClicked] = useState(false);
-
-  useEffect(
-    () => () => {
-      setIsButtonClicked(false);
-    },
-    []
-  );
-
-  const handleClickAndSetButton = () => {
-    setIsButtonClicked(true);
-    if (handleClick) {
-      handleClick();
-    }
-  };
-
   const childrenWithProps = Children.map(children, (child) => {
     if (isValidElement(child)) {
       return cloneElement(child, { size: ICON_SIZE });
@@ -104,12 +66,7 @@ const Button: FC<ButtonProps> = ({
   });
 
   return (
-    <StyledButton
-      type={type}
-      name={name}
-      disabled={disabled}
-      onClick={handleClickAndSetButton}
-      aria-pressed={isButtonClicked}
+    <StyledImage
       backgroundColor={backgroundColor}
       color={color}
       flat={flat}
@@ -117,17 +74,15 @@ const Button: FC<ButtonProps> = ({
       height={height}
       image={image}
       borderRadius={borderRadius}
+      aria-label={name}
     >
       {childrenWithProps}
-    </StyledButton>
+    </StyledImage>
   );
 };
 
-Button.defaultProps = {
+Image.defaultProps = {
   name: '',
-  type: 'button',
-  disabled: false,
-  handleClick: () => {},
   backgroundColor: color.contrast,
   color: color.white,
   flat: false,
@@ -137,4 +92,4 @@ Button.defaultProps = {
   borderRadius: 45,
 };
 
-export default Button;
+export default Image;

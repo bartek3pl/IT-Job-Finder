@@ -3,7 +3,7 @@ import styled from 'styled-components';
 
 import color from '@styles/colors';
 import shadow from '@styles/shadows';
-import Button from '@components/ui/Button/Button';
+import Image from '@components/ui/Image/Image';
 import Text from '@components/ui/Text/Text';
 import colors from '@styles/colors';
 
@@ -43,7 +43,6 @@ const StyledListElement = styled.button<StyledListElementProps>`
   font-size: 20px;
   transition: transform 0.2s ease-out, background-color 0.2s ease,
     box-shadow 0.2s ease;
-
   transform: ${({ disabled, isFocused }) =>
     disabled || !isFocused ? '' : 'scale(0.97)'};
   background-color: ${({ backgroundColor, isFocused }) =>
@@ -111,12 +110,11 @@ const ListElement: FC<ListElementProps> = ({
       onBlur={handleBlur}
     >
       <LogoJobWrapper>
-        <Button
+        <Image
           backgroundColor={colors.lightgray}
           color={color}
           width={100}
           height={100}
-          clickable={false}
           image={logo}
           borderRadius={30}
           flat

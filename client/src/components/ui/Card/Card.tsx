@@ -1,12 +1,19 @@
 import React, { FC, useState, useEffect } from 'react';
 import styled from 'styled-components';
+import { useMutation } from '@apollo/client';
 import { AiFillHeart, AiOutlineHeart } from 'react-icons/ai';
 
+import {
+  ADD_JOB_OFFER_TO_USER_FAVOURITE,
+  DELETE_JOB_OFFER_FROM_USER_FAVOURITE,
+  CHECK_JOB_OFFER_USER_FAVOURITE,
+} from '@api/jobOffers/mutations';
 import color from '@styles/colors';
 import shadow from '@styles/shadows';
-import Button from '@components/ui/Button/Button';
+import Image from '@components/ui/Image/Image';
 import Text from '@components/ui/Text/Text';
 import colors from '@styles/colors';
+import AuthenticationService from '@services/authenticationService/authenticationService';
 
 interface CardProps {
   company: string;
@@ -14,6 +21,7 @@ interface CardProps {
   salary?: string;
   location?: string;
   logo?: string | null;
+  jobOfferId?: string;
   disabled?: boolean;
   handleClick?: () => void;
   backgroundColor?: string;
@@ -43,7 +51,6 @@ const StyledCard = styled.button<StyledCardProps>`
   font-size: 20px;
   transition: transform 0.2s ease-out, background-color 0.2s ease,
     box-shadow 0.2s ease;
-
   transform: ${({ disabled, isFocused }) =>
     disabled || !isFocused ? '' : 'scale(0.97)'};
   background-color: ${({ backgroundColor, isFocused }) =>
@@ -53,7 +60,7 @@ const StyledCard = styled.button<StyledCardProps>`
   color: ${({ color, isFocused }) => (isFocused ? colors.white : color)};
 `;
 
-const HeartWrapper = styled.button`
+const HeartWrapper = styled.a`
   position: absolute;
   top: 50px;
   right: 60px;
@@ -81,19 +88,24 @@ const Card: FC<CardProps> = ({
   salary,
   location,
   logo,
+  jobOfferId,
   backgroundColor,
   color,
   flat,
   disabled,
   handleClick,
 }) => {
-  const [isJobFavourite, setIsJobFavourite] = useState(false);
+  const [isJobOfferUserFavourite, setIsJobOfferUserFavourite] = useState(false);
   const [isFocused, setIsFocused] = useState(false);
 
+  const [checkJobUserFavourite] = useMutation(CHECK_JOB_OFFER_USER_FAVOURITE);
+  const [addJobToUserFavourite] = useMutation(ADD_JOB_OFFER_TO_USER_FAVOURITE);
+  const [deleteJobFromUserFavourite] = useMutation(
+    DELETE_JOB_OFFER_FROM_USER_FAVOURITE
+  );
+
   useEffect(() => {
-    return () => {
-      setIsFocused(false);
-    };
+    checkJobFavourite();
   }, []);
 
   const handleFocus = () => {
@@ -104,9 +116,66 @@ const Card: FC<CardProps> = ({
     setIsFocused(false);
   };
 
+  const getUserId = () => {
+    const authenticationService = new AuthenticationService();
+    const userId = authenticationService.getUserId();
+    return userId;
+  };
+
+  const checkJobFavourite = async () => {
+    const userId = getUserId();
+    try {
+      const { data } = await checkJobUserFavourite({
+        variables: { userId, jobOfferId },
+      });
+      const isJobOfferFavourite =
+        !!data?.checkJobOfferUserFavourite?.isFavourite;
+      if (isJobOfferFavourite) {
+        setIsJobOfferUserFavourite(true);
+      }
+    } catch (error) {
+      console.error(error);
+    }
+  };
+
+  const addJobToFavourite = async () => {
+    const userId = getUserId();
+    try {
+      const { data } = await addJobToUserFavourite({
+        variables: { userId, jobOfferId },
+      });
+      const isSuccess = !!data?.addJobOfferToUserFavourite?.success;
+      if (isSuccess) {
+        setIsJobOfferUserFavourite(true);
+      }
+    } catch (error) {
+      console.error(error);
+    }
+  };
+
+  const deleteJobFromFavourite = async () => {
+    const userId = getUserId();
+    try {
+      const { data } = await deleteJobFromUserFavourite({
+        variables: { userId, jobOfferId },
+      });
+      const isSuccess = !!data?.deleteJobOfferFromUserFavourite?.success;
+      if (isSuccess) {
+        setIsJobOfferUserFavourite(false);
+      }
+    } catch (error) {
+      console.error(error);
+    }
+  };
+
   const toggleFavourite = () => {
     setIsFocused(false);
-    setIsJobFavourite(!isJobFavourite);
+
+    if (!isJobOfferUserFavourite) {
+      addJobToFavourite();
+    } else {
+      deleteJobFromFavourite();
+    }
   };
 
   return (
@@ -121,18 +190,17 @@ const Card: FC<CardProps> = ({
       onBlur={handleBlur}
     >
       <HeartWrapper onClick={toggleFavourite}>
-        {isJobFavourite ? (
+        {isJobOfferUserFavourite ? (
           <AiFillHeart size={50} color={colors.contrast} />
         ) : (
           <AiOutlineHeart size={50} color={colors.contrast} />
         )}
       </HeartWrapper>
-      <Button
+      <Image
         backgroundColor={colors.lightgray}
         color={color}
         width={120}
         height={120}
-        clickable={false}
         image={logo}
         borderRadius={35}
         flat
@@ -185,6 +253,7 @@ Card.defaultProps = {
   salary: '',
   location: '',
   logo: '',
+  jobOfferId: '',
   disabled: false,
   handleClick: () => {},
   backgroundColor: color.contrast,

@@ -64,6 +64,14 @@ const typeDefs = gql`
     ): UserFavouriteJobOffersResponse
 
     """
+    Checks if chosen job offer is chosen user favourite job offer.
+    """
+    checkJobOfferUserFavourite(
+      userId: ID
+      jobOfferId: ID
+    ): UserFavouriteJobOffersCheckResponse
+
+    """
     Logins and authorizes user with login and password.
     """
     login(input: LoginUserInput): UserTokenResponse

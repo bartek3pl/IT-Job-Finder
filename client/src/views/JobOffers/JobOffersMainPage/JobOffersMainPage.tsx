@@ -175,6 +175,7 @@ const JobOffersPage: FC = () => {
             salary={formattedSalary}
             location={formattedLocation}
             logo={formattedLogo}
+            jobOfferId={jobOffer._id}
             backgroundColor={colors.white}
             key={`${jobOffer._id}-card`}
           />
