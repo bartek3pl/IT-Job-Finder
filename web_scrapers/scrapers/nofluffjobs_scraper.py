@@ -1,3 +1,5 @@
+import pycountry
+
 from typing import Union, Tuple, List
 from currency_converter import CurrencyConverter
 
@@ -72,6 +74,8 @@ class NoFluffJobsScraper(BaseScraper):
 
         try:
             country = job_offer["location"]["places"][0]["country"]["code"]
+            country = pycountry.countries.get(alpha_3=country)
+            country = country.alpha_2
         except KeyError:
             pass
 

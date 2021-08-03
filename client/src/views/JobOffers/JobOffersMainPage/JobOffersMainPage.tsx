@@ -1,11 +1,15 @@
-import React, { FC, FormEvent, useState } from 'react';
+import React, { FC, FormEvent, useState, useEffect } from 'react';
 
 import { useQuery } from '@apollo/client';
-import { useHistory, Link } from 'react-router-dom';
+import { useHistory } from 'react-router-dom';
 import styled from 'styled-components';
 
 import avatar from '@assets/images/avatar.jpg';
-import { GLOBAL_PADDING } from '@utils/constants/constants';
+import {
+  GLOBAL_PADDING,
+  INPUT_TIMEOUT_VALUE,
+  PAGE_SIZE,
+} from '@utils/constants/constants';
 import { GET_ALL_JOB_OFFERS } from '@api/jobOffers/queries';
 import { JobOffer } from '@typings/graphql';
 import AuthenticationService from '@services/authenticationService';
@@ -78,24 +82,79 @@ const chips = [
 
 const jobOfferFormattingService = new JobOfferFormattingService();
 
+let timer: ReturnType<typeof setTimeout>;
+const timeoutValue = INPUT_TIMEOUT_VALUE;
+
 const JobOffersPage: FC = () => {
   const history = useHistory();
 
   const [searchText, setSearchText] = useState('');
+  const [currentSearchText, setCurrentSearchText] = useState(searchText);
+  const [isUserTyping, setIsUserTyping] = useState(false);
+  const [offset, setOffset] = useState(0);
 
-  const { data, loading, error } = useQuery(GET_ALL_JOB_OFFERS);
+  const country = 'PL';
+  const city = '';
+  const {
+    data: nearbyData,
+    loading: nearbyLoading,
+    error: nearbyError,
+  } = useQuery(GET_ALL_JOB_OFFERS, {
+    variables: {
+      first: PAGE_SIZE,
+      offset,
+      search: { title: searchText, employer: { address: { country, city } } },
+    },
+  });
+  const {
+    data: allData,
+    loading: allLoading,
+    error: allError,
+  } = useQuery(GET_ALL_JOB_OFFERS, {
+    variables: {
+      first: PAGE_SIZE,
+      offset,
+      search: { title: searchText },
+    },
+  });
 
-  const handleSearchText = (event: FormEvent<HTMLInputElement>) => {
-    setSearchText(event.currentTarget.value);
+  useEffect(() => {
+    if (isUserTyping === false) {
+      setSearchText(currentSearchText);
+    }
+  }, [isUserTyping]);
+
+  const handleCurrentSearchText = (event: FormEvent<HTMLInputElement>) => {
+    setCurrentSearchText(event.currentTarget.value);
+  };
+
+  const handleKeyUp = () => {
+    clearTimeout(timer);
+    timer = setTimeout(() => {
+      setIsUserTyping(false);
+    }, timeoutValue);
+  };
+
+  const handleKeyDown = () => {
+    clearTimeout(timer);
+    setIsUserTyping(true);
   };
 
   const handleShowAllJobs = () => {
     history.push(routes.jobOffersSearch);
   };
 
-  const getAllJobOffers = () => {
-    if (data && !loading && !error) {
-      const { getAllJobOffers } = data;
+  const handleShowNearbyJobs = () => {
+    history.push({
+      pathname: routes.jobOffersSearch,
+      search: `?country=${country}&city=${city}`,
+      state: { country, city },
+    });
+  };
+
+  const getNearbyJobOffers = () => {
+    if (nearbyData && !nearbyLoading && !nearbyError) {
+      const { getAllJobOffers } = nearbyData;
       if (getAllJobOffers?.success) {
         return getAllJobOffers?.results?.jobOffers;
       } else {
@@ -104,8 +163,19 @@ const JobOffersPage: FC = () => {
     }
   };
 
-  const createJobOffersSquareCards = () => {
-    const allJobOffers = getAllJobOffers();
+  const getAllJobOffers = () => {
+    if (allData && !allLoading && !allError) {
+      const { getAllJobOffers } = allData;
+      if (getAllJobOffers?.success) {
+        return getAllJobOffers?.results?.jobOffers;
+      } else {
+        return [];
+      }
+    }
+  };
+
+  const createNearbyJobOffers = () => {
+    const allJobOffers = getNearbyJobOffers();
 
     if (allJobOffers?.length) {
       return allJobOffers.map((jobOffer: JobOffer) => {
@@ -137,7 +207,7 @@ const JobOffersPage: FC = () => {
     }
   };
 
-  const createJobOffersListElements = () => {
+  const createAllJobOffers = () => {
     const allJobOffers = getAllJobOffers();
 
     if (allJobOffers?.length) {
@@ -175,9 +245,9 @@ const JobOffersPage: FC = () => {
 
   const userLogin = getUserLogin();
 
-  const jobOfferSquareCards = createJobOffersSquareCards();
+  const nearbyJobOffers = createNearbyJobOffers();
 
-  const jobOfferListElements = createJobOffersListElements();
+  const allJobOffers = createAllJobOffers();
 
   return (
     <StyledJobOffersPage>
@@ -192,8 +262,10 @@ const JobOffersPage: FC = () => {
           alt="login"
           name="login"
           placeholder="What are you looking for?"
-          value={searchText}
-          handleChange={handleSearchText}
+          value={currentSearchText}
+          handleChange={handleCurrentSearchText}
+          handleKeyDown={handleKeyDown}
+          handleKeyUp={handleKeyUp}
         />
 
         <SliderButton />
@@ -201,15 +273,19 @@ const JobOffersPage: FC = () => {
 
       <ChipWrapper>{chips}</ChipWrapper>
 
-      <Section primaryText="Nearby jobs" secondaryText="Show all" />
+      <Section
+        primaryText="Nearby jobs"
+        secondaryText="Show all"
+        secondaryTextHandleClick={handleShowNearbyJobs}
+      />
 
-      {loading ? (
+      {nearbyLoading ? (
         <SpinnerWrapper>
-          <Spinner loading={loading} size={120} />
+          <Spinner loading={nearbyLoading} size={120} />
         </SpinnerWrapper>
       ) : (
         <CardWrapper>
-          <Carousel>{jobOfferSquareCards}</Carousel>
+          <Carousel>{nearbyJobOffers}</Carousel>
         </CardWrapper>
       )}
 
@@ -219,12 +295,12 @@ const JobOffersPage: FC = () => {
         secondaryTextHandleClick={handleShowAllJobs}
       />
 
-      {loading ? (
+      {allLoading ? (
         <SpinnerWrapper>
-          <Spinner loading={loading} size={120} />
+          <Spinner loading={allLoading} size={120} />
         </SpinnerWrapper>
       ) : (
-        <ListWrapper>{jobOfferListElements}</ListWrapper>
+        <ListWrapper>{allJobOffers}</ListWrapper>
       )}
     </StyledJobOffersPage>
   );

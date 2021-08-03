@@ -19,6 +19,7 @@ export const GET_ALL_JOB_OFFERS = gql`
       results {
         pageInfo {
           totalCount
+          currentCount
           hasMore
         }
         jobOffers {

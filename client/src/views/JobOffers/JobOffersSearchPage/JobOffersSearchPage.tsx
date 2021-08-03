@@ -1,8 +1,13 @@
-import React, { FC, useState, FormEvent } from 'react';
+import React, { FC, FormEvent, useState, useEffect } from 'react';
 import styled from 'styled-components';
 import { useQuery } from '@apollo/client';
+import { useLocation } from 'react-router-dom';
 
-import { GLOBAL_PADDING } from '@utils/constants/constants';
+import {
+  GLOBAL_PADDING,
+  INPUT_TIMEOUT_VALUE,
+  PAGE_SIZE,
+} from '@utils/constants/constants';
 import { GET_ALL_JOB_OFFERS } from '@api/jobOffers/queries';
 import { JobOffer } from '@typings/graphql';
 import colors from '@styles/colors';
@@ -17,10 +22,15 @@ import Spinner from '@components/ui/Spinner/Spinner';
 import BackButton from '@components/ui/SideButtons/BackButton';
 import RectangleCard from '@components/ui/Cards/RectangleCard';
 
-type Filter = 'Most Relevant' | 'Most Recent';
+interface LocationState {
+  country: string;
+  city: string;
+}
 
-const MOST_RELEVANT_FILTER = 'Most Relevant';
-const MOST_RECENT_FILTER = 'Most Recent';
+type Filter = 'All Job Offers' | 'Nearby Job Offers';
+
+const ALL_JOB_OFFERS_FILTER = 'All Job Offers';
+const NEARBY_JOB_OFFERS_FILTER = 'Nearby Job Offers';
 
 const StyledJobOffersSearchPage = styled.div`
   padding: ${GLOBAL_PADDING};
@@ -63,14 +73,48 @@ const SearchJobOffersWrapper = styled.div`
 
 const jobOfferFormattingService = new JobOfferFormattingService();
 
+let timer: ReturnType<typeof setTimeout>;
+const timeoutValue = INPUT_TIMEOUT_VALUE;
+
 const JobOffersSearchPage: FC = () => {
+  const location = useLocation<LocationState>();
+
   const [searchText, setSearchText] = useState('');
-  const [checkedFilter, setCheckedFilter] = useState(MOST_RELEVANT_FILTER);
+  const [currentSearchText, setCurrentSearchText] = useState(searchText);
+  const [isUserTyping, setIsUserTyping] = useState(false);
+  const [checkedFilter, setCheckedFilter] = useState(ALL_JOB_OFFERS_FILTER);
+  const [offset, setOffset] = useState(0);
 
-  const { data, loading, error } = useQuery(GET_ALL_JOB_OFFERS);
+  const country = location?.state?.country || '';
+  const city = location?.state?.city || '';
+  const { data, loading, error } = useQuery(GET_ALL_JOB_OFFERS, {
+    variables: {
+      first: PAGE_SIZE,
+      offset,
+      search: { title: searchText, employer: { address: { country, city } } },
+    },
+  });
 
-  const handleSearchText = (event: FormEvent<HTMLInputElement>) => {
-    setSearchText(event.currentTarget.value);
+  useEffect(() => {
+    if (isUserTyping === false) {
+      setSearchText(currentSearchText);
+    }
+  }, [isUserTyping]);
+
+  const handleCurrentSearchText = (event: FormEvent<HTMLInputElement>) => {
+    setCurrentSearchText(event.currentTarget.value);
+  };
+
+  const handleKeyUp = () => {
+    clearTimeout(timer);
+    timer = setTimeout(() => {
+      setIsUserTyping(false);
+    }, timeoutValue);
+  };
+
+  const handleKeyDown = () => {
+    clearTimeout(timer);
+    setIsUserTyping(true);
   };
 
   const handleCheckedFilter = (filter: Filter) => {
@@ -121,15 +165,15 @@ const JobOffersSearchPage: FC = () => {
     }
   };
 
-  const getTotalCount = () => {
+  const getCurrentCount = () => {
     const isSuccess = data?.getAllJobOffers?.success;
     if (isSuccess) {
-      return data?.getAllJobOffers?.results?.pageInfo?.totalCount;
+      return data?.getAllJobOffers?.results?.pageInfo?.currentCount;
     }
     return 0;
   };
 
-  const totalCount = getTotalCount();
+  const currentCount = getCurrentCount();
 
   const jobOfferRectangleCards = createJobOffersRectangleCards();
 
@@ -145,14 +189,16 @@ const JobOffersSearchPage: FC = () => {
           alt="login"
           name="login"
           placeholder="What are you looking for?"
-          value={searchText}
-          handleChange={handleSearchText}
+          value={currentSearchText}
+          handleChange={handleCurrentSearchText}
+          handleKeyDown={handleKeyDown}
+          handleKeyUp={handleKeyUp}
         />
         <SliderButton />
       </TextFieldWrapper>
       <TextWrapper>
         <Text size={30} weight={500}>
-          {totalCount} Job Opportunity
+          {currentCount} Job Opportunity
         </Text>
       </TextWrapper>
       <SelectTextButtonWrapper>
@@ -160,19 +206,19 @@ const JobOffersSearchPage: FC = () => {
           size={30}
           verticalPadding={30}
           borderRadius={35}
-          checked={checkedFilter === MOST_RELEVANT_FILTER}
-          handleClick={() => handleCheckedFilter(MOST_RELEVANT_FILTER)}
+          checked={checkedFilter === ALL_JOB_OFFERS_FILTER}
+          handleClick={() => handleCheckedFilter(ALL_JOB_OFFERS_FILTER)}
         >
-          {MOST_RELEVANT_FILTER}
+          {ALL_JOB_OFFERS_FILTER}
         </SelectTextButton>
         <SelectTextButton
           size={30}
           verticalPadding={30}
           borderRadius={35}
-          checked={checkedFilter === MOST_RECENT_FILTER}
-          handleClick={() => handleCheckedFilter(MOST_RECENT_FILTER)}
+          checked={checkedFilter === NEARBY_JOB_OFFERS_FILTER}
+          handleClick={() => handleCheckedFilter(NEARBY_JOB_OFFERS_FILTER)}
         >
-          {MOST_RECENT_FILTER}
+          {NEARBY_JOB_OFFERS_FILTER}
         </SelectTextButton>
         <SearchJobOffersWrapper>
           {jobOfferRectangleCards}

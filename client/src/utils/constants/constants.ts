@@ -20,3 +20,5 @@ export const USER_ID = 'userId';
 export const USER_LOGIN = 'userLogin';
 
 export const PAGE_SIZE = 15;
+
+export const INPUT_TIMEOUT_VALUE = 500;

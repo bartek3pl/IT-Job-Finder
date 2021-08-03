@@ -22,6 +22,8 @@ interface TextFieldProps {
   name?: string;
   error?: string;
   handleChange?: (event: FormEvent<HTMLInputElement>) => void;
+  handleKeyUp?: (event: FormEvent<HTMLInputElement>) => void;
+  handleKeyDown?: (event: FormEvent<HTMLInputElement>) => void;
 }
 
 type StyledTextFieldProps = Pick<TextFieldProps, 'disabled' | 'error'>;
@@ -74,6 +76,8 @@ const TextField: FC<TextFieldProps> = ({
   name,
   error,
   handleChange,
+  handleKeyUp,
+  handleKeyDown,
 }) => {
   const [isPasswordVisible, setIsPasswordVisible] = useState(false);
   const [textFieldType, setTextFieldType] = useState(type);
@@ -133,6 +137,8 @@ const TextField: FC<TextFieldProps> = ({
         aria-label={name}
         error={error}
         onChange={handleChange}
+        onKeyUp={handleKeyUp}
+        onKeyDown={handleKeyDown}
       />
       {renderIconComponent()}
       <ErrorMessage>{error}</ErrorMessage>
@@ -150,6 +156,8 @@ TextField.defaultProps = {
   name: '',
   error: '',
   handleChange: () => {},
+  handleKeyUp: () => {},
+  handleKeyDown: () => {},
 };
 
 export default TextField;

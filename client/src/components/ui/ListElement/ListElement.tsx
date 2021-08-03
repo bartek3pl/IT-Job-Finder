@@ -38,7 +38,7 @@ const StyledListElement = styled.button<StyledListElementProps>`
   opacity: ${({ disabled }) => (disabled ? '40%' : '100%')};
   width: 100%;
   min-height: 200px;
-  border-radius: 60px;
+  border-radius: 55px;
   padding: 50px 60px;
   transition: transform 0.2s ease-out, background-color 0.2s ease,
     box-shadow 0.2s ease;
