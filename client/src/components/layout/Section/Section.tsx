@@ -1,14 +1,14 @@
 import React, { FC } from 'react';
-import { useHistory } from 'react-router-dom';
 import styled from 'styled-components';
 
-import routes from '@components/routing/routesStrings';
 import colors from '@styles/colors';
 import Text from '@components/ui/Text/Text';
 
 interface SectionProps {
   primaryText: string;
   secondaryText?: string;
+  primaryTextHandleClick?: () => void;
+  secondaryTextHandleClick?: () => void;
 }
 
 const StyledSection = styled.section`
@@ -25,20 +25,19 @@ const SecondaryTextWrapper = styled.button`
   background: transparent;
 `;
 
-const Section: FC<SectionProps> = ({ primaryText, secondaryText }) => {
-  const history = useHistory();
-
-  const handleClick = () => {
-    history.push(routes.all);
-  };
-
+const Section: FC<SectionProps> = ({
+  primaryText,
+  secondaryText,
+  primaryTextHandleClick,
+  secondaryTextHandleClick,
+}) => {
   return (
     <StyledSection>
-      <SectionTextWrapper>
+      <SectionTextWrapper onClick={primaryTextHandleClick}>
         <Text size={45} weight={600}>
           {primaryText}
         </Text>
-        <SecondaryTextWrapper onClick={handleClick}>
+        <SecondaryTextWrapper onClick={secondaryTextHandleClick}>
           <Text size={30} weight={500} color={colors.secondary}>
             {secondaryText}
           </Text>
@@ -51,6 +50,8 @@ const Section: FC<SectionProps> = ({ primaryText, secondaryText }) => {
 Section.defaultProps = {
   primaryText: '',
   secondaryText: '',
+  primaryTextHandleClick: () => {},
+  secondaryTextHandleClick: () => {},
 };
 
 export default Section;

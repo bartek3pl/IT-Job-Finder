@@ -12,11 +12,11 @@ import color from '@styles/colors';
 import shadow from '@styles/shadows';
 import { ICON_SIZE } from '@utils/constants/constants';
 
-type ButtonType = 'button' | 'submit' | 'reset';
+type BaseButtonType = 'button' | 'submit' | 'reset';
 
-interface ButtonProps {
+interface BaseButtonProps {
   name?: string;
-  type?: ButtonType;
+  type?: BaseButtonType;
   disabled?: boolean;
   handleClick?: () => void;
   backgroundColor?: string;
@@ -31,8 +31,8 @@ interface ButtonProps {
   borderRadius?: number;
 }
 
-type StyledButtonProps = Pick<
-  ButtonProps,
+type StyledBaseButtonProps = Pick<
+  BaseButtonProps,
   | 'backgroundColor'
   | 'image'
   | 'color'
@@ -43,7 +43,7 @@ type StyledButtonProps = Pick<
   | 'borderRadius'
 >;
 
-const StyledButton = styled.button<StyledButtonProps>`
+const StyledBaseButton = styled.button<StyledBaseButtonProps>`
   display: block;
   background-color: ${({ backgroundColor }) => backgroundColor};
   background-image: ${({ image }) => `url(${image})`};
@@ -66,7 +66,7 @@ const StyledButton = styled.button<StyledButtonProps>`
   }
 `;
 
-const Button: FC<ButtonProps> = ({
+const BaseButton: FC<BaseButtonProps> = ({
   name,
   type,
   disabled,
@@ -104,7 +104,7 @@ const Button: FC<ButtonProps> = ({
   });
 
   return (
-    <StyledButton
+    <StyledBaseButton
       type={type}
       name={name}
       disabled={disabled}
@@ -119,11 +119,11 @@ const Button: FC<ButtonProps> = ({
       borderRadius={borderRadius}
     >
       {childrenWithProps}
-    </StyledButton>
+    </StyledBaseButton>
   );
 };
 
-Button.defaultProps = {
+BaseButton.defaultProps = {
   name: '',
   type: 'button',
   disabled: false,
@@ -137,4 +137,4 @@ Button.defaultProps = {
   borderRadius: 45,
 };
 
-export default Button;
+export default BaseButton;

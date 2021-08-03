@@ -10,7 +10,7 @@ import { setContext } from '@apollo/client/link/context';
 
 import config from './config';
 import color from '@styles/colors';
-import AuthenticationService from '@services/authenticationService/authenticationService';
+import AuthenticationService from '@services/authenticationService';
 import ErrorBoundary from '@components/errorBoundary/ErrorBoundary';
 import Routes from '@components/routing/Routes';
 

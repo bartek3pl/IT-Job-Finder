@@ -38,9 +38,8 @@ const StyledListElement = styled.button<StyledListElementProps>`
   opacity: ${({ disabled }) => (disabled ? '40%' : '100%')};
   width: 100%;
   min-height: 200px;
-  border-radius: 45px;
+  border-radius: 60px;
   padding: 50px 60px;
-  font-size: 20px;
   transition: transform 0.2s ease-out, background-color 0.2s ease,
     box-shadow 0.2s ease;
   transform: ${({ disabled, isFocused }) =>
@@ -157,8 +156,8 @@ ListElement.defaultProps = {
   logo: '',
   disabled: false,
   handleClick: () => {},
-  backgroundColor: color.contrast,
-  color: color.white,
+  backgroundColor: color.white,
+  color: color.primary,
   flat: false,
 };
 

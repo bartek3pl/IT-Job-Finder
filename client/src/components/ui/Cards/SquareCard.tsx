@@ -13,9 +13,9 @@ import shadow from '@styles/shadows';
 import Image from '@components/ui/Image/Image';
 import Text from '@components/ui/Text/Text';
 import colors from '@styles/colors';
-import AuthenticationService from '@services/authenticationService/authenticationService';
+import AuthenticationService from '@services/authenticationService';
 
-interface CardProps {
+interface SquareCardProps {
   company: string;
   jobTitle: string;
   salary?: string;
@@ -30,12 +30,12 @@ interface CardProps {
   isFocused?: boolean;
 }
 
-type StyledCardProps = Pick<
-  CardProps,
+type StyledSquareCardProps = Pick<
+  SquareCardProps,
   'backgroundColor' | 'color' | 'flat' | 'disabled' | 'isFocused'
 >;
 
-const StyledCard = styled.button<StyledCardProps>`
+const StyledSquareCard = styled.button<StyledSquareCardProps>`
   position: relative;
   display: flex;
   flex-direction: column;
@@ -46,7 +46,7 @@ const StyledCard = styled.button<StyledCardProps>`
   opacity: ${({ disabled }) => (disabled ? '40%' : '100%')};
   width: 556px;
   min-height: 434px;
-  border-radius: 45px;
+  border-radius: 60px;
   padding: 50px 60px;
   font-size: 20px;
   transition: transform 0.2s ease-out, background-color 0.2s ease,
@@ -73,7 +73,7 @@ const CompanyWrapper = styled.div`
 `;
 
 const JobWrapper = styled.div`
-  margin-top: 15px;
+  margin-top: 20px;
 `;
 
 const SalaryLocationWrapper = styled.div`
@@ -82,7 +82,7 @@ const SalaryLocationWrapper = styled.div`
   margin-top: 5px;
 `;
 
-const Card: FC<CardProps> = ({
+const SquareCard: FC<SquareCardProps> = ({
   company,
   jobTitle,
   salary,
@@ -179,7 +179,7 @@ const Card: FC<CardProps> = ({
   };
 
   return (
-    <StyledCard
+    <StyledSquareCard
       disabled={disabled}
       onClick={handleClick}
       backgroundColor={backgroundColor}
@@ -243,11 +243,11 @@ const Card: FC<CardProps> = ({
           </Text>
         ) : null}
       </SalaryLocationWrapper>
-    </StyledCard>
+    </StyledSquareCard>
   );
 };
 
-Card.defaultProps = {
+SquareCard.defaultProps = {
   company: '',
   jobTitle: '',
   salary: '',
@@ -256,9 +256,9 @@ Card.defaultProps = {
   jobOfferId: '',
   disabled: false,
   handleClick: () => {},
-  backgroundColor: color.contrast,
-  color: color.white,
+  backgroundColor: color.white,
+  color: color.primary,
   flat: false,
 };
 
-export default Card;
+export default SquareCard;

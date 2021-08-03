@@ -12,7 +12,7 @@ import {
   validatePassword,
 } from '@utils/helpers/validators';
 import routes from '@components/routing/routesStrings';
-import Button from '@components/ui/Button/Button';
+import Button from '@components/ui/Buttons/BaseButton';
 import TextField from '@components/ui/TextField/TextField';
 import Spinner from '@components/ui/Spinner/Spinner';
 

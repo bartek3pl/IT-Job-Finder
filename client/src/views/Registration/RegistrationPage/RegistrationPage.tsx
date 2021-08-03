@@ -10,7 +10,7 @@ import Subheader from '@components/ui/Subheader/Subheader';
 import BackButton from '@components/ui/SideButtons/BackButton';
 import Text from '@components/ui/Text/Text';
 import Dot from '@components/ui/Dot/Dot';
-import TextButton from '@components/ui/TextButton/TextButton';
+import TextButton from '@components/ui/TextButtons/TextButton';
 import RegistrationForm from '@views/Registration/RegistrationForm/RegistrationForm';
 
 const StyledRegistrationPage = styled.div`

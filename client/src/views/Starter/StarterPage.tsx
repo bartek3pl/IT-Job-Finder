@@ -10,7 +10,7 @@ import colors from '@styles/colors';
 import routes from '@components/routing/routesStrings';
 import Header from '@components/ui/Header/Header';
 import Subheader from '@components/ui/Subheader/Subheader';
-import TextButton from '@components/ui/TextButton/TextButton';
+import TextButton from '@components/ui/TextButtons/TextButton';
 
 const StyledStarterPage = styled.div`
   display: flex;

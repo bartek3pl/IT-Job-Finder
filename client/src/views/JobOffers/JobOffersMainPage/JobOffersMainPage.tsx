@@ -1,13 +1,15 @@
 import React, { FC, FormEvent, useState } from 'react';
-import { FiSliders } from 'react-icons/fi';
+
 import { useQuery } from '@apollo/client';
-import { useHistory } from 'react-router-dom';
+import { useHistory, Link } from 'react-router-dom';
 import styled from 'styled-components';
 
 import avatar from '@assets/images/avatar.jpg';
-import { GLOBAL_PADDING, PAGE_SIZE } from '@utils/constants/constants';
-import { validateUrl } from '@utils/helpers/validators';
+import { GLOBAL_PADDING } from '@utils/constants/constants';
 import { GET_ALL_JOB_OFFERS } from '@api/jobOffers/queries';
+import { JobOffer } from '@typings/graphql';
+import AuthenticationService from '@services/authenticationService';
+import JobOfferFormattingService from '@services/jobOfferFormattingService';
 import colors from '@styles/colors';
 import routes from '@components/routing/routesStrings';
 import Header from '@components/ui/Header/Header';
@@ -16,24 +18,32 @@ import AvatarButton from '@components/ui/SideButtons/AvatarButton';
 import MenuButton from '@components/ui/SideButtons/MenuButton';
 import Chip from '@components/ui/Chip/Chip';
 import TextField from '@components/ui/TextField/TextField';
-import Button from '@components/ui/Button/Button';
-import Card from '@components/ui/Card/Card';
+import SliderButton from '@components/ui/Buttons/SliderButton';
+import SquareCard from '@components/ui/Cards/SquareCard';
 import ListElement from '@components/ui/ListElement/ListElement';
 import Carousel from '@components/ui/Carousel/Carousel';
 import Spinner from '@components/ui/Spinner/Spinner';
 import Section from '@components/layout/Section/Section';
-import { Address, JobOffer, Level, Maybe } from '@typings/graphql';
 
 const StyledJobOffersPage = styled.div`
   padding: ${GLOBAL_PADDING};
   padding-top: 210px;
-  background-color: ${colors.white};
+  padding-bottom: 96px;
+  background-color: ${colors.lightBackground};
+  min-height: 100%;
 `;
 
 const TextFieldWrapper = styled.div`
   display: flex;
   gap: 30px;
   margin-top: 60px;
+`;
+
+const SpinnerWrapper = styled.div`
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  margin-top: 150px;
 `;
 
 const ChipWrapper = styled.div`
@@ -66,6 +76,8 @@ const chips = [
   </Chip>,
 ];
 
+const jobOfferFormattingService = new JobOfferFormattingService();
+
 const JobOffersPage: FC = () => {
   const history = useHistory();
 
@@ -75,6 +87,10 @@ const JobOffersPage: FC = () => {
 
   const handleSearchText = (event: FormEvent<HTMLInputElement>) => {
     setSearchText(event.currentTarget.value);
+  };
+
+  const handleShowAllJobs = () => {
+    history.push(routes.jobOffersSearch);
   };
 
   const getAllJobOffers = () => {
@@ -88,95 +104,30 @@ const JobOffersPage: FC = () => {
     }
   };
 
-  const formatSalary = (minSalary?: number, maxSalary?: number) => {
-    let convertedMinSalary = null;
-    let convertedMaxSalary = null;
-
-    if (minSalary) {
-      convertedMinSalary = Math.round(minSalary / 1000);
-    }
-    if (maxSalary) {
-      convertedMaxSalary = Math.round(maxSalary / 1000);
-    }
-
-    if (minSalary && maxSalary) {
-      return `PLN ${convertedMinSalary}-${convertedMaxSalary}k`;
-    } else if (minSalary && !maxSalary) {
-      return `PLN ${convertedMinSalary}k`;
-    } else if (!minSalary && maxSalary) {
-      return `PLN ${convertedMaxSalary}k`;
-    } else {
-      return '';
-    }
-  };
-
-  const formatLocation = (address?: Address) => {
-    if (address) {
-      const { city, country } = address || {};
-
-      if (city && country) {
-        return `${city}, ${country}`;
-      } else if (country && !city) {
-        return country;
-      } else if (!country && city) {
-        return city;
-      }
-    } else {
-      return '';
-    }
-  };
-
-  const formatLogo = (logo?: string | null) => {
-    if (logo) {
-      const isLogoUrlValid = validateUrl(logo);
-      if (isLogoUrlValid) {
-        return logo;
-      } else {
-        const BASE_URL = 'https://nofluffjobs.com/';
-        return `${BASE_URL}${logo}`;
-      }
-    } else {
-      return '';
-    }
-  };
-
-  const formatLevels = (levels?: Maybe<Maybe<Level>[]>) => {
-    if (levels) {
-      return levels.join(', ');
-    } else {
-      return '';
-    }
-  };
-
-  const formatDetails = (jobOffer: JobOffer) => {
-    const formattedLocation = formatLocation(jobOffer?.employer?.address);
-    const formattedLevels = formatLevels(jobOffer?.levels);
-    const contractType = jobOffer?.contractType;
-
-    return `${formattedLocation} | ${formattedLevels} | ${contractType}`;
-  };
-
-  const createJobOffersCards = () => {
+  const createJobOffersSquareCards = () => {
     const allJobOffers = getAllJobOffers();
 
     if (allJobOffers?.length) {
       return allJobOffers.map((jobOffer: JobOffer) => {
-        const formattedSalary = formatSalary(
+        const formattedSalary = jobOfferFormattingService.formatSalary(
           jobOffer.minSalary,
           jobOffer.maxSalary
         );
-        const formattedLocation = formatLocation(jobOffer.employer?.address);
-        const formattedLogo = formatLogo(jobOffer.employer?.logo);
+        const formattedLocation = jobOfferFormattingService.formatLocation(
+          jobOffer.employer?.address
+        );
+        const formattedLogo = jobOfferFormattingService.formatLogo(
+          jobOffer.employer?.logo
+        );
 
         return (
-          <Card
+          <SquareCard
             company={jobOffer.employer?.name}
             jobTitle={jobOffer.title}
             salary={formattedSalary}
             location={formattedLocation}
             logo={formattedLogo}
             jobOfferId={jobOffer._id}
-            backgroundColor={colors.white}
             key={`${jobOffer._id}-card`}
           />
         );
@@ -191,12 +142,15 @@ const JobOffersPage: FC = () => {
 
     if (allJobOffers?.length) {
       return allJobOffers.map((jobOffer: JobOffer) => {
-        const formattedSalary = formatSalary(
+        const formattedSalary = jobOfferFormattingService.formatSalary(
           jobOffer.minSalary,
           jobOffer.maxSalary
         );
-        const formattedLogo = formatLogo(jobOffer.employer?.logo);
-        const formattedDetails = formatDetails(jobOffer);
+        const formattedLogo = jobOfferFormattingService.formatLogo(
+          jobOffer.employer?.logo
+        );
+        const formattedDetails =
+          jobOfferFormattingService.formatDetails(jobOffer);
 
         return (
           <ListElement
@@ -204,7 +158,6 @@ const JobOffersPage: FC = () => {
             salary={formattedSalary}
             details={formattedDetails}
             logo={formattedLogo}
-            backgroundColor={colors.white}
             key={`${jobOffer._id}-listElement`}
           />
         );
@@ -214,7 +167,15 @@ const JobOffersPage: FC = () => {
     }
   };
 
-  const jobOfferCards = createJobOffersCards();
+  const getUserLogin = () => {
+    const authenticationService = new AuthenticationService();
+    const userFirstName = authenticationService.getUserLogin();
+    return userFirstName || '';
+  };
+
+  const userLogin = getUserLogin();
+
+  const jobOfferSquareCards = createJobOffersSquareCards();
 
   const jobOfferListElements = createJobOffersListElements();
 
@@ -223,7 +184,7 @@ const JobOffersPage: FC = () => {
       <MenuButton />
       <AvatarButton avatar={avatar} />
 
-      <Subheader>Hello Bartek</Subheader>
+      <Subheader>Hello {userLogin}</Subheader>
       <Header>Find your perfect job</Header>
       <TextFieldWrapper>
         <TextField
@@ -234,27 +195,34 @@ const JobOffersPage: FC = () => {
           value={searchText}
           handleChange={handleSearchText}
         />
-        <Button flat width={160}>
-          <FiSliders />
-        </Button>
+
+        <SliderButton />
       </TextFieldWrapper>
 
       <ChipWrapper>{chips}</ChipWrapper>
 
-      <Section primaryText="Popular jobs" secondaryText="Show all" />
+      <Section primaryText="Nearby jobs" secondaryText="Show all" />
 
       {loading ? (
-        <Spinner loading={loading} />
+        <SpinnerWrapper>
+          <Spinner loading={loading} size={120} />
+        </SpinnerWrapper>
       ) : (
         <CardWrapper>
-          <Carousel>{jobOfferCards}</Carousel>
+          <Carousel>{jobOfferSquareCards}</Carousel>
         </CardWrapper>
       )}
 
-      <Section primaryText="All jobs" secondaryText="Show all" />
+      <Section
+        primaryText="All jobs"
+        secondaryText="Show all"
+        secondaryTextHandleClick={handleShowAllJobs}
+      />
 
       {loading ? (
-        <Spinner loading={loading} />
+        <SpinnerWrapper>
+          <Spinner loading={loading} size={120} />
+        </SpinnerWrapper>
       ) : (
         <ListWrapper>{jobOfferListElements}</ListWrapper>
       )}

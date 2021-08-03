@@ -17,4 +17,6 @@ export const REFRESH_TOKEN = 'refreshToken';
 
 export const USER_ID = 'userId';
 
+export const USER_LOGIN = 'userLogin';
+
 export const PAGE_SIZE = 15;

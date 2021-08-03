@@ -7,9 +7,9 @@ import styled from 'styled-components';
 import { LOGIN as USER_LOGIN } from '@api/user/mutations';
 import { REGISTRATION } from '@utils/constants/constants';
 import { validateLogin, validatePassword } from '@utils/helpers/validators';
-import AuthenticationService from '@services/authenticationService/authenticationService';
+import AuthenticationService from '@services/authenticationService';
 import routes from '@components/routing/routesStrings';
-import Button from '@components/ui/Button/Button';
+import Button from '@components/ui/Buttons/BaseButton';
 import TextField from '@components/ui/TextField/TextField';
 import Spinner from '@components/ui/Spinner/Spinner';
 
@@ -41,8 +41,8 @@ const LoginForm: FC = () => {
       const { login: userLogin } = data || {};
       if (userLogin?.success) {
         const { accessToken, refreshToken, user } = userLogin || {};
-        const { _id: userId } = user || {};
-        authenticate(accessToken, refreshToken, userId);
+        const { _id: userId, login } = user || {};
+        authenticate(accessToken, refreshToken, userId, login);
         history.push(routes.jobOffers);
       }
     }
@@ -51,10 +51,11 @@ const LoginForm: FC = () => {
   const authenticate = (
     accessToken: string,
     refreshToken: string,
-    userId: string
+    userId: string,
+    userLogin: string
   ) => {
     const authenticationService = new AuthenticationService();
-    authenticationService.login(accessToken, refreshToken, userId);
+    authenticationService.login(accessToken, refreshToken, userId, userLogin);
   };
 
   const handleLogin = (event: FormEvent<HTMLInputElement>) => {

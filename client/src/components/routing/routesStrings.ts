@@ -4,5 +4,5 @@ export default {
   registration: '/registration',
   login: '/login',
   jobOffers: '/jobOffers',
-  all: '/all',
+  jobOffersSearch: '/search',
 };

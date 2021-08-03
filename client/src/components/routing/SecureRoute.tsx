@@ -3,12 +3,13 @@ import { useMutation } from '@apollo/client';
 import { Route, Redirect } from 'react-router-dom';
 
 import { VERIFY_ACCESS_TOKEN } from '@api/tokens/mutations';
-import AuthenticationService from '@services/authenticationService/authenticationService';
+import AuthenticationService from '@services/authenticationService';
 import routes from './routesStrings';
 
 interface SecureRouteProps {
   children: any;
   path?: string;
+  exact?: boolean;
 }
 
 const SecureRoute: FC<SecureRouteProps> = ({ children, ...rest }) => {

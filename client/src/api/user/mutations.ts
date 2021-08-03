@@ -20,7 +20,28 @@ export const LOGIN = gql`
       refreshToken
       user {
         _id
+        login
         firstName
+        lastName
+        email
+        age
+        gender
+        address {
+          country
+          city
+          street
+          postalCode
+          buildingNumber
+          apartmentNumber
+        }
+        skills
+        experienceYears
+        levels
+        minSalary
+        maxSalary
+        githubLink
+        linkedinLink
+        emailNotification
       }
     }
   }

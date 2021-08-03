@@ -41,12 +41,14 @@ const StyledTextField = styled.input<StyledTextFieldProps>`
   border-radius: 45px;
   background-color: ${color.lightgray};
   font-size: 35px;
+  font-weight: 500;
   color: ${({ error }) => (error ? color.error : color.primary)};
   opacity: ${({ disabled }) => (disabled ? '40%' : '100%')};
 
   &::placeholder {
     color: ${({ error }) => (error ? color.error : color.inputPlaceholder)};
     font-size: 36px;
+    font-weight: 400;
   }
 `;
 

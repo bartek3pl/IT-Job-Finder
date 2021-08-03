@@ -7,6 +7,7 @@ export default {
   white: '#FFFFFF',
   black: '#000000',
   lightgray: '#F3F4F8',
+  lightBackground: '#FAFAFC',
   inputPlaceholder: '#9694AC',
   error: '#FF0033',
 };
