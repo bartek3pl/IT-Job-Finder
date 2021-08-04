@@ -21,6 +21,8 @@ import SelectTextButton from '@components/ui/TextButtons/SelectTextButton';
 import Spinner from '@components/ui/Spinner/Spinner';
 import BackButton from '@components/ui/SideButtons/BackButton';
 import RectangleCard from '@components/ui/Cards/RectangleCard';
+import Modal from '@components/ui/Modal/Modal';
+import FiltersPage from '@views/Filters/FiltersPage';
 
 interface LocationState {
   country: string;
@@ -79,6 +81,14 @@ const SpinnerWrapper = styled.div`
   margin-top: 150px;
 `;
 
+const hasUrlParameter = (parameter: string) => {
+  if (parameter) {
+    const queryString = window.location.search;
+    return queryString.includes(parameter);
+  }
+  return false;
+};
+
 const jobOfferFormattingService = new JobOfferFormattingService();
 
 let timer: ReturnType<typeof setTimeout>;
@@ -86,30 +96,29 @@ const timeoutValue = INPUT_TIMEOUT_VALUE;
 
 const JobOffersSearchPage: FC = () => {
   const location = useLocation<LocationState>();
-  const mainPageSearchText = location?.state?.searchText || '';
-  const country = location?.state?.country || '';
-  const city = location?.state?.city || '';
 
-  const selectCheckedFilter = () => {
-    if (country || city) {
-      return NEARBY_JOB_OFFERS_FILTER;
-    }
-    return ALL_JOB_OFFERS_FILTER;
-  };
-
-  const selectedCheckedFilter = selectCheckedFilter();
+  const country = location.state.country;
+  const city = location.state.city;
+  const mainPageSearchText = location.state.searchText;
+  const selectedCheckedFilter =
+    hasUrlParameter(country) || hasUrlParameter(city)
+      ? NEARBY_JOB_OFFERS_FILTER
+      : ALL_JOB_OFFERS_FILTER;
 
   const [searchText, setSearchText] = useState(mainPageSearchText);
   const [currentSearchText, setCurrentSearchText] = useState(searchText);
   const [isUserTyping, setIsUserTyping] = useState(false);
   const [checkedFilter, setCheckedFilter] = useState(selectedCheckedFilter);
   const [offset, setOffset] = useState(0);
+  const [isFiltersModalShown, setIsFiltersModalShown] = useState(false);
 
+  const queryAddress =
+    checkedFilter === NEARBY_JOB_OFFERS_FILTER ? { country, city } : null;
   const { data, loading, error } = useQuery(GET_ALL_JOB_OFFERS, {
     variables: {
       first: PAGE_SIZE,
       offset,
-      search: { title: searchText, employer: { address: { country, city } } },
+      search: { title: searchText, employer: { address: queryAddress } },
     },
   });
 
@@ -121,6 +130,14 @@ const JobOffersSearchPage: FC = () => {
 
   const handleCurrentSearchText = (event: FormEvent<HTMLInputElement>) => {
     setCurrentSearchText(event.currentTarget.value);
+  };
+
+  const showFilterModal = () => {
+    setIsFiltersModalShown(true);
+  };
+
+  const hideFilterModal = () => {
+    setIsFiltersModalShown(false);
   };
 
   const handleKeyUp = () => {
@@ -196,60 +213,65 @@ const JobOffersSearchPage: FC = () => {
   const jobOfferRectangleCards = createJobOffersRectangleCards();
 
   return (
-    <StyledJobOffersSearchPage>
-      <BackButton />
-      <SubheaderWrapper>
-        <Subheader>Search</Subheader>
-      </SubheaderWrapper>
-      <TextFieldWrapper>
-        <TextField
-          type="text"
-          alt="login"
-          name="login"
-          placeholder="What are you looking for?"
-          value={currentSearchText}
-          handleChange={handleCurrentSearchText}
-          handleKeyDown={handleKeyDown}
-          handleKeyUp={handleKeyUp}
-        />
-        <SliderButton />
-      </TextFieldWrapper>
-      <TextWrapper>
-        <Text size={30} weight={500}>
-          {currentCount} Job Opportunity
-        </Text>
-      </TextWrapper>
-      <SelectTextButtonWrapper>
-        <SelectTextButton
-          size={30}
-          verticalPadding={30}
-          borderRadius={35}
-          checked={checkedFilter === ALL_JOB_OFFERS_FILTER}
-          handleClick={() => handleCheckedFilter(ALL_JOB_OFFERS_FILTER)}
-        >
-          {ALL_JOB_OFFERS_FILTER}
-        </SelectTextButton>
-        <SelectTextButton
-          size={30}
-          verticalPadding={30}
-          borderRadius={35}
-          checked={checkedFilter === NEARBY_JOB_OFFERS_FILTER}
-          handleClick={() => handleCheckedFilter(NEARBY_JOB_OFFERS_FILTER)}
-        >
-          {NEARBY_JOB_OFFERS_FILTER}
-        </SelectTextButton>
-      </SelectTextButtonWrapper>
+    <>
+      <Modal show={isFiltersModalShown}>
+        <FiltersPage />
+      </Modal>
+      <StyledJobOffersSearchPage>
+        <BackButton />
+        <SubheaderWrapper>
+          <Subheader>Search</Subheader>
+        </SubheaderWrapper>
+        <TextFieldWrapper>
+          <TextField
+            type="text"
+            alt="login"
+            name="login"
+            placeholder="What are you looking for?"
+            value={currentSearchText}
+            handleChange={handleCurrentSearchText}
+            handleKeyDown={handleKeyDown}
+            handleKeyUp={handleKeyUp}
+          />
+          <SliderButton handleClick={showFilterModal} />
+        </TextFieldWrapper>
+        <TextWrapper>
+          <Text size={30} weight={500}>
+            {currentCount} Job Opportunity
+          </Text>
+        </TextWrapper>
+        <SelectTextButtonWrapper>
+          <SelectTextButton
+            size={30}
+            verticalPadding={30}
+            borderRadius={35}
+            checked={checkedFilter === ALL_JOB_OFFERS_FILTER}
+            handleClick={() => handleCheckedFilter(ALL_JOB_OFFERS_FILTER)}
+          >
+            {ALL_JOB_OFFERS_FILTER}
+          </SelectTextButton>
+          <SelectTextButton
+            size={30}
+            verticalPadding={30}
+            borderRadius={35}
+            checked={checkedFilter === NEARBY_JOB_OFFERS_FILTER}
+            handleClick={() => handleCheckedFilter(NEARBY_JOB_OFFERS_FILTER)}
+          >
+            {NEARBY_JOB_OFFERS_FILTER}
+          </SelectTextButton>
+        </SelectTextButtonWrapper>
 
-      {loading ? (
-        <SpinnerWrapper>
-          <Spinner loading={loading} size={120} />
-        </SpinnerWrapper>
-      ) : (
-        <SearchJobOffersWrapper>
-          {jobOfferRectangleCards}
-        </SearchJobOffersWrapper>
-      )}
-    </StyledJobOffersSearchPage>
+        {loading ? (
+          <SpinnerWrapper>
+            <Spinner loading={loading} size={120} />
+          </SpinnerWrapper>
+        ) : (
+          <SearchJobOffersWrapper>
+            {jobOfferRectangleCards}
+          </SearchJobOffersWrapper>
+        )}
+      </StyledJobOffersSearchPage>
+    </>
   );
 };
 

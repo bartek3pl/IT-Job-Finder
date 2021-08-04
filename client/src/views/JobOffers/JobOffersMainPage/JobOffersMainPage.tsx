@@ -27,7 +27,9 @@ import SquareCard from '@components/ui/Cards/SquareCard';
 import ListElement from '@components/ui/ListElement/ListElement';
 import Carousel from '@components/ui/Carousel/Carousel';
 import Spinner from '@components/ui/Spinner/Spinner';
+import Modal from '@components/ui/Modal/Modal';
 import Section from '@components/layout/Section/Section';
+import FiltersPage from '@views/Filters/FiltersPage';
 
 const StyledJobOffersPage = styled.div`
   padding: ${GLOBAL_PADDING};
@@ -80,6 +82,7 @@ const chips = [
   </Chip>,
 ];
 
+const authenticationService = new AuthenticationService();
 const jobOfferFormattingService = new JobOfferFormattingService();
 
 let timer: ReturnType<typeof setTimeout>;
@@ -92,9 +95,11 @@ const JobOffersPage: FC = () => {
   const [currentSearchText, setCurrentSearchText] = useState(searchText);
   const [isUserTyping, setIsUserTyping] = useState(false);
   const [offset, setOffset] = useState(0);
+  const [isFiltersModalShown, setIsFiltersModalShown] = useState(false);
 
-  const country = 'PL';
-  const city = '';
+  const user = authenticationService.getUser();
+  const country = user.address?.country || 'PL';
+  const city = user.address?.city || '';
   const {
     data: nearbyData,
     loading: nearbyLoading,
@@ -128,6 +133,14 @@ const JobOffersPage: FC = () => {
     setCurrentSearchText(event.currentTarget.value);
   };
 
+  const showFilterModal = () => {
+    setIsFiltersModalShown(true);
+  };
+
+  const hideFilterModal = () => {
+    setIsFiltersModalShown(false);
+  };
+
   const handleKeyUp = () => {
     clearTimeout(timer);
     timer = setTimeout(() => {
@@ -140,16 +153,20 @@ const JobOffersPage: FC = () => {
     setIsUserTyping(true);
   };
 
+  const handleShowJobs = (search: string) => {
+    history.push({
+      pathname: routes.jobOffersSearch,
+      state: { searchText, country, city },
+      search,
+    });
+  };
+
   const handleShowAllJobs = () => {
-    history.push(routes.jobOffersSearch);
+    handleShowJobs(`?searchText=${searchText}`);
   };
 
   const handleShowNearbyJobs = () => {
-    history.push({
-      pathname: routes.jobOffersSearch,
-      search: `?searchText=${searchText}&country=${country}&city=${city}`,
-      state: { searchText, country, city },
-    });
+    handleShowJobs(`?searchText=${searchText}&country=${country}&city=${city}`);
   };
 
   const getNearbyJobOffers = () => {
@@ -239,8 +256,9 @@ const JobOffersPage: FC = () => {
 
   const getUserLogin = () => {
     const authenticationService = new AuthenticationService();
-    const userFirstName = authenticationService.getUserLogin();
-    return userFirstName || '';
+    const user = authenticationService.getUser();
+    const userLogin = user?.login;
+    return userLogin || '';
   };
 
   const userLogin = getUserLogin();
@@ -250,59 +268,64 @@ const JobOffersPage: FC = () => {
   const allJobOffers = createAllJobOffers();
 
   return (
-    <StyledJobOffersPage>
-      <MenuButton />
-      <AvatarButton avatar={avatar} />
+    <>
+      <Modal show={isFiltersModalShown}>
+        <FiltersPage />
+      </Modal>
+      <StyledJobOffersPage>
+        <MenuButton />
+        <AvatarButton avatar={avatar} />
 
-      <Subheader>Hello {userLogin}</Subheader>
-      <Header>Find your perfect job</Header>
-      <TextFieldWrapper>
-        <TextField
-          type="text"
-          alt="login"
-          name="login"
-          placeholder="What are you looking for?"
-          value={currentSearchText}
-          handleChange={handleCurrentSearchText}
-          handleKeyDown={handleKeyDown}
-          handleKeyUp={handleKeyUp}
+        <Subheader>Hello {userLogin}</Subheader>
+        <Header>Find your perfect job</Header>
+        <TextFieldWrapper>
+          <TextField
+            type="text"
+            alt="login"
+            name="login"
+            placeholder="What are you looking for?"
+            value={currentSearchText}
+            handleChange={handleCurrentSearchText}
+            handleKeyDown={handleKeyDown}
+            handleKeyUp={handleKeyUp}
+          />
+
+          <SliderButton handleClick={showFilterModal} />
+        </TextFieldWrapper>
+
+        <ChipWrapper>{chips}</ChipWrapper>
+
+        <Section
+          primaryText="Nearby jobs"
+          secondaryText="Show all"
+          secondaryTextHandleClick={handleShowNearbyJobs}
         />
 
-        <SliderButton />
-      </TextFieldWrapper>
+        {nearbyLoading ? (
+          <SpinnerWrapper>
+            <Spinner loading={nearbyLoading} size={120} />
+          </SpinnerWrapper>
+        ) : (
+          <CardWrapper>
+            <Carousel>{nearbyJobOffers}</Carousel>
+          </CardWrapper>
+        )}
 
-      <ChipWrapper>{chips}</ChipWrapper>
+        <Section
+          primaryText="All jobs"
+          secondaryText="Show all"
+          secondaryTextHandleClick={handleShowAllJobs}
+        />
 
-      <Section
-        primaryText="Nearby jobs"
-        secondaryText="Show all"
-        secondaryTextHandleClick={handleShowNearbyJobs}
-      />
-
-      {nearbyLoading ? (
-        <SpinnerWrapper>
-          <Spinner loading={nearbyLoading} size={120} />
-        </SpinnerWrapper>
-      ) : (
-        <CardWrapper>
-          <Carousel>{nearbyJobOffers}</Carousel>
-        </CardWrapper>
-      )}
-
-      <Section
-        primaryText="All jobs"
-        secondaryText="Show all"
-        secondaryTextHandleClick={handleShowAllJobs}
-      />
-
-      {allLoading ? (
-        <SpinnerWrapper>
-          <Spinner loading={allLoading} size={120} />
-        </SpinnerWrapper>
-      ) : (
-        <ListWrapper>{allJobOffers}</ListWrapper>
-      )}
-    </StyledJobOffersPage>
+        {allLoading ? (
+          <SpinnerWrapper>
+            <Spinner loading={allLoading} size={120} />
+          </SpinnerWrapper>
+        ) : (
+          <ListWrapper>{allJobOffers}</ListWrapper>
+        )}
+      </StyledJobOffersPage>
+    </>
   );
 };
 

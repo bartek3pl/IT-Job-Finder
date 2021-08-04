@@ -1,9 +1,5 @@
-import {
-  ACCESS_TOKEN,
-  REFRESH_TOKEN,
-  USER_ID,
-  USER_LOGIN,
-} from '@utils/constants/constants';
+import { ACCESS_TOKEN, REFRESH_TOKEN, USER } from '@utils/constants/constants';
+import { User as UserType } from '@typings/graphql';
 
 class AuthenticationService {
   getAccessToken = () => localStorage.getItem(ACCESS_TOKEN);
@@ -20,38 +16,25 @@ class AuthenticationService {
 
   private deleteRefreshToken = () => localStorage.getItem(REFRESH_TOKEN);
 
-  getUserId = () => localStorage.getItem(USER_ID);
+  getUser = (): UserType => JSON.parse(localStorage.getItem(USER) || '{}');
 
-  private setUserId = (userId: string) => localStorage.setItem(USER_ID, userId);
+  private setUser = (user: UserType) =>
+    localStorage.setItem(USER, JSON.stringify(user));
 
-  private deleteUserId = () => localStorage.removeItem(USER_ID);
-
-  getUserLogin = () => localStorage.getItem(USER_LOGIN);
-
-  private setUserLogin = (userLogin: string) =>
-    localStorage.setItem(USER_LOGIN, userLogin);
-
-  private deleteUserLogin = () => localStorage.removeItem(USER_LOGIN);
+  private deleteUser = () => localStorage.removeItem(USER);
 
   getBearerAccessToken = () => `Bearer ${this.getAccessToken()}`;
 
-  login = (
-    accessToken: string,
-    refreshToken: string,
-    userId: string,
-    userLogin: string
-  ) => {
+  login = (accessToken: string, refreshToken: string, user: UserType) => {
     this.setAccessToken(accessToken);
     this.setRefreshToken(refreshToken);
-    this.setUserId(userId);
-    this.setUserLogin(userLogin);
+    this.setUser(user);
   };
 
   logout = () => {
     this.deleteAccessToken();
     this.deleteRefreshToken();
-    this.deleteUserId();
-    this.deleteUserLogin();
+    this.deleteUser();
   };
 }
 

@@ -26,7 +26,7 @@ const StyledAvatarButton = styled.button<StyledAvatarButtonProps>`
   background-size: cover;
   background-repeat: no-repeat;
   background-position: center center;
-  z-index: 999;
+  z-index: 99;
   transition: transform 0.2s ease-out;
 
   &:active {

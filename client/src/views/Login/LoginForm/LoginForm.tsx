@@ -4,6 +4,7 @@ import { useHistory } from 'react-router-dom';
 import { FiArrowRight, FiUser } from 'react-icons/fi';
 import styled from 'styled-components';
 
+import { User as UserType } from '@typings/graphql';
 import { LOGIN as USER_LOGIN } from '@api/user/mutations';
 import { REGISTRATION } from '@utils/constants/constants';
 import { validateLogin, validatePassword } from '@utils/helpers/validators';
@@ -41,8 +42,7 @@ const LoginForm: FC = () => {
       const { login: userLogin } = data || {};
       if (userLogin?.success) {
         const { accessToken, refreshToken, user } = userLogin || {};
-        const { _id: userId, login } = user || {};
-        authenticate(accessToken, refreshToken, userId, login);
+        authenticate(accessToken, refreshToken, user);
         history.push(routes.jobOffers);
       }
     }
@@ -51,11 +51,10 @@ const LoginForm: FC = () => {
   const authenticate = (
     accessToken: string,
     refreshToken: string,
-    userId: string,
-    userLogin: string
+    user: UserType
   ) => {
     const authenticationService = new AuthenticationService();
-    authenticationService.login(accessToken, refreshToken, userId, userLogin);
+    authenticationService.login(accessToken, refreshToken, user);
   };
 
   const handleLogin = (event: FormEvent<HTMLInputElement>) => {

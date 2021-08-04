@@ -18,7 +18,7 @@ const StyledBaseSideButton = styled.button`
   width: 85px;
   height: 85px;
   background-color: ${color.lightgray};
-  z-index: 999;
+  z-index: 99;
   transition: transform 0.2s ease-out;
 
   &:active {

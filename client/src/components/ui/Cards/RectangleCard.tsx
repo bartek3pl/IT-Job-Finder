@@ -124,7 +124,8 @@ const RectangleCard: FC<RectangleCardProps> = ({
 
   const getUserId = () => {
     const authenticationService = new AuthenticationService();
-    const userId = authenticationService.getUserId();
+    const user = authenticationService.getUser();
+    const userId = user?._id;
     return userId;
   };
 
