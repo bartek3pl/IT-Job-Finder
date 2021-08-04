@@ -34,11 +34,11 @@ const StyledImage = styled.div<StyledImageProps>`
   display: block;
   background-color: ${({ backgroundColor }) => backgroundColor};
   background-image: ${({ image }) => `url(${image})`};
-  background-size: cover;
+  background-size: contain;
   background-repeat: no-repeat;
   background-position: center center;
   color: ${({ color }) => color};
-  width: ${({ width }) => `${width}px`};
+  min-width: ${({ width }) => `${width}px`};
   height: ${({ height }) => `${height}px`};
   box-shadow: ${({ flat }) => (flat ? 'none' : shadow['shadow-2'])};
   border: ${({ flat }) => (flat ? `2px ${color.lightgray} solid` : 'none')};

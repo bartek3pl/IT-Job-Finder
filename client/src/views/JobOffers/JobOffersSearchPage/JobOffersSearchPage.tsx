@@ -25,6 +25,7 @@ import RectangleCard from '@components/ui/Cards/RectangleCard';
 interface LocationState {
   country: string;
   city: string;
+  searchText: string;
 }
 
 type Filter = 'All Job Offers' | 'Nearby Job Offers';
@@ -71,6 +72,13 @@ const SearchJobOffersWrapper = styled.div`
   width: 100%;
 `;
 
+const SpinnerWrapper = styled.div`
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  margin-top: 150px;
+`;
+
 const jobOfferFormattingService = new JobOfferFormattingService();
 
 let timer: ReturnType<typeof setTimeout>;
@@ -78,15 +86,25 @@ const timeoutValue = INPUT_TIMEOUT_VALUE;
 
 const JobOffersSearchPage: FC = () => {
   const location = useLocation<LocationState>();
-
-  const [searchText, setSearchText] = useState('');
-  const [currentSearchText, setCurrentSearchText] = useState(searchText);
-  const [isUserTyping, setIsUserTyping] = useState(false);
-  const [checkedFilter, setCheckedFilter] = useState(ALL_JOB_OFFERS_FILTER);
-  const [offset, setOffset] = useState(0);
-
+  const mainPageSearchText = location?.state?.searchText || '';
   const country = location?.state?.country || '';
   const city = location?.state?.city || '';
+
+  const selectCheckedFilter = () => {
+    if (country || city) {
+      return NEARBY_JOB_OFFERS_FILTER;
+    }
+    return ALL_JOB_OFFERS_FILTER;
+  };
+
+  const selectedCheckedFilter = selectCheckedFilter();
+
+  const [searchText, setSearchText] = useState(mainPageSearchText);
+  const [currentSearchText, setCurrentSearchText] = useState(searchText);
+  const [isUserTyping, setIsUserTyping] = useState(false);
+  const [checkedFilter, setCheckedFilter] = useState(selectedCheckedFilter);
+  const [offset, setOffset] = useState(0);
+
   const { data, loading, error } = useQuery(GET_ALL_JOB_OFFERS, {
     variables: {
       first: PAGE_SIZE,
@@ -220,10 +238,17 @@ const JobOffersSearchPage: FC = () => {
         >
           {NEARBY_JOB_OFFERS_FILTER}
         </SelectTextButton>
+      </SelectTextButtonWrapper>
+
+      {loading ? (
+        <SpinnerWrapper>
+          <Spinner loading={loading} size={120} />
+        </SpinnerWrapper>
+      ) : (
         <SearchJobOffersWrapper>
           {jobOfferRectangleCards}
         </SearchJobOffersWrapper>
-      </SelectTextButtonWrapper>
+      )}
     </StyledJobOffersSearchPage>
   );
 };

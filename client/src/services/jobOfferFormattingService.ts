@@ -53,9 +53,18 @@ class JobOfferFormattingService {
     }
   };
 
+  private capitalizeFirstLetter(str?: string) {
+    if (str) {
+      return `${str.charAt(0).toUpperCase()}${str.slice(1)}`;
+    }
+    return str;
+  }
+
   formatLevels = (levels?: Maybe<Maybe<Level>[]>) => {
     if (levels) {
-      return levels.join(', ');
+      return levels
+        .map((level) => this.capitalizeFirstLetter(level?.toLowerCase()))
+        .join(', ');
     } else {
       return '';
     }

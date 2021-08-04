@@ -15,6 +15,8 @@ export const ACCESS_TOKEN = 'accessToken';
 
 export const REFRESH_TOKEN = 'refreshToken';
 
+export const USER = 'user';
+
 export const USER_ID = 'userId';
 
 export const USER_LOGIN = 'userLogin';

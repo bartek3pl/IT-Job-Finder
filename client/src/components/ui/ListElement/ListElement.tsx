@@ -33,6 +33,7 @@ const StyledListElement = styled.button<StyledListElementProps>`
   justify-content: space-between;
   align-items: center;
   text-align: left;
+  gap: 10px;
   border: ${({ flat }) => (flat ? `2px ${color.lightgray} solid` : 'none')};
   box-shadow: ${({ flat }) => (flat ? 'none' : shadow['shadow-1'])};
   opacity: ${({ disabled }) => (disabled ? '40%' : '100%')};
@@ -61,13 +62,10 @@ const JobTitleWrapper = styled.div`
   display: flex;
   flex-direction: column;
   align-items: flex-start;
-  margin-top: 15px;
 `;
 
-const SalaryLocationWrapper = styled.div`
-  display: flex;
-  gap: 20px;
-  margin-top: 5px;
+const SalaryWrapper = styled.div`
+  flex-basis: 30%;
 `;
 
 const ListElement: FC<ListElementProps> = ({
@@ -120,7 +118,7 @@ const ListElement: FC<ListElementProps> = ({
         />
         <JobTitleWrapper>
           <Text
-            size={35}
+            size={34}
             weight={600}
             color={isFocused ? colors.lightgray : colors.primary}
           >
@@ -135,7 +133,7 @@ const ListElement: FC<ListElementProps> = ({
           </Text>
         </JobTitleWrapper>
       </LogoJobWrapper>
-      <SalaryLocationWrapper>
+      <SalaryWrapper>
         {salary ? (
           <Text
             size={30}
@@ -145,7 +143,7 @@ const ListElement: FC<ListElementProps> = ({
             {salary}
           </Text>
         ) : null}
-      </SalaryLocationWrapper>
+      </SalaryWrapper>
     </StyledListElement>
   );
 };

@@ -147,8 +147,8 @@ const JobOffersPage: FC = () => {
   const handleShowNearbyJobs = () => {
     history.push({
       pathname: routes.jobOffersSearch,
-      search: `?country=${country}&city=${city}`,
-      state: { country, city },
+      search: `?searchText=${searchText}&country=${country}&city=${city}`,
+      state: { searchText, country, city },
     });
   };
 
