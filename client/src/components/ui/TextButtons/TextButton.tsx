@@ -24,6 +24,7 @@ interface TextButtonProps {
   verticalPadding?: number;
   fullWidth?: boolean;
   icon?: ReactElement;
+  flat?: boolean;
 }
 
 type StyledTextButtonProps = Pick<
@@ -34,6 +35,7 @@ type StyledTextButtonProps = Pick<
   | 'verticalPadding'
   | 'fullWidth'
   | 'disabled'
+  | 'flat'
 >;
 
 const StyledTextButton = styled.button<StyledTextButtonProps>`
@@ -49,12 +51,12 @@ const StyledTextButton = styled.button<StyledTextButtonProps>`
   border: none;
   padding: ${({ verticalPadding, horizontalPadding }) =>
     `${verticalPadding}px ${horizontalPadding}px`};
-  box-shadow: ${shadow['shadow-2']};
+  box-shadow: ${({ flat }) => (flat ? 'none' : shadow['shadow-2'])};
   opacity: ${({ disabled }) => (disabled ? '40%' : '100%')};
   transition: transform 0.2s ease-out;
 
   &:active {
-    transform: ${({ disabled }) => (disabled ? '' : 'scale(0.9)')};
+    transform: ${({ disabled }) => (disabled ? '' : 'scale(0.95)')};
   }
 `;
 
@@ -69,6 +71,7 @@ const TextButton: FC<TextButtonProps> = ({
   verticalPadding,
   fullWidth,
   icon,
+  flat,
   children,
 }) => {
   const [isButtonClicked, setIsButtonClicked] = useState(false);
@@ -111,6 +114,7 @@ const TextButton: FC<TextButtonProps> = ({
       horizontalPadding={horizontalPadding}
       verticalPadding={verticalPadding}
       fullWidth={fullWidth}
+      flat={flat}
     >
       <Text size={size} color={color}>
         {children}
@@ -131,6 +135,7 @@ TextButton.defaultProps = {
   verticalPadding: 10,
   fullWidth: false,
   icon: undefined,
+  flat: false,
 };
 
 export default TextButton;

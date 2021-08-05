@@ -82,6 +82,8 @@
   },
   "dependencies": {
     "@apollo/client": "^3.4.1",
+    "@bit/mui-org.material-ui.slider": "^4.9.10",
+    "@bit/mui-org.material-ui.styles": "^4.9.10",
     "@emotion/core": "^11.0.0",
     "classnames": "^2.3.1",
     "core-js": "^3.16.0",

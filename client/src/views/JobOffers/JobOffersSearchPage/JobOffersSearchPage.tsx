@@ -61,8 +61,8 @@ const TextWrapper = styled.div`
 
 const SelectTextButtonWrapper = styled.div`
   display: flex;
-  gap: 30px;
   flex-wrap: wrap;
+  gap: 30px;
   margin-top: 40px;
 `;
 
@@ -140,6 +140,8 @@ const JobOffersSearchPage: FC = () => {
     setIsFiltersModalShown(false);
   };
 
+  const applyFilters = () => {};
+
   const handleKeyUp = () => {
     clearTimeout(timer);
     timer = setTimeout(() => {
@@ -215,7 +217,7 @@ const JobOffersSearchPage: FC = () => {
   return (
     <>
       <Modal show={isFiltersModalShown}>
-        <FiltersPage />
+        <FiltersPage closeModal={hideFilterModal} applyFilters={applyFilters} />
       </Modal>
       <StyledJobOffersSearchPage>
         <BackButton />

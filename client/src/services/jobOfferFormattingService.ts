@@ -77,6 +77,10 @@ class JobOfferFormattingService {
 
     return `${formattedLocation} | ${formattedLevels} | ${contractType}`;
   };
+
+  lowerAndCapitalizeFirstLetter = (str: string) => {
+    return this.capitalizeFirstLetter(str.toLowerCase());
+  };
 }
 
 export default JobOfferFormattingService;

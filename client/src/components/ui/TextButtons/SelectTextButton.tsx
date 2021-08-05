@@ -12,6 +12,7 @@ interface SelectTextButtonProps {
   verticalPadding?: number;
   checked?: boolean;
   borderRadius?: number;
+  border?: boolean;
   handleClick?: Function;
 }
 
@@ -22,6 +23,7 @@ type StyledSelectTextButtonProps = Pick<
   | 'disabled'
   | 'checked'
   | 'borderRadius'
+  | 'border'
 >;
 
 const StyledSelectTextButton = styled.button<StyledSelectTextButtonProps>`
@@ -29,7 +31,7 @@ const StyledSelectTextButton = styled.button<StyledSelectTextButtonProps>`
   justify-content: center;
   align-items: center;
   border-radius: ${({ borderRadius }) => `${borderRadius}px`};
-  border: none;
+  border: ${({ border }) => (border ? `2px ${colors.neutral} solid` : 'none')};
   background-color: ${({ checked }) =>
     checked ? colors.primary : colors.lightgray};
   padding: ${({ verticalPadding, horizontalPadding }) =>
@@ -46,6 +48,7 @@ const SelectTextButton: FC<SelectTextButtonProps> = ({
   verticalPadding,
   checked,
   borderRadius,
+  border,
   handleClick,
   children,
 }) => {
@@ -67,6 +70,7 @@ const SelectTextButton: FC<SelectTextButtonProps> = ({
       verticalPadding={verticalPadding}
       checked={checked}
       borderRadius={borderRadius}
+      border={border}
       onClick={handleClickAndSetButton}
       aria-pressed={isButtonClicked}
     >
@@ -85,6 +89,7 @@ SelectTextButton.defaultProps = {
   verticalPadding: 10,
   checked: false,
   borderRadius: 45,
+  border: false,
   handleClick: () => {},
 };
 

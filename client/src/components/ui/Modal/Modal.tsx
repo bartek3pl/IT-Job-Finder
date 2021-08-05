@@ -9,22 +9,26 @@ interface ModalProps {
   show?: boolean;
 }
 
-const StyledModal = styled.div`
+const StyledModal = styled.div<ModalProps>`
   position: fixed;
+  overflow-y: scroll;
   width: 100%;
-  height: calc(100vh - 200px);
-  margin-top: 200px;
+  height: 100vh;
   padding: ${GLOBAL_PADDING};
-  border-top-left-radius: 70px;
-  border-top-right-radius: 70px;
-  background: ${colors.neutral};
+  background: ${colors.white};
   color: ${colors.primary};
   box-shadow: ${shadows['shadow-1']};
   z-index: 999;
+  pointer-events: ${({ show }) => (show ? 'auto' : 'none')};
+  opacity: ${({ show }) => (show ? '100%' : '0%')};
+  transform: ${({ show }) => (show ? 'translateY(0)' : 'translateY(100vh)')};
+  transition: ${({ show }) =>
+      show ? 'opacity 0.1s ease' : 'opacity 0.3s ease-in'},
+    transform 0.3s ease;
 `;
 
 const Modal: FC<ModalProps> = ({ show, children }) => {
-  return <>{show ? <StyledModal>{children}</StyledModal> : null}</>;
+  return <StyledModal show={show}>{children}</StyledModal>;
 };
 
 Modal.defaultProps = {

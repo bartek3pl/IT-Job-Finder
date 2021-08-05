@@ -21,12 +21,16 @@ interface TextFieldProps {
   icon?: ReactElement;
   name?: string;
   error?: string;
+  border?: boolean;
   handleChange?: (event: FormEvent<HTMLInputElement>) => void;
   handleKeyUp?: (event: FormEvent<HTMLInputElement>) => void;
   handleKeyDown?: (event: FormEvent<HTMLInputElement>) => void;
 }
 
-type StyledTextFieldProps = Pick<TextFieldProps, 'disabled' | 'error'>;
+type StyledTextFieldProps = Pick<
+  TextFieldProps,
+  'disabled' | 'error' | 'border'
+>;
 
 const StyledButtonWrapper = styled.div`
   position: relative;
@@ -39,7 +43,8 @@ const StyledTextField = styled.input<StyledTextFieldProps>`
   width: 100%;
   height: 140px;
   padding: 21px 60px;
-  border: ${({ error }) => (error ? '2px red solid' : 'none')};
+  border: ${({ error, border }) =>
+    error ? '2px red solid' : border ? `2px ${color.neutral} solid` : 'none'};
   border-radius: 45px;
   background-color: ${color.lightgray};
   font-size: 35px;
@@ -75,6 +80,7 @@ const TextField: FC<TextFieldProps> = ({
   icon,
   name,
   error,
+  border,
   handleChange,
   handleKeyUp,
   handleKeyDown,
@@ -136,6 +142,7 @@ const TextField: FC<TextFieldProps> = ({
         name={name}
         aria-label={name}
         error={error}
+        border={border}
         onChange={handleChange}
         onKeyUp={handleKeyUp}
         onKeyDown={handleKeyDown}
@@ -155,6 +162,7 @@ TextField.defaultProps = {
   icon: undefined,
   name: '',
   error: '',
+  border: false,
   handleChange: () => {},
   handleKeyUp: () => {},
   handleKeyDown: () => {},

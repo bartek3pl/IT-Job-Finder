@@ -141,6 +141,10 @@ const JobOffersPage: FC = () => {
     setIsFiltersModalShown(false);
   };
 
+  const applyFilters = () => {
+    hideFilterModal();
+  };
+
   const handleKeyUp = () => {
     clearTimeout(timer);
     timer = setTimeout(() => {
@@ -270,7 +274,7 @@ const JobOffersPage: FC = () => {
   return (
     <>
       <Modal show={isFiltersModalShown}>
-        <FiltersPage />
+        <FiltersPage closeModal={hideFilterModal} applyFilters={applyFilters} />
       </Modal>
       <StyledJobOffersPage>
         <MenuButton />
