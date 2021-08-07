@@ -1,34 +1,34 @@
-import React, { FC, FormEvent, ChangeEvent, useState } from 'react';
-import { useSelector } from 'react-redux';
+import React, { FC, ChangeEvent, FormEvent, useState } from 'react';
 import styled from 'styled-components';
 
-import { ContractType, Level } from '@typings/graphql';
 import JobOfferFormattingService from '@services/jobOfferFormattingService';
+import AuthenticationService from '@services/authenticationService';
+import {
+  GLOBAL_PADDING,
+  MAX_SALARY,
+  MIN_SALARY,
+  SKILLS,
+} from '@utils/constants/constants';
 import colors from '@styles/colors';
-import { SKILLS } from '@utils/constants/constants';
+import BackButton from '@components/ui/SideButtons/BackButton';
 import Subheader from '@components/ui/Subheader/Subheader';
 import Text from '@components/ui/Text/Text';
 import TextField from '@components/ui/TextField/TextField';
 import TextButton from '@components/ui/TextButtons/TextButton';
-import SelectTextButton from '@components/ui/TextButtons/SelectTextButton';
 import Slider from '@components/ui/Slider/Slider';
-import CloseButton from '@components/ui/SideButtons/CloseButton';
-import { FilterReducers, FiltersData } from '../../store/filter/reducers';
+import SelectTextButton from '@components/ui/TextButtons/SelectTextButton';
+import { Level, ContractType } from '@typings/graphql';
 
-interface FilterPageProps {
-  closeModal?: () => void;
-  applyFilters: (filtersData: any) => void;
-}
-
-const StyledFiltersPage = styled.div`
+const StyledProfilePage = styled.div`
   display: flex;
   flex-direction: column;
-  justify-content: center;
   gap: 40px;
-  margin-top: 30px;
+  padding: ${GLOBAL_PADDING};
+  padding-top: 96px;
+  padding-bottom: 96px;
+  background-color: ${colors.lightBackground};
+  min-height: 100%;
 `;
-
-const CloseButtonWrapper = styled.div``;
 
 const SubheaderWrapper = styled.div`
   display: flex;
@@ -42,7 +42,7 @@ const InputLabelWrapper = styled.div`
   gap: 20px;
 `;
 
-const LocationWrapper = styled.div`
+const InputsWrapper = styled.div`
   display: flex;
   gap: 40px;
 `;
@@ -67,40 +67,36 @@ const SliderWrapper = styled.div`
   width: 100%;
 `;
 
-const ApplyFiltersWrapper = styled.div`
+const SaveSettingsWrapper = styled.div`
   margin-top: 30px;
 `;
 
 const jobOfferFormattingService = new JobOfferFormattingService();
+const authenticationService = new AuthenticationService();
+const user = authenticationService.getUser();
 
-const FiltersPage: FC<FilterPageProps> = ({ closeModal, applyFilters }) => {
-  const filtersData = useSelector<FilterReducers, FiltersData>(
-    (state) => state.filterReducers
+const ProfilePage: FC = () => {
+  const [firstName, setFirstName] = useState(user.firstName || '');
+  const [lastName, setLastName] = useState(user.lastName || '');
+  const [age, setAge] = useState(user.age || '');
+  const [gender, setGender] = useState(user.gender || '');
+  const [experienceYears, setExperienceYears] = useState(
+    user.experienceYears || ''
   );
+  const [githubLink, setGithubLink] = useState(user.githubLink || '');
+  const [linkedinLink, setLinkedinLink] = useState(user.linkedinLink || '');
+  const [country, setCountry] = useState(user.address?.country || '');
+  const [city, setCity] = useState(user.address?.city || '');
+  const [salary, setSalary] = useState([
+    user.minSalary || MIN_SALARY,
+    user.maxSalary || MAX_SALARY,
+  ]);
+  const [skills, setSkills] = useState(user.skills || []);
+  const [levels, setLevels] = useState<Array<Level>>([]);
+  const [contractTypes, setContractTypes] = useState<Array<ContractType>>([]);
 
-  const sliderMinSalary = filtersData.minSalary / 1000;
-  const sliderMaxSalary = filtersData.maxSalary / 1000;
-
-  const [company, setCompany] = useState(filtersData.employer.name);
-  const [country, setCountry] = useState(filtersData.employer.address.country);
-  const [city, setCity] = useState(filtersData.employer.address.city);
-  const [salary, setSalary] = useState([sliderMinSalary, sliderMaxSalary]);
-  const [skills, setSkills] = useState<Array<string>>(filtersData.skills);
-  const [levels, setLevels] = useState<Array<Level>>(filtersData.levels);
-  const [contractTypes, setContractTypes] = useState<Array<ContractType>>(
-    filtersData.contractTypes
-  );
-
-  const handleCompany = (event: FormEvent<HTMLInputElement>) => {
-    setCompany(event.currentTarget.value);
-  };
-
-  const handleCountry = (event: FormEvent<HTMLInputElement>) => {
-    setCountry(event.currentTarget.value);
-  };
-
-  const handleCity = (event: FormEvent<HTMLInputElement>) => {
-    setCity(event.currentTarget.value);
+  const handleFirstName = (event: any) => {
+    setFirstName(event.target.value);
   };
 
   const handleSalary = (_event: ChangeEvent<{}>, value: number | number[]) => {
@@ -225,49 +221,47 @@ const FiltersPage: FC<FilterPageProps> = ({ closeModal, applyFilters }) => {
     ));
   };
 
-  const getCurrentFiltersData = () => {
-    const [minSalary, maxSalary] = salary;
-    return {
-      employer: { name: company, address: { country, city } },
-      minSalary: minSalary * 1000,
-      maxSalary: maxSalary * 1000,
-      skills,
-      levels,
-      contractTypes,
-    };
-  };
-
   const skillsTextButtons = getSkillsTextButtons();
 
   const levelsTextButtons = getLevelsTextButtons();
 
   const contractTypesTextButtons = getContractTypesTextButtons();
 
-  const currentFiltersData = getCurrentFiltersData();
-
   return (
-    <StyledFiltersPage>
-      <CloseButtonWrapper>
-        <CloseButton handleClick={closeModal} />
-      </CloseButtonWrapper>
+    <StyledProfilePage>
+      <BackButton />
       <SubheaderWrapper>
-        <Subheader>Set Filters</Subheader>
+        <Subheader>Profile</Subheader>
       </SubheaderWrapper>
-      <InputLabelWrapper>
-        <Text size={35} weight={600}>
-          Company
-        </Text>
-        <TextField
-          type="text"
-          alt="company"
-          name="company"
-          placeholder="Type company..."
-          value={company}
-          border
-          handleChange={handleCompany}
-        />
-      </InputLabelWrapper>
-      <LocationWrapper>
+
+      <InputsWrapper>
+        <InputLabelWrapper>
+          <Text size={35} weight={600}>
+            First Name
+          </Text>
+          <TextField
+            type="text"
+            alt="first name"
+            name="first name"
+            placeholder="Type first name..."
+            border
+          />
+        </InputLabelWrapper>
+        <InputLabelWrapper>
+          <Text size={35} weight={600}>
+            Last name
+          </Text>
+          <TextField
+            type="text"
+            alt="last name"
+            name="last name"
+            placeholder="Type last name..."
+            border
+          />
+        </InputLabelWrapper>
+      </InputsWrapper>
+
+      <InputsWrapper>
         <InputLabelWrapper>
           <Text size={35} weight={600}>
             Country
@@ -277,9 +271,7 @@ const FiltersPage: FC<FilterPageProps> = ({ closeModal, applyFilters }) => {
             alt="country"
             name="country"
             placeholder="Type country..."
-            value={country}
             border
-            handleChange={handleCountry}
           />
         </InputLabelWrapper>
         <InputLabelWrapper>
@@ -291,12 +283,37 @@ const FiltersPage: FC<FilterPageProps> = ({ closeModal, applyFilters }) => {
             alt="city"
             name="city"
             placeholder="Type city..."
-            value={city}
             border
-            handleChange={handleCity}
           />
         </InputLabelWrapper>
-      </LocationWrapper>
+      </InputsWrapper>
+
+      <InputsWrapper>
+        <InputLabelWrapper>
+          <Text size={35} weight={600}>
+            Age
+          </Text>
+          <TextField
+            type="number"
+            alt="age"
+            name="age"
+            placeholder="Type age..."
+            border
+          />
+        </InputLabelWrapper>
+        <InputLabelWrapper>
+          <Text size={35} weight={600}>
+            Experience years
+          </Text>
+          <TextField
+            type="text"
+            alt="experience years"
+            name="experience years"
+            placeholder="Type experience years..."
+            border
+          />
+        </InputLabelWrapper>
+      </InputsWrapper>
 
       <InputLabelWrapper>
         <SalaryWrapper>
@@ -335,22 +352,38 @@ const FiltersPage: FC<FilterPageProps> = ({ closeModal, applyFilters }) => {
         </SelectTextButtonWrapper>
       </InputLabelWrapper>
 
-      <ApplyFiltersWrapper>
-        <TextButton
-          fullWidth
-          flat
-          handleClick={() => applyFilters(currentFiltersData)}
-        >
-          Apply filters
+      <InputLabelWrapper>
+        <Text size={35} weight={600}>
+          Linkedin link
+        </Text>
+        <TextField
+          type="text"
+          alt="linkedin link"
+          name="linkedin link"
+          placeholder="Type linkedin link..."
+          border
+        />
+      </InputLabelWrapper>
+      <InputLabelWrapper>
+        <Text size={35} weight={600}>
+          Github link
+        </Text>
+        <TextField
+          type="text"
+          alt="github link"
+          name="github link"
+          placeholder="Type github link..."
+          border
+        />
+      </InputLabelWrapper>
+
+      <SaveSettingsWrapper>
+        <TextButton fullWidth flat>
+          Save settings
         </TextButton>
-      </ApplyFiltersWrapper>
-    </StyledFiltersPage>
+      </SaveSettingsWrapper>
+    </StyledProfilePage>
   );
 };
 
-FiltersPage.defaultProps = {
-  closeModal: () => {},
-  applyFilters: () => {},
-};
-
-export default FiltersPage;
+export default ProfilePage;

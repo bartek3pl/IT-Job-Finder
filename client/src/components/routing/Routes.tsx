@@ -13,6 +13,7 @@ import RegistrationPage from '@views/Registration/RegistrationPage/RegistrationP
 import LoginPage from '@views/Login/LoginPage/LoginPage';
 import JobOffersMainPage from '@views/JobOffers/JobOffersMainPage/JobOffersMainPage';
 import JobOffersSearchPage from '@views/JobOffers/JobOffersSearchPage/JobOffersSearchPage';
+import ProfilePage from '@views/Profile/ProfilePage';
 
 const Routes: FC = () => (
   <Router>
@@ -25,6 +26,9 @@ const Routes: FC = () => (
       </SecureRoute>
       <SecureRoute exact path={routes.jobOffersSearch}>
         <JobOffersSearchPage />
+      </SecureRoute>
+      <SecureRoute exact path={routes.profile}>
+        <ProfilePage />
       </SecureRoute>
       <Redirect to={routes.login} />
     </Switch>

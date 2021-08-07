@@ -181,6 +181,10 @@ const JobOffersPage: FC = () => {
     handleShowJobs(`?searchText=${searchText}&country=${country}&city=${city}`);
   };
 
+  const handleProfile = () => {
+    history.push(routes.profile);
+  };
+
   const getNearbyJobOffers = () => {
     if (nearbyData && !nearbyLoading && !nearbyError) {
       const { getAllJobOffers } = nearbyData;
@@ -322,7 +326,7 @@ const JobOffersPage: FC = () => {
       </Modal>
       <StyledJobOffersPage>
         <MenuButton />
-        <AvatarButton avatar={avatar} />
+        <AvatarButton avatar={avatar} handleClick={handleProfile} />
 
         <Subheader>Hello {userLogin}</Subheader>
         <Header>Find your perfect job</Header>

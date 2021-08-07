@@ -5,4 +5,5 @@ export default {
   login: '/login',
   jobOffers: '/jobOffers',
   jobOffersSearch: '/search',
+  profile: '/profile',
 };
