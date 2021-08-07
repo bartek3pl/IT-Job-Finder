@@ -1,6 +1,7 @@
 import React, { FC, FormEvent, useState, useEffect } from 'react';
 import styled from 'styled-components';
 import { useQuery } from '@apollo/client';
+import { useDispatch, useSelector } from 'react-redux';
 import { useLocation } from 'react-router-dom';
 
 import {
@@ -22,12 +23,18 @@ import Spinner from '@components/ui/Spinner/Spinner';
 import BackButton from '@components/ui/SideButtons/BackButton';
 import RectangleCard from '@components/ui/Cards/RectangleCard';
 import Modal from '@components/ui/Modal/Modal';
+import Chip from '@components/ui/Chip/Chip';
 import FiltersPage from '@views/Filters/FiltersPage';
+import {
+  getFilters,
+  saveFilters,
+  saveTitle,
+} from '../../../store/filter/actions';
+import { FilterReducers, FiltersData } from '../../../store/filter/reducers';
 
 interface LocationState {
   country: string;
   city: string;
-  searchText: string;
 }
 
 type Filter = 'All Job Offers' | 'Nearby Job Offers';
@@ -81,6 +88,13 @@ const SpinnerWrapper = styled.div`
   margin-top: 150px;
 `;
 
+const ChipWrapper = styled.div`
+  display: flex;
+  flex-wrap: wrap;
+  gap: 20px;
+  margin-top: 30px;
+`;
+
 const hasUrlParameter = (parameter: string) => {
   if (parameter) {
     const queryString = window.location.search;
@@ -95,36 +109,54 @@ let timer: ReturnType<typeof setTimeout>;
 const timeoutValue = INPUT_TIMEOUT_VALUE;
 
 const JobOffersSearchPage: FC = () => {
+  const dispatch = useDispatch();
   const location = useLocation<LocationState>();
 
   const country = location.state.country;
   const city = location.state.city;
-  const mainPageSearchText = location.state.searchText;
   const selectedCheckedFilter =
     hasUrlParameter(country) || hasUrlParameter(city)
       ? NEARBY_JOB_OFFERS_FILTER
       : ALL_JOB_OFFERS_FILTER;
 
-  const [searchText, setSearchText] = useState(mainPageSearchText);
+  const filtersData = useSelector<FilterReducers, FiltersData>(
+    (state) => state.filterReducers
+  );
+
+  const [searchText, setSearchText] = useState(filtersData.title);
   const [currentSearchText, setCurrentSearchText] = useState(searchText);
   const [isUserTyping, setIsUserTyping] = useState(false);
   const [checkedFilter, setCheckedFilter] = useState(selectedCheckedFilter);
   const [offset, setOffset] = useState(0);
   const [isFiltersModalShown, setIsFiltersModalShown] = useState(false);
 
-  const queryAddress =
-    checkedFilter === NEARBY_JOB_OFFERS_FILTER ? { country, city } : null;
+  const getSearchQuery = () => {
+    const queryAddress =
+      checkedFilter === NEARBY_JOB_OFFERS_FILTER ? { country, city } : null;
+
+    return {
+      ...filtersData,
+      employer: { address: queryAddress },
+    };
+  };
+
+  const searchQuery = getSearchQuery();
   const { data, loading, error } = useQuery(GET_ALL_JOB_OFFERS, {
     variables: {
       first: PAGE_SIZE,
       offset,
-      search: { title: searchText, employer: { address: queryAddress } },
+      search: searchQuery,
     },
   });
 
   useEffect(() => {
+    dispatch(getFilters());
+  }, []);
+
+  useEffect(() => {
     if (isUserTyping === false) {
       setSearchText(currentSearchText);
+      dispatch(saveTitle(currentSearchText));
     }
   }, [isUserTyping]);
 
@@ -140,7 +172,10 @@ const JobOffersSearchPage: FC = () => {
     setIsFiltersModalShown(false);
   };
 
-  const applyFilters = () => {};
+  const applyFilters = (filtersData: FiltersData) => {
+    dispatch(saveFilters(filtersData));
+    hideFilterModal();
+  };
 
   const handleKeyUp = () => {
     clearTimeout(timer);
@@ -210,9 +245,45 @@ const JobOffersSearchPage: FC = () => {
     return 0;
   };
 
+  const getSelectedFilters = () => {
+    const { employer, skills, levels, contractTypes } = filtersData;
+    const { name, address } = employer;
+    const { country, city } = address;
+    const formattedLevels = jobOfferFormattingService
+      .formatLevels(levels)
+      .split(', ');
+
+    return [
+      country,
+      city,
+      name,
+      ...skills,
+      ...formattedLevels,
+      ...contractTypes,
+    ];
+  };
+
+  const createSelectedFiltersChips = () => {
+    const selectedFilters = getSelectedFilters();
+
+    if (selectedFilters?.length) {
+      return selectedFilters
+        .filter((selectedFilter) => selectedFilter !== '')
+        .map((selectedFilter: string) => (
+          <Chip size={30} key={`${selectedFilter}-chip`}>
+            {selectedFilter}
+          </Chip>
+        ));
+    } else {
+      return [];
+    }
+  };
+
   const currentCount = getCurrentCount();
 
   const jobOfferRectangleCards = createJobOffersRectangleCards();
+
+  const selectedFilters = createSelectedFiltersChips();
 
   return (
     <>
@@ -237,6 +308,7 @@ const JobOffersSearchPage: FC = () => {
           />
           <SliderButton handleClick={showFilterModal} />
         </TextFieldWrapper>
+        <ChipWrapper>{selectedFilters}</ChipWrapper>
         <TextWrapper>
           <Text size={30} weight={500}>
             {currentCount} Job Opportunity
@@ -247,19 +319,19 @@ const JobOffersSearchPage: FC = () => {
             size={30}
             verticalPadding={30}
             borderRadius={35}
-            checked={checkedFilter === ALL_JOB_OFFERS_FILTER}
-            handleClick={() => handleCheckedFilter(ALL_JOB_OFFERS_FILTER)}
+            checked={checkedFilter === NEARBY_JOB_OFFERS_FILTER}
+            handleClick={() => handleCheckedFilter(NEARBY_JOB_OFFERS_FILTER)}
           >
-            {ALL_JOB_OFFERS_FILTER}
+            {NEARBY_JOB_OFFERS_FILTER}
           </SelectTextButton>
           <SelectTextButton
             size={30}
             verticalPadding={30}
             borderRadius={35}
-            checked={checkedFilter === NEARBY_JOB_OFFERS_FILTER}
-            handleClick={() => handleCheckedFilter(NEARBY_JOB_OFFERS_FILTER)}
+            checked={checkedFilter === ALL_JOB_OFFERS_FILTER}
+            handleClick={() => handleCheckedFilter(ALL_JOB_OFFERS_FILTER)}
           >
-            {NEARBY_JOB_OFFERS_FILTER}
+            {ALL_JOB_OFFERS_FILTER}
           </SelectTextButton>
         </SelectTextButtonWrapper>
 

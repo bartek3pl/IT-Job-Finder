@@ -1,9 +1,11 @@
 import React, { FC, FormEvent, ChangeEvent, useState } from 'react';
+import { useSelector } from 'react-redux';
 import styled from 'styled-components';
 
 import { ContractType, Level } from '@typings/graphql';
 import JobOfferFormattingService from '@services/jobOfferFormattingService';
 import colors from '@styles/colors';
+import { SKILLS, MIN_SALARY, MAX_SALARY } from '@utils/constants/constants';
 import Subheader from '@components/ui/Subheader/Subheader';
 import Text from '@components/ui/Text/Text';
 import TextField from '@components/ui/TextField/TextField';
@@ -11,10 +13,11 @@ import TextButton from '@components/ui/TextButtons/TextButton';
 import SelectTextButton from '@components/ui/TextButtons/SelectTextButton';
 import Slider from '@components/ui/Slider/Slider';
 import CloseButton from '@components/ui/SideButtons/CloseButton';
+import { FilterReducers, FiltersData } from '../../store/filter/reducers';
 
 interface FilterPageProps {
   closeModal?: () => void;
-  applyFilters?: () => void;
+  applyFilters: (filtersData: any) => void;
 }
 
 const StyledFiltersPage = styled.div`
@@ -69,17 +72,24 @@ const ApplyFiltersWrapper = styled.div`
 `;
 
 const jobOfferFormattingService = new JobOfferFormattingService();
-const MIN_SALARY = 0;
-const MAX_SALARY = 50_000;
 
 const FiltersPage: FC<FilterPageProps> = ({ closeModal, applyFilters }) => {
-  const [company, setCompany] = useState('');
-  const [country, setCountry] = useState('');
-  const [city, setCity] = useState('');
-  const [salary, setSalary] = useState([MIN_SALARY, MAX_SALARY]);
-  const [skills, setSkills] = useState<Array<string>>([]);
-  const [levels, setLevels] = useState<Array<Level>>([]);
-  const [contractTypes, setContractTypes] = useState<Array<ContractType>>([]);
+  const filtersData = useSelector<FilterReducers, FiltersData>(
+    (state) => state.filterReducers
+  );
+
+  const sliderMinSalary = filtersData.minSalary / 1000;
+  const sliderMaxSalary = filtersData.maxSalary / 1000;
+
+  const [company, setCompany] = useState(filtersData.employer.name);
+  const [country, setCountry] = useState(filtersData.employer.address.country);
+  const [city, setCity] = useState(filtersData.employer.address.city);
+  const [salary, setSalary] = useState([sliderMinSalary, sliderMaxSalary]);
+  const [skills, setSkills] = useState<Array<string>>(filtersData.skills);
+  const [levels, setLevels] = useState<Array<Level>>(filtersData.levels);
+  const [contractTypes, setContractTypes] = useState<Array<ContractType>>(
+    filtersData.contractTypes
+  );
 
   const handleCompany = (event: FormEvent<HTMLInputElement>) => {
     setCompany(event.currentTarget.value);
@@ -162,8 +172,7 @@ const FiltersPage: FC<FilterPageProps> = ({ closeModal, applyFilters }) => {
   };
 
   const getSkillsTextButtons = () => {
-    const skills = ['Python', 'JavaScript', 'C++', '.NET'];
-    return skills.map((skill) => (
+    return SKILLS.map((skill) => (
       <SelectTextButton
         size={30}
         verticalPadding={25}
@@ -216,11 +225,25 @@ const FiltersPage: FC<FilterPageProps> = ({ closeModal, applyFilters }) => {
     ));
   };
 
+  const getCurrentFiltersData = () => {
+    const [minSalary, maxSalary] = salary;
+    return {
+      employer: { name: company, address: { country, city } },
+      minSalary: minSalary * 1000,
+      maxSalary: maxSalary * 1000,
+      skills,
+      levels,
+      contractTypes,
+    };
+  };
+
   const skillsTextButtons = getSkillsTextButtons();
 
   const levelsTextButtons = getLevelsTextButtons();
 
   const contractTypesTextButtons = getContractTypesTextButtons();
+
+  const currentFiltersData = getCurrentFiltersData();
 
   return (
     <StyledFiltersPage>
@@ -285,12 +308,7 @@ const FiltersPage: FC<FilterPageProps> = ({ closeModal, applyFilters }) => {
           </Text>
         </SalaryWrapper>
         <SliderWrapper>
-          <Slider
-            value={salary}
-            min={MIN_SALARY}
-            max={MAX_SALARY / 1000}
-            handleChange={handleSalary}
-          />
+          <Slider value={salary} min={0} max={50} handleChange={handleSalary} />
         </SliderWrapper>
       </InputLabelWrapper>
 
@@ -318,7 +336,11 @@ const FiltersPage: FC<FilterPageProps> = ({ closeModal, applyFilters }) => {
       </InputLabelWrapper>
 
       <ApplyFiltersWrapper>
-        <TextButton fullWidth flat handleClick={applyFilters}>
+        <TextButton
+          fullWidth
+          flat
+          handleClick={() => applyFilters(currentFiltersData)}
+        >
           Apply filters
         </TextButton>
       </ApplyFiltersWrapper>

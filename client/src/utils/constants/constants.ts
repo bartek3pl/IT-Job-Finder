@@ -20,3 +20,37 @@ export const USER = 'user';
 export const PAGE_SIZE = 15;
 
 export const INPUT_TIMEOUT_VALUE = 500;
+
+export const MIN_SALARY = 0;
+
+export const MAX_SALARY = 50_000;
+
+export const SKILLS = [
+  'Python',
+  'JavaScript',
+  'TypeScript',
+  'Node.js',
+  'HTML',
+  'CSS',
+  'PHP',
+  'Ruby',
+  'Rust',
+  'Java',
+  'Scala',
+  'Golang',
+  'Flutter',
+  'C++',
+  'C',
+  'C#',
+  '.NET',
+  'SQL',
+  'Docker',
+  'Linux',
+  'Android',
+  'IOS',
+  'Swift',
+  'Unity',
+  'UX',
+  'UI',
+  'Figma',
+];

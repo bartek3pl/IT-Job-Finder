@@ -1740,12 +1740,16 @@
             "deprecationReason": null
           },
           {
-            "name": "contractType",
+            "name": "contractTypes",
             "description": null,
             "type": {
-              "kind": "ENUM",
-              "name": "ContractType",
-              "ofType": null
+              "kind": "LIST",
+              "name": null,
+              "ofType": {
+                "kind": "ENUM",
+                "name": "ContractType",
+                "ofType": null
+              }
             },
             "defaultValue": null,
             "isDeprecated": false,

@@ -1,6 +1,6 @@
 import React, { FC, FormEvent, useState, useEffect } from 'react';
-
 import { useQuery } from '@apollo/client';
+import { useDispatch, useSelector } from 'react-redux';
 import { useHistory } from 'react-router-dom';
 import styled from 'styled-components';
 
@@ -30,6 +30,12 @@ import Spinner from '@components/ui/Spinner/Spinner';
 import Modal from '@components/ui/Modal/Modal';
 import Section from '@components/layout/Section/Section';
 import FiltersPage from '@views/Filters/FiltersPage';
+import {
+  getFilters,
+  saveFilters,
+  saveTitle,
+} from '../../../store/filter/actions';
+import { FilterReducers, FiltersData } from '../../../store/filter/reducers';
 
 const StyledJobOffersPage = styled.div`
   padding: ${GLOBAL_PADDING};
@@ -70,18 +76,6 @@ const ListWrapper = styled.div`
   margin-top: 30px;
 `;
 
-const chips = [
-  <Chip size={30} key="3a">
-    Product
-  </Chip>,
-  <Chip size={30} key="3b">
-    Design
-  </Chip>,
-  <Chip size={30} key="3c">
-    Development
-  </Chip>,
-];
-
 const authenticationService = new AuthenticationService();
 const jobOfferFormattingService = new JobOfferFormattingService();
 
@@ -89,9 +83,14 @@ let timer: ReturnType<typeof setTimeout>;
 const timeoutValue = INPUT_TIMEOUT_VALUE;
 
 const JobOffersPage: FC = () => {
+  const dispatch = useDispatch();
   const history = useHistory();
 
-  const [searchText, setSearchText] = useState('');
+  const filtersData = useSelector<FilterReducers, FiltersData>(
+    (state) => state.filterReducers
+  );
+
+  const [searchText, setSearchText] = useState(filtersData.title);
   const [currentSearchText, setCurrentSearchText] = useState(searchText);
   const [isUserTyping, setIsUserTyping] = useState(false);
   const [offset, setOffset] = useState(0);
@@ -108,7 +107,10 @@ const JobOffersPage: FC = () => {
     variables: {
       first: PAGE_SIZE,
       offset,
-      search: { title: searchText, employer: { address: { country, city } } },
+      search: {
+        ...filtersData,
+        employer: { address: { country, city } },
+      },
     },
   });
   const {
@@ -119,13 +121,18 @@ const JobOffersPage: FC = () => {
     variables: {
       first: PAGE_SIZE,
       offset,
-      search: { title: searchText },
+      search: { ...filtersData },
     },
   });
 
   useEffect(() => {
+    dispatch(getFilters());
+  }, []);
+
+  useEffect(() => {
     if (isUserTyping === false) {
       setSearchText(currentSearchText);
+      dispatch(saveTitle(currentSearchText));
     }
   }, [isUserTyping]);
 
@@ -141,7 +148,8 @@ const JobOffersPage: FC = () => {
     setIsFiltersModalShown(false);
   };
 
-  const applyFilters = () => {
+  const applyFilters = (filtersData: FiltersData) => {
+    dispatch(saveFilters(filtersData));
     hideFilterModal();
   };
 
@@ -258,6 +266,40 @@ const JobOffersPage: FC = () => {
     }
   };
 
+  const getSelectedFilters = () => {
+    const { employer, skills, levels, contractTypes } = filtersData;
+    const { name, address } = employer;
+    const { country, city } = address;
+    const formattedLevels = jobOfferFormattingService
+      .formatLevels(levels)
+      .split(', ');
+
+    return [
+      country,
+      city,
+      name,
+      ...skills,
+      ...formattedLevels,
+      ...contractTypes,
+    ];
+  };
+
+  const createSelectedFiltersChips = () => {
+    const selectedFilters = getSelectedFilters();
+
+    if (selectedFilters?.length) {
+      return selectedFilters
+        .filter((selectedFilter) => selectedFilter !== '')
+        .map((selectedFilter: string) => (
+          <Chip size={30} key={`${selectedFilter}-chip`}>
+            {selectedFilter}
+          </Chip>
+        ));
+    } else {
+      return [];
+    }
+  };
+
   const getUserLogin = () => {
     const authenticationService = new AuthenticationService();
     const user = authenticationService.getUser();
@@ -270,6 +312,8 @@ const JobOffersPage: FC = () => {
   const nearbyJobOffers = createNearbyJobOffers();
 
   const allJobOffers = createAllJobOffers();
+
+  const selectedFilters = createSelectedFiltersChips();
 
   return (
     <>
@@ -297,7 +341,7 @@ const JobOffersPage: FC = () => {
           <SliderButton handleClick={showFilterModal} />
         </TextFieldWrapper>
 
-        <ChipWrapper>{chips}</ChipWrapper>
+        <ChipWrapper>{selectedFilters}</ChipWrapper>
 
         <Section
           primaryText="Nearby jobs"

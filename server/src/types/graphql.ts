@@ -205,7 +205,7 @@ export type JobOfferSearch = {
   skills?: Maybe<Array<Scalars['String']>>;
   experienceYears?: Maybe<Scalars['Int']>;
   levels?: Maybe<Array<Maybe<Level>>>;
-  contractType?: Maybe<ContractType>;
+  contractTypes?: Maybe<Array<Maybe<ContractType>>>;
 };
 
 export type JobOffersResponse = Response & {

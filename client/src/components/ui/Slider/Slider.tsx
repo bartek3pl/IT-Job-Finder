@@ -24,19 +24,16 @@ const PrettoSlider = withStyles({
     color: colors.contrast,
   },
   thumb: {
-    height: 45,
-    width: 45,
+    height: 50,
+    width: 50,
     backgroundColor: colors.white,
     border: '4px solid currentColor',
-    marginTop: -18,
+    marginTop: -23,
     marginLeft: -12,
     '&:focus, &:hover, &$active': {
       boxShadow: 'inherit',
     },
   },
-  valueLabel: {},
-  mark: {},
-  markLabel: {},
   track: {
     height: 5,
     borderRadius: 5,

@@ -45,7 +45,7 @@ const userQueries = {
         skills,
         experienceYears,
         levels,
-        contractType,
+        contractTypes,
       } = {
         title: '',
         description: '',
@@ -58,7 +58,7 @@ const userQueries = {
         skills: [],
         experienceYears: null,
         levels: null,
-        contractType: null,
+        contractTypes: [],
       },
     }: {
       first: Scalars['Int'];
@@ -103,10 +103,8 @@ const userQueries = {
         experienceYears !== 0
           ? { experienceYears: { $lte: experienceYears } }
           : {},
-        levels ? { levels: { $in: levels } } : {},
-        contractType
-          ? { contractType: { $regex: contractType, $options: 'i' } }
-          : {},
+        levels?.length ? { levels: { $in: levels } } : {},
+        contractTypes?.length ? { contractType: { $in: contractTypes } } : {},
       ],
     };
     const pageInfo = await getPageInfo(JobOffer, query, first, offset);

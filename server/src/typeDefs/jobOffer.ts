@@ -46,7 +46,7 @@ const typeDefs = gql`
     skills: [String!]
     experienceYears: Int
     levels: [Level]
-    contractType: ContractType
+    contractTypes: [ContractType]
   }
 
   type JobOffersResponse implements Response {

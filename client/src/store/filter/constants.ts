@@ -1,0 +1,5 @@
+export default {
+  GET_FILTERS: 'GET_FILTERS',
+  SAVE_FILTERS: 'SAVE_FILTERS',
+  SAVE_TITLE: 'SAVE_TITLE',
+};
