@@ -44,6 +44,8 @@ export const GET_ALL_JOB_OFFERS = gql`
           skills
           levels
           contractType
+          createdDateTime
+          updatedDateTime
         }
       }
     }

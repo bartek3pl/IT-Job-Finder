@@ -28,8 +28,6 @@ const StyledFiltersPage = styled.div`
   margin-top: 30px;
 `;
 
-const CloseButtonWrapper = styled.div``;
-
 const SubheaderWrapper = styled.div`
   display: flex;
   justify-content: center;
@@ -250,9 +248,8 @@ const FiltersPage: FC<FilterPageProps> = ({ closeModal, applyFilters }) => {
 
   return (
     <StyledFiltersPage>
-      <CloseButtonWrapper>
-        <CloseButton handleClick={closeModal} />
-      </CloseButtonWrapper>
+      <CloseButton handleClick={closeModal} />
+
       <SubheaderWrapper>
         <Subheader>Set Filters</Subheader>
       </SubheaderWrapper>

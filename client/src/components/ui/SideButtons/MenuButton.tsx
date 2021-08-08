@@ -4,16 +4,20 @@ import { CgMenuLeftAlt } from 'react-icons/cg';
 import BaseSideButton from '@components/ui/SideButtons/BaseSideButton';
 import color from '@styles/colors';
 
-const MenuButton: FC = () => {
-  const handleClick = () => {
-    // showMenu
-  };
+interface MenuButtonProps {
+  handleClick?: () => void;
+}
 
+const MenuButton: FC<MenuButtonProps> = ({ handleClick }) => {
   return (
     <BaseSideButton handleClick={handleClick}>
       <CgMenuLeftAlt size={60} color={color.primary} />
     </BaseSideButton>
   );
+};
+
+MenuButton.defaultProps = {
+  handleClick: () => {},
 };
 
 export default MenuButton;

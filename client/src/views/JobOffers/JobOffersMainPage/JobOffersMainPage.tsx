@@ -29,6 +29,7 @@ import Spinner from '@components/ui/Spinner/Spinner';
 import Modal from '@components/ui/Modal/Modal';
 import Section from '@components/layout/Section/Section';
 import FiltersPage from '@views/Filters/FiltersPage';
+import MenuPage from '@views/Menu/MenuPage';
 import {
   getFilters,
   saveFilters,
@@ -89,13 +90,12 @@ const JobOffersPage: FC = () => {
     (state) => state.filterReducers
   );
 
-  console.log(authenticationService.getUser());
-
   const [searchText, setSearchText] = useState(filtersData.title);
   const [currentSearchText, setCurrentSearchText] = useState(searchText);
   const [isUserTyping, setIsUserTyping] = useState(false);
   const [offset, setOffset] = useState(0);
   const [isFiltersModalShown, setIsFiltersModalShown] = useState(false);
+  const [isMenuModalShown, setIsMenuModalShown] = useState(false);
 
   const user = authenticationService.getUser();
   const country = user.address?.country || 'PL';
@@ -139,6 +139,14 @@ const JobOffersPage: FC = () => {
 
   const handleCurrentSearchText = (event: FormEvent<HTMLInputElement>) => {
     setCurrentSearchText(event.currentTarget.value);
+  };
+
+  const showMenuModal = () => {
+    setIsMenuModalShown(true);
+  };
+
+  const hideMenuModal = () => {
+    setIsMenuModalShown(false);
   };
 
   const showFilterModal = () => {
@@ -191,9 +199,8 @@ const JobOffersPage: FC = () => {
       const { getAllJobOffers } = nearbyData;
       if (getAllJobOffers?.success) {
         return getAllJobOffers?.results?.jobOffers;
-      } else {
-        return [];
       }
+      return [];
     }
   };
 
@@ -202,9 +209,8 @@ const JobOffersPage: FC = () => {
       const { getAllJobOffers } = allData;
       if (getAllJobOffers?.success) {
         return getAllJobOffers?.results?.jobOffers;
-      } else {
-        return [];
       }
+      return [];
     }
   };
 
@@ -236,9 +242,8 @@ const JobOffersPage: FC = () => {
           />
         );
       });
-    } else {
-      return [];
     }
+    return [];
   };
 
   const createAllJobOffers = () => {
@@ -266,9 +271,8 @@ const JobOffersPage: FC = () => {
           />
         );
       });
-    } else {
-      return [];
     }
+    return [];
   };
 
   const getSelectedFilters = () => {
@@ -300,9 +304,8 @@ const JobOffersPage: FC = () => {
             {selectedFilter}
           </Chip>
         ));
-    } else {
-      return [];
     }
+    return [];
   };
 
   const getUserLogin = () => {
@@ -322,11 +325,14 @@ const JobOffersPage: FC = () => {
 
   return (
     <>
-      <Modal show={isFiltersModalShown}>
+      <Modal show={isFiltersModalShown} appearFrom="bottom">
         <FiltersPage closeModal={hideFilterModal} applyFilters={applyFilters} />
       </Modal>
+      <Modal show={isMenuModalShown} appearFrom="left">
+        <MenuPage closeModal={hideMenuModal} selectedPage="Main Menu" />
+      </Modal>
       <StyledJobOffersPage>
-        <MenuButton />
+        <MenuButton handleClick={showMenuModal} />
         <AvatarButton handleClick={handleProfile} />
 
         <Subheader>Hello {userLogin}</Subheader>

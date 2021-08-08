@@ -42,6 +42,31 @@ export const LOGIN = gql`
         githubLink
         linkedinLink
         emailNotification
+        favouriteJobOffers {
+          _id
+          title
+          contractType
+          skills
+          levels
+          employer {
+            name
+            logo
+            employeesNumber
+            address {
+              country
+              city
+              street
+              postalCode
+              buildingNumber
+              apartmentNumber
+            }
+          }
+          minSalary
+          maxSalary
+          createdDateTime
+          updatedDateTime
+          description
+        }
       }
     }
   }
@@ -73,6 +98,31 @@ export const UPDATE_USER = gql`
         githubLink
         linkedinLink
         emailNotification
+        favouriteJobOffers {
+          _id
+          title
+          contractType
+          skills
+          levels
+          employer {
+            name
+            logo
+            employeesNumber
+            address {
+              country
+              city
+              street
+              postalCode
+              buildingNumber
+              apartmentNumber
+            }
+          }
+          minSalary
+          maxSalary
+          createdDateTime
+          updatedDateTime
+          description
+        }
       }
     }
   }

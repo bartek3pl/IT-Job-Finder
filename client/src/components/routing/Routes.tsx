@@ -14,6 +14,7 @@ import LoginPage from '@views/Login/LoginPage/LoginPage';
 import JobOffersMainPage from '@views/JobOffers/JobOffersMainPage/JobOffersMainPage';
 import JobOffersSearchPage from '@views/JobOffers/JobOffersSearchPage/JobOffersSearchPage';
 import ProfilePage from '@views/Profile/ProfilePage';
+import FavouriteJobOffersPage from '@views/JobOffers/FavouriteJobOffersPage/FavouriteJobOffersPage';
 
 const Routes: FC = () => (
   <Router>
@@ -29,6 +30,9 @@ const Routes: FC = () => (
       </SecureRoute>
       <SecureRoute exact path={routes.profile}>
         <ProfilePage />
+      </SecureRoute>
+      <SecureRoute exact path={routes.favouriteJobOffers}>
+        <FavouriteJobOffersPage />
       </SecureRoute>
       <Redirect to={routes.login} />
     </Switch>

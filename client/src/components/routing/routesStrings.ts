@@ -6,4 +6,5 @@ export default {
   jobOffers: '/jobOffers',
   jobOffersSearch: '/search',
   profile: '/profile',
+  favouriteJobOffers: '/favouriteJobOffers',
 };
