@@ -32,7 +32,6 @@ const jobOfferMutations = {
         minSalary,
         maxSalary,
         skills,
-        experienceYears,
         levels,
         contractType,
       },
@@ -74,7 +73,6 @@ const jobOfferMutations = {
         minSalary,
         maxSalary,
         skills,
-        experienceYears,
         levels,
         contractType,
         createdDateTime,
@@ -141,7 +139,6 @@ const jobOfferMutations = {
         minSalary,
         maxSalary,
         skills,
-        experienceYears,
         levels,
         contractType,
       },
@@ -175,7 +172,6 @@ const jobOfferMutations = {
       let updatedMinSalary = minSalary;
       let updatedMaxSalary = maxSalary;
       let updatedSkills = skills;
-      let updatedExperienceYears = experienceYears;
       let updatedLevels = levels;
       let updatedContractType = contractType;
 
@@ -197,9 +193,6 @@ const jobOfferMutations = {
       if (isNullish(updatedSkills)) {
         updatedSkills = jobOffer.skills;
       }
-      if (isNullish(updatedExperienceYears)) {
-        updatedExperienceYears = jobOffer.experienceYears;
-      }
       if (isNullish(updatedLevels)) {
         updatedLevels = jobOffer.levels;
       }
@@ -216,7 +209,6 @@ const jobOfferMutations = {
           minSalary: updatedMinSalary,
           maxSalary: updatedMaxSalary,
           skills: updatedSkills,
-          experienceYears: updatedExperienceYears,
           levels: updatedLevels,
           contractType: updatedContractType,
           updatedDateTime,

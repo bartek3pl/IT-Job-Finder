@@ -2,7 +2,7 @@ import mongoose from 'mongoose';
 
 import { address } from './address';
 import { jobOffer } from './jobOffer';
-import { levels, genders } from './helpers/enums';
+import { levels, genders, contractTypes } from './helpers/enums';
 import C from './helpers/constants';
 
 const user = new mongoose.Schema({
@@ -46,16 +46,15 @@ const user = new mongoose.Schema({
   },
   address: address,
   skills: [String],
-  experienceYears: {
-    type: Number,
-    required: false,
-    min: 0,
-    max: 100,
-  },
   levels: {
     type: [String],
     required: false,
     enum: levels,
+  },
+  contractTypes: {
+    type: [String],
+    required: false,
+    enum: contractTypes,
   },
   minSalary: {
     type: Number,

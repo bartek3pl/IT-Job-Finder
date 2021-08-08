@@ -16,8 +16,8 @@ const typeDefs = gql`
     gender: Gender
     address: UpdateAddressInput
     skills: [String!]
-    experienceYears: Int
     levels: [Level]
+    contractTypes: [ContractType]
     minSalary: Salary
     maxSalary: Salary
     githubLink: String
@@ -26,14 +26,15 @@ const typeDefs = gql`
   }
 
   input UpdateUserInput {
+    email: Email
     firstName: String
     lastName: String
     age: Int
     gender: Gender
     address: UpdateAddressInput
-    skills: [String!]
-    experienceYears: Int
+    skills: [String]
     levels: [Level]
+    contractTypes: [ContractType]
     minSalary: Salary
     maxSalary: Salary
     githubLink: String
@@ -95,8 +96,8 @@ const typeDefs = gql`
     gender: Gender
     address: SearchAddress
     skills: [String!]
-    experienceYears: Int
     levels: [Level]
+    contractTypes: [ContractType]
     minSalary: Salary
     maxSalary: Salary
   }
@@ -113,8 +114,8 @@ const typeDefs = gql`
     gender: Gender
     address: Address
     skills: [String]
-    experienceYears: Int
     levels: [Level]
+    contractTypes: [ContractType]
     minSalary: Salary
     maxSalary: Salary
     githubLink: String

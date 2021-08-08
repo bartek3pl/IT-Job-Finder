@@ -8,7 +8,6 @@ const typeDefs = gql`
     minSalary: Salary
     maxSalary: Salary
     skills: [String!]!
-    experienceYears: Int
     levels: [Level]
     contractType: ContractType
   }
@@ -20,7 +19,6 @@ const typeDefs = gql`
     minSalary: Salary
     maxSalary: Salary
     skills: [String!]
-    experienceYears: Int
     levels: [Level]
     contractType: ContractType
   }
@@ -44,7 +42,6 @@ const typeDefs = gql`
     minSalary: Salary
     maxSalary: Salary
     skills: [String!]
-    experienceYears: Int
     levels: [Level]
     contractTypes: [ContractType]
   }
@@ -65,7 +62,6 @@ const typeDefs = gql`
     minSalary: Salary
     maxSalary: Salary
     skills: [String!]!
-    experienceYears: Int
     levels: [Level]
     contractType: ContractType
     createdDateTime: DateTime!

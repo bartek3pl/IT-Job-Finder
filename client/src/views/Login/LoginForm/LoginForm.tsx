@@ -1,18 +1,24 @@
 import React, { FC, FormEvent, useState, useEffect } from 'react';
+import { useDispatch } from 'react-redux';
 import { useMutation } from '@apollo/client';
 import { useHistory } from 'react-router-dom';
 import { FiArrowRight, FiUser } from 'react-icons/fi';
 import styled from 'styled-components';
 
-import { User as UserType } from '@typings/graphql';
+import { ContractType, Level, User as UserType } from '@typings/graphql';
 import { LOGIN as USER_LOGIN } from '@api/user/mutations';
-import { REGISTRATION } from '@utils/constants/constants';
+import {
+  MAX_SALARY,
+  MIN_SALARY,
+  REGISTRATION,
+} from '@utils/constants/constants';
 import { validateLogin, validatePassword } from '@utils/helpers/validators';
 import AuthenticationService from '@services/authenticationService';
 import routes from '@components/routing/routesStrings';
 import Button from '@components/ui/Buttons/BaseButton';
 import TextField from '@components/ui/TextField/TextField';
 import Spinner from '@components/ui/Spinner/Spinner';
+import { saveFilters } from '../../../store/filter/actions';
 
 const TextFieldsWrapper = styled.div`
   margin-top: 60px;
@@ -30,6 +36,7 @@ const ButtonWrapper = styled.div`
 `;
 
 const LoginForm: FC = () => {
+  const dispatch = useDispatch();
   const history = useHistory();
 
   const [login, setLogin] = useState('');
@@ -65,13 +72,41 @@ const LoginForm: FC = () => {
     setPassword(event.currentTarget.value);
   };
 
+  const getFilters = (user: UserType) => {
+    return {
+      title: '',
+      employer: {
+        name: '',
+        address: {
+          country: user.address?.country || '',
+          city: user.address?.city || '',
+        },
+      },
+      minSalary: user.minSalary || MIN_SALARY,
+      maxSalary: user.maxSalary || MAX_SALARY,
+      skills: (user?.skills || []) as Array<string>,
+      levels: (user.levels || []) as Array<Level>,
+      contractTypes: (user.contractTypes || []) as Array<ContractType>,
+    };
+  };
+
+  const setInitialFilters = (user: UserType) => {
+    const filters = getFilters(user);
+    dispatch(saveFilters(filters));
+  };
+
   const handleSubmit = async (event: FormEvent) => {
     event.preventDefault();
 
     try {
-      await userLogin({
+      const { data } = await userLogin({
         variables: { input: { login, password } },
       });
+      const isSuccess = data?.login?.success;
+      if (isSuccess) {
+        const user = data?.login?.user;
+        setInitialFilters(user);
+      }
     } catch (error) {
       console.error(error);
     }

@@ -181,6 +181,7 @@ const FiltersPage: FC<FilterPageProps> = ({ closeModal, applyFilters }) => {
         border
         handleClick={() => handleSkill(skill)}
         checked={isSkillChecked(skill)}
+        key={skill}
       >
         {skill}
       </SelectTextButton>
@@ -198,6 +199,7 @@ const FiltersPage: FC<FilterPageProps> = ({ closeModal, applyFilters }) => {
         border
         handleClick={() => handleLevel(level)}
         checked={isLevelChecked(level)}
+        key={level}
       >
         {jobOfferFormattingService.lowerAndCapitalizeFirstLetter(level)}
       </SelectTextButton>
@@ -215,6 +217,7 @@ const FiltersPage: FC<FilterPageProps> = ({ closeModal, applyFilters }) => {
         border
         handleClick={() => handleContractType(contractType)}
         checked={isContractTypeChecked(contractType)}
+        key={contractType}
       >
         {contractType === ContractType.Other
           ? jobOfferFormattingService.lowerAndCapitalizeFirstLetter(

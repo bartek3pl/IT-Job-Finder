@@ -17,7 +17,7 @@ interface TextFieldProps {
   alt?: string;
   disabled?: boolean;
   placeholder?: string;
-  value?: string;
+  value?: string | number;
   icon?: ReactElement;
   name?: string;
   error?: string;

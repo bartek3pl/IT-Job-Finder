@@ -44,8 +44,8 @@ const userQueries = {
         gender,
         address,
         skills,
-        experienceYears,
         levels,
+        contractTypes,
         minSalary,
         maxSalary,
       } = {
@@ -60,8 +60,8 @@ const userQueries = {
           city: '',
         },
         skills: [],
-        experienceYears: null,
-        levels: null,
+        levels: [],
+        contractTypes: [],
         minSalary: null,
         maxSalary: null,
       },
@@ -102,10 +102,8 @@ const userQueries = {
             }
           : {},
         skills?.length ? { skills: { $in: skills } } : {},
-        experienceYears || experienceYears === 0
-          ? { experienceYears: { $lte: experienceYears } }
-          : {},
-        levels ? { levels: { $in: levels } } : {},
+        levels?.length ? { levels: { $in: levels } } : {},
+        contractTypes?.length ? { contractTypes: { $in: contractTypes } } : {},
         minSalary ? { minSalary: { $gte: minSalary } } : {},
         maxSalary ? { maxSalary: { $lte: maxSalary } } : {},
       ],

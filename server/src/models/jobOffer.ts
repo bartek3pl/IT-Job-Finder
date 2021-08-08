@@ -28,12 +28,6 @@ const jobOffer = new mongoose.Schema({
     required: false,
   },
   skills: [String],
-  experienceYears: {
-    type: Number,
-    required: false,
-    min: 0,
-    max: 100,
-  },
   levels: {
     type: [String],
     required: false,

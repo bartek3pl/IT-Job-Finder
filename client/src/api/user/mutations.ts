@@ -35,8 +35,39 @@ export const LOGIN = gql`
           apartmentNumber
         }
         skills
-        experienceYears
         levels
+        contractTypes
+        minSalary
+        maxSalary
+        githubLink
+        linkedinLink
+        emailNotification
+      }
+    }
+  }
+`;
+
+export const UPDATE_USER = gql`
+  mutation updateUser($id: ID!, $input: UpdateUserInput) {
+    updateUser(id: $id, input: $input) {
+      code
+      message
+      success
+      user {
+        _id
+        login
+        firstName
+        lastName
+        email
+        age
+        gender
+        address {
+          country
+          city
+        }
+        skills
+        levels
+        contractTypes
         minSalary
         maxSalary
         githubLink

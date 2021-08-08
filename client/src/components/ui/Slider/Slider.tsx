@@ -62,7 +62,6 @@ const CustomSlider: FC<SliderProps> = ({
         value={value}
         onChange={handleChange}
         valueLabelDisplay="on"
-        aria-label="salary-range-slider"
         getAriaValueText={valuetext}
         min={min}
         max={max}

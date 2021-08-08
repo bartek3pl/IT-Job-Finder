@@ -42,7 +42,6 @@ export const GET_ALL_JOB_OFFERS = gql`
           minSalary
           maxSalary
           skills
-          experienceYears
           levels
           contractType
         }

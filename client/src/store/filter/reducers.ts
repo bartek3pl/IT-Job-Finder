@@ -1,4 +1,4 @@
-import { ContractType, Level } from '@typings/graphql';
+import { ContractType, Level, Maybe } from '@typings/graphql';
 import c from './constants';
 import initialState from './initialState';
 

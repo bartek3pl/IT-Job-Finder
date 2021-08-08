@@ -4,7 +4,6 @@ import { useDispatch, useSelector } from 'react-redux';
 import { useHistory } from 'react-router-dom';
 import styled from 'styled-components';
 
-import avatar from '@assets/images/avatar.jpg';
 import {
   GLOBAL_PADDING,
   INPUT_TIMEOUT_VALUE,
@@ -89,6 +88,8 @@ const JobOffersPage: FC = () => {
   const filtersData = useSelector<FilterReducers, FiltersData>(
     (state) => state.filterReducers
   );
+
+  console.log(authenticationService.getUser());
 
   const [searchText, setSearchText] = useState(filtersData.title);
   const [currentSearchText, setCurrentSearchText] = useState(searchText);
@@ -326,7 +327,7 @@ const JobOffersPage: FC = () => {
       </Modal>
       <StyledJobOffersPage>
         <MenuButton />
-        <AvatarButton avatar={avatar} handleClick={handleProfile} />
+        <AvatarButton handleClick={handleProfile} />
 
         <Subheader>Hello {userLogin}</Subheader>
         <Header>Find your perfect job</Header>

@@ -43,7 +43,6 @@ const userQueries = {
         minSalary,
         maxSalary,
         skills,
-        experienceYears,
         levels,
         contractTypes,
       } = {
@@ -56,7 +55,6 @@ const userQueries = {
         minSalary: modelC.minSalary,
         maxSalary: modelC.maxSalary,
         skills: [],
-        experienceYears: null,
         levels: null,
         contractTypes: [],
       },
@@ -100,9 +98,6 @@ const userQueries = {
         minSalary ? { minSalary: { $gte: minSalary } } : {},
         maxSalary ? { maxSalary: { $lte: maxSalary } } : {},
         skills?.length ? { skills: { $in: skills } } : {},
-        experienceYears !== 0
-          ? { experienceYears: { $lte: experienceYears } }
-          : {},
         levels?.length ? { levels: { $in: levels } } : {},
         contractTypes?.length ? { contractType: { $in: contractTypes } } : {},
       ],
