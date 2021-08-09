@@ -8,7 +8,7 @@ const getPageInfo = async (
 ) => {
   const totalCount = await model.count({});
   const currentCount = await model.count(query);
-  const hasMore = offset + first < totalCount;
+  const hasMore = offset + first < currentCount;
 
   return {
     totalCount,

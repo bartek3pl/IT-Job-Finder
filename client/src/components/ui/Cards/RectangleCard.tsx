@@ -17,8 +17,8 @@ import AuthenticationService from '@services/authenticationService';
 import JobOfferFormattingService from '@services/jobOfferFormattingService';
 
 interface RectangleCardProps {
-  company: string;
-  jobTitle: string;
+  company?: string;
+  jobTitle?: string;
   salary?: string;
   location?: string;
   logo?: string | null;

@@ -14,6 +14,9 @@ class JobOfferFormattingService {
     }
 
     if (minSalary && maxSalary) {
+      if (minSalary === maxSalary) {
+        return `PLN ${convertedMinSalary}k`;
+      }
       return `PLN ${convertedMinSalary}-${convertedMaxSalary}k`;
     } else if (minSalary && !maxSalary) {
       return `PLN ${convertedMinSalary}k`;
@@ -96,14 +99,14 @@ class JobOfferFormattingService {
       } else if (hoursDifference <= 24) {
         return `${hoursDifference}h`;
       } else if (hoursDifference > 24) {
-        return `${hoursDifference / 24}d`;
+        return `${Math.floor(hoursDifference / 24)}d`;
       }
       return '';
     }
     return '';
   };
 
-  formatDetails = (jobOffer: JobOffer) => {
+  formatDetails = (jobOffer: Maybe<JobOffer>) => {
     const formattedLocation = this.formatLocation(jobOffer?.employer?.address);
     const formattedLevels = this.formatLevels(jobOffer?.levels);
     const contractType = jobOffer?.contractType;

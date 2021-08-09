@@ -3,7 +3,6 @@ import styled from 'styled-components';
 import { useQuery } from '@apollo/client';
 import { useDispatch, useSelector } from 'react-redux';
 import { useLocation } from 'react-router-dom';
-import InfiniteScroll from 'react-infinite-scroll-component';
 
 import {
   GLOBAL_PADDING,
@@ -11,10 +10,9 @@ import {
   PAGE_SIZE,
 } from '@utils/constants/constants';
 import { GET_ALL_JOB_OFFERS } from '@api/jobOffers/queries';
-import { JobOffer } from '@typings/graphql';
+import { JobOffer, Maybe, JobOffersResponse } from '@typings/graphql';
 import colors from '@styles/colors';
 import JobOfferFormattingService from '@services/jobOfferFormattingService';
-import routes from '@components/routing/routesStrings';
 import Subheader from '@components/ui/Subheader/Subheader';
 import Text from '@components/ui/Text/Text';
 import TextField from '@components/ui/TextField/TextField';
@@ -23,6 +21,7 @@ import SelectTextButton from '@components/ui/TextButtons/SelectTextButton';
 import Spinner from '@components/ui/Spinner/Spinner';
 import BackButton from '@components/ui/SideButtons/BackButton';
 import RectangleCard from '@components/ui/Cards/RectangleCard';
+import TextButton from '@components/ui/TextButtons/TextButton';
 import Modal from '@components/ui/Modal/Modal';
 import Chip from '@components/ui/Chip/Chip';
 import FiltersPage from '@views/Filters/FiltersPage';
@@ -32,6 +31,10 @@ import {
   saveTitle,
 } from '../../../store/filter/actions';
 import { FilterReducers, FiltersData } from '../../../store/filter/reducers';
+
+interface JobOffersData {
+  getAllJobOffers: Maybe<JobOffersResponse>;
+}
 
 interface LocationState {
   country: string;
@@ -74,6 +77,14 @@ const SelectTextButtonWrapper = styled.div`
   margin-top: 40px;
 `;
 
+const ElementsWrapper = styled.div`
+  display: flex;
+  flex-direction: column;
+  gap: 30px;
+  margin-top: 50px;
+  width: '100%';
+`;
+
 const SpinnerWrapper = styled.div`
   display: flex;
   justify-content: center;
@@ -94,6 +105,10 @@ const NoJobOffersWrapper = styled.div`
   align-items: center;
   text-align: center;
   margin: 80px;
+`;
+
+const FetchButtonWrapper = styled.div`
+  margin-top: 50px;
 `;
 
 const hasUrlParameter = (parameter: string) => {
@@ -130,38 +145,43 @@ const JobOffersSearchPage: FC = () => {
   const [checkedFilter, setCheckedFilter] = useState(selectedCheckedFilter);
   const [isFiltersModalShown, setIsFiltersModalShown] = useState(false);
 
-  const [jobOffers, setJobOffers] = useState<Array<JobOffer>>([]);
+  const [jobOffers, setJobOffers] = useState<Maybe<JobOffer>[]>([]);
   const [currentCount, setCurrentCount] = useState(0);
-  const [hasMore, setHasMore] = useState(true);
+  const [hasMore, setHasMore] = useState(false);
   const [offset, setOffset] = useState(0);
 
   const getSearchQuery = () => {
     const queryAddress =
       checkedFilter === NEARBY_JOB_OFFERS_FILTER ? { country, city } : null;
+    if (queryAddress) {
+      return {
+        ...filtersData,
+        employer: { address: queryAddress },
+      };
+    }
     return {
       ...filtersData,
-      employer: { address: queryAddress },
     };
   };
 
-  const getCurrentCount = (data: any) => {
+  const getCurrentCount = (data: JobOffersData) => {
     const isSuccess = data?.getAllJobOffers?.success;
     if (isSuccess) {
-      return data?.getAllJobOffers?.results?.pageInfo?.currentCount;
+      return data?.getAllJobOffers?.results?.pageInfo?.currentCount || 0;
     }
     return 0;
   };
 
-  const getHasMore = (data: any) => {
+  const getHasMore = (data: JobOffersData) => {
     const { getAllJobOffers } = data || {};
     const hasMore = Boolean(getAllJobOffers?.results?.pageInfo?.hasMore);
     return hasMore;
   };
 
-  const getAllJobOffers = (data: any) => {
+  const getAllJobOffers = (data: JobOffersData) => {
     const { getAllJobOffers } = data || {};
     if (getAllJobOffers?.success) {
-      return getAllJobOffers?.results?.jobOffers;
+      return getAllJobOffers?.results?.jobOffers || [];
     }
     return [];
   };
@@ -184,9 +204,8 @@ const JobOffersSearchPage: FC = () => {
   });
 
   const fetchMoreData = async () => {
-    console.log('FETCH');
     const newOffset = (offset + 1) * PAGE_SIZE;
-    const { data } = await fetchMore({
+    const { data } = await fetchMore<any, any>({
       variables: {
         first: PAGE_SIZE,
         offset: newOffset,
@@ -249,28 +268,28 @@ const JobOffersSearchPage: FC = () => {
 
   const createJobOffersRectangleCards = () => {
     if (jobOffers?.length) {
-      return jobOffers.map((jobOffer: JobOffer) => {
+      return jobOffers.map((jobOffer: Maybe<JobOffer>) => {
         const formattedSalary = jobOfferFormattingService.formatSalary(
-          jobOffer.minSalary,
-          jobOffer.maxSalary
+          jobOffer?.minSalary,
+          jobOffer?.maxSalary
         );
         const formattedLocation = jobOfferFormattingService.formatLocation(
-          jobOffer.employer?.address
+          jobOffer?.employer?.address
         );
         const formattedLogo = jobOfferFormattingService.formatLogo(
-          jobOffer.employer?.logo
+          jobOffer?.employer?.logo
         );
 
         return (
           <RectangleCard
-            company={jobOffer.employer?.name}
-            jobTitle={jobOffer.title}
+            company={jobOffer?.employer?.name}
+            jobTitle={jobOffer?.title}
             salary={formattedSalary}
             location={formattedLocation}
             logo={formattedLogo}
-            jobOfferId={jobOffer._id}
-            updatedTime={jobOffer.updatedDateTime}
-            key={`${jobOffer._id}-card`}
+            jobOfferId={jobOffer?._id}
+            updatedTime={jobOffer?.updatedDateTime}
+            key={`${jobOffer?._id}-card`}
           />
         );
       });
@@ -308,9 +327,8 @@ const JobOffersSearchPage: FC = () => {
             {selectedFilter}
           </Chip>
         ));
-    } else {
-      return [];
     }
+    return [];
   };
 
   const noJobOffersComponent = (
@@ -350,7 +368,7 @@ const JobOffersSearchPage: FC = () => {
             name="login"
             placeholder="What are you looking for?"
             value={currentSearchText}
-            handleChange={fetchMoreData}
+            handleChange={handleCurrentSearchText}
             handleKeyDown={handleKeyDown}
             handleKeyUp={handleKeyUp}
           />
@@ -388,26 +406,20 @@ const JobOffersSearchPage: FC = () => {
             <Spinner loading={loading} size={120} />
           </SpinnerWrapper>
         ) : jobOfferRectangleCards?.length ? (
-          <InfiniteScroll
-            dataLength={jobOffers?.length}
-            next={fetchMoreData}
-            hasMore={true}
-            loader={<Spinner loading={loading} size={120} />}
-            endMessage={endMessageComponent}
-            style={{
-              display: 'flex',
-              flexDirection: 'column',
-              gap: '30px',
-              paddingBottom: '5px',
-              marginTop: '50px',
-              width: '100%',
-            }}
-          >
-            {jobOfferRectangleCards}
-          </InfiniteScroll>
+          <ElementsWrapper>{jobOfferRectangleCards}</ElementsWrapper>
         ) : (
           noJobOffersComponent
         )}
+
+        {hasMore ? (
+          <FetchButtonWrapper>
+            <TextButton fullWidth flat handleClick={fetchMoreData}>
+              Fetch more
+            </TextButton>
+          </FetchButtonWrapper>
+        ) : !loading ? (
+          endMessageComponent
+        ) : null}
       </StyledJobOffersSearchPage>
     </>
   );

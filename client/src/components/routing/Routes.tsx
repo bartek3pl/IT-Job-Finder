@@ -34,7 +34,7 @@ const Routes: FC = () => (
       <SecureRoute exact path={routes.favouriteJobOffers}>
         <FavouriteJobOffersPage />
       </SecureRoute>
-      <Redirect to={routes.login} />
+      <Redirect to={routes.starter} />
     </Switch>
   </Router>
 );

@@ -8,7 +8,7 @@ import Text from '@components/ui/Text/Text';
 import colors from '@styles/colors';
 
 interface ListElementProps {
-  jobTitle: string;
+  jobTitle?: string;
   salary?: string;
   details?: string;
   logo?: string;

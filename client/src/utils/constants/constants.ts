@@ -45,6 +45,7 @@ export const SKILLS = [
   '.NET',
   'SQL',
   'Docker',
+  'AWS',
   'Linux',
   'Android',
   'IOS',

@@ -3,7 +3,6 @@ import { useQuery } from '@apollo/client';
 import { useDispatch, useSelector } from 'react-redux';
 import { useHistory } from 'react-router-dom';
 import styled from 'styled-components';
-import InfiniteScroll from 'react-infinite-scroll-component';
 
 import {
   GLOBAL_PADDING,
@@ -11,7 +10,7 @@ import {
   PAGE_SIZE,
 } from '@utils/constants/constants';
 import { GET_ALL_JOB_OFFERS } from '@api/jobOffers/queries';
-import { JobOffer } from '@typings/graphql';
+import { JobOffer, Maybe, JobOffersResponse } from '@typings/graphql';
 import AuthenticationService from '@services/authenticationService';
 import JobOfferFormattingService from '@services/jobOfferFormattingService';
 import colors from '@styles/colors';
@@ -23,6 +22,7 @@ import AvatarButton from '@components/ui/SideButtons/AvatarButton';
 import MenuButton from '@components/ui/SideButtons/MenuButton';
 import Chip from '@components/ui/Chip/Chip';
 import TextField from '@components/ui/TextField/TextField';
+import TextButton from '@components/ui/TextButtons/TextButton';
 import SliderButton from '@components/ui/Buttons/SliderButton';
 import SquareCard from '@components/ui/Cards/SquareCard';
 import ListElement from '@components/ui/ListElement/ListElement';
@@ -38,6 +38,10 @@ import {
   saveTitle,
 } from '../../../store/filter/actions';
 import { FilterReducers, FiltersData } from '../../../store/filter/reducers';
+
+interface JobOffersData {
+  getAllJobOffers: Maybe<JobOffersResponse>;
+}
 
 const StyledJobOffersPage = styled.div`
   padding: ${GLOBAL_PADDING};
@@ -86,6 +90,10 @@ const NoJobOffersWrapper = styled.div`
   margin: 80px;
 `;
 
+const FetchButtonWrapper = styled.div`
+  margin-top: 50px;
+`;
+
 const authenticationService = new AuthenticationService();
 const jobOfferFormattingService = new JobOfferFormattingService();
 
@@ -103,13 +111,31 @@ const JobOffersPage: FC = () => {
   const [searchText, setSearchText] = useState(filtersData.title);
   const [currentSearchText, setCurrentSearchText] = useState(searchText);
   const [isUserTyping, setIsUserTyping] = useState(false);
-  const [offset, setOffset] = useState(0);
   const [isFiltersModalShown, setIsFiltersModalShown] = useState(false);
   const [isMenuModalShown, setIsMenuModalShown] = useState(false);
+
+  const [allJobOffers, setAllJobOffers] = useState<Maybe<JobOffer>[]>([]);
+  const [allHasMore, setAllHasMore] = useState(false);
+  const [allOffset, setAllOffset] = useState(0);
 
   const user = authenticationService.getUser();
   const country = user.address?.country || 'PL';
   const city = user.address?.city || '';
+
+  const getHasMore = (data: JobOffersData) => {
+    const { getAllJobOffers } = data || {};
+    const hasMore = Boolean(getAllJobOffers?.results?.pageInfo?.hasMore);
+    return hasMore;
+  };
+
+  const getJobOffers = (data: JobOffersData) => {
+    const { getAllJobOffers } = data || {};
+    if (getAllJobOffers?.success) {
+      return getAllJobOffers?.results?.jobOffers || [];
+    }
+    return [];
+  };
+
   const {
     data: nearbyData,
     loading: nearbyLoading,
@@ -117,24 +143,44 @@ const JobOffersPage: FC = () => {
   } = useQuery(GET_ALL_JOB_OFFERS, {
     variables: {
       first: PAGE_SIZE,
-      offset,
+      offset: 0,
       search: {
         ...filtersData,
         employer: { address: { country, city } },
       },
     },
   });
-  const {
-    data: allData,
-    loading: allLoading,
-    error: allError,
-  } = useQuery(GET_ALL_JOB_OFFERS, {
+
+  const { loading: allLoading, fetchMore } = useQuery(GET_ALL_JOB_OFFERS, {
     variables: {
       first: PAGE_SIZE,
-      offset,
       search: { ...filtersData },
     },
+    onCompleted: (data) => {
+      const thisJobOffers = getJobOffers(data);
+      const thisHasMore = getHasMore(data);
+
+      setAllJobOffers(thisJobOffers);
+      setAllHasMore(thisHasMore);
+    },
   });
+
+  const allFetchMoreData = async () => {
+    const newOffset = (allOffset + 1) * PAGE_SIZE;
+    const { data } = await fetchMore<any, any>({
+      variables: {
+        first: PAGE_SIZE,
+        offset: newOffset,
+        search: { ...filtersData },
+      },
+    });
+    const thisJobOffers = getJobOffers(data);
+    const thisHasMore = getHasMore(data);
+
+    setAllJobOffers([...allJobOffers, ...thisJobOffers]);
+    setAllHasMore(thisHasMore);
+    setAllOffset(allOffset + 1);
+  };
 
   useEffect(() => {
     dispatch(getFilters());
@@ -214,16 +260,6 @@ const JobOffersPage: FC = () => {
     }
   };
 
-  const getAllJobOffers = () => {
-    if (allData && !allLoading && !allError) {
-      const { getAllJobOffers } = allData;
-      if (getAllJobOffers?.success) {
-        return getAllJobOffers?.results?.jobOffers;
-      }
-      return [];
-    }
-  };
-
   const createNearbyJobOffers = () => {
     const allJobOffers = getNearbyJobOffers();
 
@@ -257,27 +293,25 @@ const JobOffersPage: FC = () => {
   };
 
   const createAllJobOffers = () => {
-    const allJobOffers = getAllJobOffers();
-
     if (allJobOffers?.length) {
-      return allJobOffers.map((jobOffer: JobOffer) => {
+      return allJobOffers.map((jobOffer: Maybe<JobOffer>) => {
         const formattedSalary = jobOfferFormattingService.formatSalary(
-          jobOffer.minSalary,
-          jobOffer.maxSalary
+          jobOffer?.minSalary,
+          jobOffer?.maxSalary
         );
         const formattedLogo = jobOfferFormattingService.formatLogo(
-          jobOffer.employer?.logo
+          jobOffer?.employer?.logo
         );
         const formattedDetails =
           jobOfferFormattingService.formatDetails(jobOffer);
 
         return (
           <ListElement
-            jobTitle={jobOffer.title}
+            jobTitle={jobOffer?.title}
             salary={formattedSalary}
             details={formattedDetails}
             logo={formattedLogo}
-            key={`${jobOffer._id}-listElement`}
+            key={`${jobOffer?._id}-listElement`}
           />
         );
       });
@@ -333,11 +367,19 @@ const JobOffersPage: FC = () => {
     </NoJobOffersWrapper>
   );
 
+  const endMessageComponent = (
+    <NoJobOffersWrapper>
+      <Text size={35} weight={500}>
+        You have viewed all job offers!
+      </Text>
+    </NoJobOffersWrapper>
+  );
+
   const userLogin = getUserLogin();
 
   const nearbyJobOffers = createNearbyJobOffers();
 
-  const allJobOffers = createAllJobOffers();
+  const allJobOffersElements = createAllJobOffers();
 
   const selectedFilters = createSelectedFiltersChips();
 
@@ -401,10 +443,20 @@ const JobOffersPage: FC = () => {
             <Spinner loading={allLoading} size={120} />
           </SpinnerWrapper>
         ) : allJobOffers?.length ? (
-          <ListWrapper>{allJobOffers}</ListWrapper>
+          <ListWrapper>{allJobOffersElements}</ListWrapper>
         ) : (
           noJobOffersComponent
         )}
+
+        {allHasMore ? (
+          <FetchButtonWrapper>
+            <TextButton fullWidth flat handleClick={allFetchMoreData}>
+              Fetch more
+            </TextButton>
+          </FetchButtonWrapper>
+        ) : !allLoading ? (
+          endMessageComponent
+        ) : null}
       </StyledJobOffersPage>
     </>
   );
