@@ -17,6 +17,7 @@ import colors from '@styles/colors';
 import routes from '@components/routing/routesStrings';
 import Header from '@components/ui/Header/Header';
 import Subheader from '@components/ui/Subheader/Subheader';
+import Text from '@components/ui/Text/Text';
 import AvatarButton from '@components/ui/SideButtons/AvatarButton';
 import MenuButton from '@components/ui/SideButtons/MenuButton';
 import Chip from '@components/ui/Chip/Chip';
@@ -74,6 +75,14 @@ const ListWrapper = styled.div`
   flex-direction: column;
   gap: 30px;
   margin-top: 30px;
+`;
+
+const NoJobOffersWrapper = styled.div`
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  text-align: center;
+  margin: 80px;
 `;
 
 const authenticationService = new AuthenticationService();
@@ -315,6 +324,14 @@ const JobOffersPage: FC = () => {
     return userLogin || '';
   };
 
+  const noJobOffersComponent = (
+    <NoJobOffersWrapper>
+      <Text size={35} weight={500}>
+        Sorry, no job offers found. Try to use different filters.
+      </Text>
+    </NoJobOffersWrapper>
+  );
+
   const userLogin = getUserLogin();
 
   const nearbyJobOffers = createNearbyJobOffers();
@@ -364,10 +381,12 @@ const JobOffersPage: FC = () => {
           <SpinnerWrapper>
             <Spinner loading={nearbyLoading} size={120} />
           </SpinnerWrapper>
-        ) : (
+        ) : nearbyJobOffers?.length ? (
           <CardWrapper>
             <Carousel>{nearbyJobOffers}</Carousel>
           </CardWrapper>
+        ) : (
+          noJobOffersComponent
         )}
 
         <Section
@@ -380,8 +399,10 @@ const JobOffersPage: FC = () => {
           <SpinnerWrapper>
             <Spinner loading={allLoading} size={120} />
           </SpinnerWrapper>
-        ) : (
+        ) : allJobOffers?.length ? (
           <ListWrapper>{allJobOffers}</ListWrapper>
+        ) : (
+          noJobOffersComponent
         )}
       </StyledJobOffersPage>
     </>

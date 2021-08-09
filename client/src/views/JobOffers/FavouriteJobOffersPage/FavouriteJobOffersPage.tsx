@@ -2,15 +2,15 @@ import React, { FC, useState } from 'react';
 import { useQuery } from '@apollo/client';
 import styled from 'styled-components';
 
-import { GLOBAL_PADDING, PAGE_SIZE } from '@utils/constants/constants';
+import { GLOBAL_PADDING } from '@utils/constants/constants';
 import { JobOffer } from '@typings/graphql';
 import colors from '@styles/colors';
 import { GET_USER_BY_ID } from '@api/user/queries';
 import AuthenticationService from '@services/authenticationService';
 import JobOfferFormattingService from '@services/jobOfferFormattingService';
-import routes from '@components/routing/routesStrings';
 import Subheader from '@components/ui/Subheader/Subheader';
 import Text from '@components/ui/Text/Text';
+import Spinner from '@components/ui/Spinner/Spinner';
 import MenuButton from '@components/ui/SideButtons/MenuButton';
 import RectangleCard from '@components/ui/Cards/RectangleCard';
 import Modal from '@components/ui/Modal/Modal';
@@ -42,6 +42,21 @@ const SearchJobOffersWrapper = styled.div`
   width: 100%;
 `;
 
+const SpinnerWrapper = styled.div`
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  margin-top: 150px;
+`;
+
+const NoJobOffersWrapper = styled.div`
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  text-align: center;
+  margin: 80px;
+`;
+
 const authenticationService = new AuthenticationService();
 const jobOfferFormattingService = new JobOfferFormattingService();
 
@@ -49,7 +64,6 @@ const user = authenticationService.getUser();
 
 const FavouriteJobOffersPage: FC = () => {
   const [isMenuModalShown, setIsMenuModalShown] = useState(false);
-  const [offset, setOffset] = useState(0);
 
   const { data, loading, error } = useQuery(GET_USER_BY_ID, {
     variables: {
@@ -101,6 +115,7 @@ const FavouriteJobOffersPage: FC = () => {
             location={formattedLocation}
             logo={formattedLogo}
             jobOfferId={jobOffer._id}
+            updatedTime={jobOffer.updatedDateTime}
             key={`${jobOffer._id}-card`}
           />
         );
@@ -119,6 +134,14 @@ const FavouriteJobOffersPage: FC = () => {
     }
     return 0;
   };
+
+  const noJobOffersComponent = (
+    <NoJobOffersWrapper>
+      <Text size={35} weight={500}>
+        Sorry, no you don't have any favourite job offer. Try to add them.
+      </Text>
+    </NoJobOffersWrapper>
+  );
 
   const currentCount = getCurrentCount();
 
@@ -144,7 +167,17 @@ const FavouriteJobOffersPage: FC = () => {
           </Text>
         </TextWrapper>
         <SearchJobOffersWrapper>
-          {jobOfferRectangleCards}
+          {loading ? (
+            <SpinnerWrapper>
+              <Spinner loading={loading} size={120} />
+            </SpinnerWrapper>
+          ) : jobOfferRectangleCards?.length ? (
+            <SearchJobOffersWrapper>
+              {jobOfferRectangleCards}
+            </SearchJobOffersWrapper>
+          ) : (
+            noJobOffersComponent
+          )}
         </SearchJobOffersWrapper>
       </StyledFavouriteJobOffersPage>
     </>

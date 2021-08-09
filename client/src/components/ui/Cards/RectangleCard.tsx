@@ -14,6 +14,7 @@ import Image from '@components/ui/Image/Image';
 import Text from '@components/ui/Text/Text';
 import colors from '@styles/colors';
 import AuthenticationService from '@services/authenticationService';
+import JobOfferFormattingService from '@services/jobOfferFormattingService';
 
 interface RectangleCardProps {
   company: string;
@@ -94,6 +95,7 @@ const RectangleCard: FC<RectangleCardProps> = ({
   salary,
   location,
   logo,
+  updatedTime,
   jobOfferId,
   backgroundColor,
   color,
@@ -185,11 +187,13 @@ const RectangleCard: FC<RectangleCardProps> = ({
     }
   };
 
-  const formatUpdatedTime = () => {
-    return '24h';
+  const getFormattedUpdatedTime = () => {
+    const jobOfferFormattingService = new JobOfferFormattingService();
+    const formattedTime = jobOfferFormattingService.formatTime(updatedTime);
+    return formattedTime;
   };
 
-  const formattedUpdatedTime = formatUpdatedTime();
+  const formattedUpdatedTime = getFormattedUpdatedTime();
 
   return (
     <StyledRectangleCard

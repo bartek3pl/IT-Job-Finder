@@ -95,6 +95,14 @@ const ChipWrapper = styled.div`
   margin-top: 30px;
 `;
 
+const NoJobOffersWrapper = styled.div`
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  text-align: center;
+  margin: 80px;
+`;
+
 const hasUrlParameter = (parameter: string) => {
   if (parameter) {
     const queryString = window.location.search;
@@ -127,8 +135,8 @@ const JobOffersSearchPage: FC = () => {
   const [currentSearchText, setCurrentSearchText] = useState(searchText);
   const [isUserTyping, setIsUserTyping] = useState(false);
   const [checkedFilter, setCheckedFilter] = useState(selectedCheckedFilter);
-  const [offset, setOffset] = useState(0);
   const [isFiltersModalShown, setIsFiltersModalShown] = useState(false);
+  const [offset, setOffset] = useState(0);
 
   const getSearchQuery = () => {
     const queryAddress =
@@ -228,6 +236,7 @@ const JobOffersSearchPage: FC = () => {
             location={formattedLocation}
             logo={formattedLogo}
             jobOfferId={jobOffer._id}
+            updatedTime={jobOffer.updatedDateTime}
             key={`${jobOffer._id}-card`}
           />
         );
@@ -278,6 +287,14 @@ const JobOffersSearchPage: FC = () => {
       return [];
     }
   };
+
+  const noJobOffersComponent = (
+    <NoJobOffersWrapper>
+      <Text size={35} weight={500}>
+        Sorry, no job offers found. Try to use different filters.
+      </Text>
+    </NoJobOffersWrapper>
+  );
 
   const currentCount = getCurrentCount();
 
@@ -339,10 +356,12 @@ const JobOffersSearchPage: FC = () => {
           <SpinnerWrapper>
             <Spinner loading={loading} size={120} />
           </SpinnerWrapper>
-        ) : (
+        ) : jobOfferRectangleCards?.length ? (
           <SearchJobOffersWrapper>
             {jobOfferRectangleCards}
           </SearchJobOffersWrapper>
+        ) : (
+          noJobOffersComponent
         )}
       </StyledJobOffersSearchPage>
     </>

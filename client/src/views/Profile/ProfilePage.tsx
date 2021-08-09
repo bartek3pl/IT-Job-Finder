@@ -104,22 +104,22 @@ const ProfilePage: FC = () => {
   const updateUserData = () => {
     const userData = data?.getUserById?.user;
     if (userData) {
-      setFirstName(userData.firstName || '');
-      setLastName(userData.lastName || '');
-      setEmail(userData.email || '');
-      setCountry(userData.address.country || '');
-      setCity(userData.address.city || '');
-      setGender(userData.gender || '');
-      setAge(userData.age || '');
+      setFirstName(userData?.firstName || '');
+      setLastName(userData?.lastName || '');
+      setEmail(userData?.email || '');
+      setCountry(userData?.address?.country || '');
+      setCity(userData?.address?.city || '');
+      setGender(userData?.gender || '');
+      setAge(userData?.age || '');
       setSalary([
-        (userData.minSalary || MIN_SALARY) / 1000,
-        (userData.maxSalary || MAX_SALARY) / 1000,
+        (userData?.minSalary || MIN_SALARY) / 1000,
+        (userData?.maxSalary || MAX_SALARY) / 1000,
       ]);
-      setSkills(userData.skills || []);
-      setLevels(userData.levels || []);
-      setContractTypes(userData.contractTypes || []);
-      setLinkedinLink(userData.linkedinLink || '');
-      setGithubLink(userData.githubLink || '');
+      setSkills(userData?.skills || []);
+      setLevels(userData?.levels || []);
+      setContractTypes(userData?.contractTypes || []);
+      setLinkedinLink(userData?.linkedinLink || '');
+      setGithubLink(userData?.githubLink || '');
     }
   };
 

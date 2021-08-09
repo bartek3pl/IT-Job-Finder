@@ -70,6 +70,39 @@ class JobOfferFormattingService {
     }
   };
 
+  formatTime = (updatedTime?: string) => {
+    if (updatedTime) {
+      const spaceIndex = updatedTime.indexOf(' ');
+      const dateStr = updatedTime.slice(0, spaceIndex);
+      const timeStr = updatedTime.slice(spaceIndex + 1, updatedTime.length);
+      const [year, month, day] = dateStr.split('-');
+      const [hours, minutes, seconds] = timeStr.split(':');
+      let dateTime = new Date();
+
+      dateTime.setFullYear(+year);
+      dateTime.setMonth(+month - 1);
+      dateTime.setDate(+day);
+      dateTime.setHours(+hours);
+      dateTime.setMinutes(+minutes);
+      dateTime.setSeconds(+seconds);
+
+      const updatedTimeDate = dateTime.getTime();
+      const currentDate = new Date().getTime();
+      const difference = currentDate - updatedTimeDate;
+      const hoursDifference = Math.floor(difference / 1000 / 60 / 60);
+
+      if (hoursDifference === 0) {
+        return '<1h';
+      } else if (hoursDifference <= 24) {
+        return `${hoursDifference}h`;
+      } else if (hoursDifference > 24) {
+        return `${hoursDifference / 24}d`;
+      }
+      return '';
+    }
+    return '';
+  };
+
   formatDetails = (jobOffer: JobOffer) => {
     const formattedLocation = this.formatLocation(jobOffer?.employer?.address);
     const formattedLevels = this.formatLevels(jobOffer?.levels);
