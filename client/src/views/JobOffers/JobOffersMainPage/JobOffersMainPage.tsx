@@ -3,6 +3,7 @@ import { useQuery } from '@apollo/client';
 import { useDispatch, useSelector } from 'react-redux';
 import { useHistory } from 'react-router-dom';
 import styled from 'styled-components';
+import InfiniteScroll from 'react-infinite-scroll-component';
 
 import {
   GLOBAL_PADDING,

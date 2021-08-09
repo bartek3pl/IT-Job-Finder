@@ -12,7 +12,7 @@ const calculateExpirationTime = (expirationSeconds: number) =>
 
 const authService = {
   generateAccessToken: (userId: Scalars['ID']): Token => {
-    const expirationSeconds = 2400; // 40 minutes
+    const expirationSeconds = 4800; // 80 minutes
     const expirationTime = calculateExpirationTime(expirationSeconds);
     const issuedAtDateTime = Date.now();
 
@@ -35,7 +35,7 @@ const authService = {
   },
 
   generateRefreshToken: (userId: Scalars['ID']): Token => {
-    const expirationSeconds = 3600; // 60 minutes
+    const expirationSeconds = 7200; // 120 minutes
     const expirationTime = calculateExpirationTime(expirationSeconds);
 
     const refreshToken = jwt.sign(

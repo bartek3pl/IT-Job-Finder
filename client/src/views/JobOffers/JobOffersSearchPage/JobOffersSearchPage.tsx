@@ -3,6 +3,7 @@ import styled from 'styled-components';
 import { useQuery } from '@apollo/client';
 import { useDispatch, useSelector } from 'react-redux';
 import { useLocation } from 'react-router-dom';
+import InfiniteScroll from 'react-infinite-scroll-component';
 
 import {
   GLOBAL_PADDING,
@@ -73,14 +74,6 @@ const SelectTextButtonWrapper = styled.div`
   margin-top: 40px;
 `;
 
-const SearchJobOffersWrapper = styled.div`
-  display: flex;
-  flex-direction: column;
-  gap: 30px;
-  margin-top: 50px;
-  width: 100%;
-`;
-
 const SpinnerWrapper = styled.div`
   display: flex;
   justify-content: center;
@@ -136,26 +129,79 @@ const JobOffersSearchPage: FC = () => {
   const [isUserTyping, setIsUserTyping] = useState(false);
   const [checkedFilter, setCheckedFilter] = useState(selectedCheckedFilter);
   const [isFiltersModalShown, setIsFiltersModalShown] = useState(false);
+
+  const [jobOffers, setJobOffers] = useState<Array<JobOffer>>([]);
+  const [currentCount, setCurrentCount] = useState(0);
+  const [hasMore, setHasMore] = useState(true);
   const [offset, setOffset] = useState(0);
 
   const getSearchQuery = () => {
     const queryAddress =
       checkedFilter === NEARBY_JOB_OFFERS_FILTER ? { country, city } : null;
-
     return {
       ...filtersData,
       employer: { address: queryAddress },
     };
   };
 
+  const getCurrentCount = (data: any) => {
+    const isSuccess = data?.getAllJobOffers?.success;
+    if (isSuccess) {
+      return data?.getAllJobOffers?.results?.pageInfo?.currentCount;
+    }
+    return 0;
+  };
+
+  const getHasMore = (data: any) => {
+    const { getAllJobOffers } = data || {};
+    const hasMore = Boolean(getAllJobOffers?.results?.pageInfo?.hasMore);
+    return hasMore;
+  };
+
+  const getAllJobOffers = (data: any) => {
+    const { getAllJobOffers } = data || {};
+    if (getAllJobOffers?.success) {
+      return getAllJobOffers?.results?.jobOffers;
+    }
+    return [];
+  };
+
   const searchQuery = getSearchQuery();
-  const { data, loading, error } = useQuery(GET_ALL_JOB_OFFERS, {
+  const { loading, fetchMore } = useQuery(GET_ALL_JOB_OFFERS, {
     variables: {
       first: PAGE_SIZE,
-      offset,
       search: searchQuery,
     },
+    onCompleted: (data) => {
+      const thisJobOffers = getAllJobOffers(data);
+      const thisCurrentCount = getCurrentCount(data);
+      const thisHasMore = getHasMore(data);
+
+      setJobOffers(thisJobOffers);
+      setCurrentCount(thisCurrentCount);
+      setHasMore(thisHasMore);
+    },
   });
+
+  const fetchMoreData = async () => {
+    console.log('FETCH');
+    const newOffset = (offset + 1) * PAGE_SIZE;
+    const { data } = await fetchMore({
+      variables: {
+        first: PAGE_SIZE,
+        offset: newOffset,
+        search: searchQuery,
+      },
+    });
+    const thisJobOffers = getAllJobOffers(data);
+    const thisCurrentCount = getCurrentCount(data);
+    const thisHasMore = getHasMore(data);
+
+    setJobOffers([...jobOffers, ...thisJobOffers]);
+    setCurrentCount(thisCurrentCount);
+    setHasMore(thisHasMore);
+    setOffset(offset + 1);
+  };
 
   useEffect(() => {
     dispatch(getFilters());
@@ -201,22 +247,9 @@ const JobOffersSearchPage: FC = () => {
     setCheckedFilter(filter);
   };
 
-  const getAllJobOffers = () => {
-    if (data && !loading && !error) {
-      const { getAllJobOffers } = data;
-      if (getAllJobOffers?.success) {
-        return getAllJobOffers?.results?.jobOffers;
-      } else {
-        return [];
-      }
-    }
-  };
-
   const createJobOffersRectangleCards = () => {
-    const allJobOffers = getAllJobOffers();
-
-    if (allJobOffers?.length) {
-      return allJobOffers.map((jobOffer: JobOffer) => {
+    if (jobOffers?.length) {
+      return jobOffers.map((jobOffer: JobOffer) => {
         const formattedSalary = jobOfferFormattingService.formatSalary(
           jobOffer.minSalary,
           jobOffer.maxSalary
@@ -244,14 +277,6 @@ const JobOffersSearchPage: FC = () => {
     } else {
       return [];
     }
-  };
-
-  const getCurrentCount = () => {
-    const isSuccess = data?.getAllJobOffers?.success;
-    if (isSuccess) {
-      return data?.getAllJobOffers?.results?.pageInfo?.currentCount;
-    }
-    return 0;
   };
 
   const getSelectedFilters = () => {
@@ -296,7 +321,13 @@ const JobOffersSearchPage: FC = () => {
     </NoJobOffersWrapper>
   );
 
-  const currentCount = getCurrentCount();
+  const endMessageComponent = (
+    <NoJobOffersWrapper>
+      <Text size={35} weight={500}>
+        You have viewed all job offers!
+      </Text>
+    </NoJobOffersWrapper>
+  );
 
   const jobOfferRectangleCards = createJobOffersRectangleCards();
 
@@ -319,7 +350,7 @@ const JobOffersSearchPage: FC = () => {
             name="login"
             placeholder="What are you looking for?"
             value={currentSearchText}
-            handleChange={handleCurrentSearchText}
+            handleChange={fetchMoreData}
             handleKeyDown={handleKeyDown}
             handleKeyUp={handleKeyUp}
           />
@@ -357,9 +388,23 @@ const JobOffersSearchPage: FC = () => {
             <Spinner loading={loading} size={120} />
           </SpinnerWrapper>
         ) : jobOfferRectangleCards?.length ? (
-          <SearchJobOffersWrapper>
+          <InfiniteScroll
+            dataLength={jobOffers?.length}
+            next={fetchMoreData}
+            hasMore={true}
+            loader={<Spinner loading={loading} size={120} />}
+            endMessage={endMessageComponent}
+            style={{
+              display: 'flex',
+              flexDirection: 'column',
+              gap: '30px',
+              paddingBottom: '5px',
+              marginTop: '50px',
+              width: '100%',
+            }}
+          >
             {jobOfferRectangleCards}
-          </SearchJobOffersWrapper>
+          </InfiniteScroll>
         ) : (
           noJobOffersComponent
         )}
