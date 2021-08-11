@@ -97,8 +97,8 @@ module.exports = {
     }),
   ],
   devServer: {
-    host: '0.0.0.0',
-    port: 8080,
+    host: process.env.URL || 'localhost',
+    port: process.env.PORT || 8080,
     historyApiFallback: true,
   },
 };
