@@ -98,7 +98,7 @@ module.exports = {
   ],
   devServer: {
     host: process.env.URL || 'localhost',
-    port: process.env.PORT || 8080,
+    port: process.env.CLIENT_PORT || 8080,
     historyApiFallback: true,
   },
 };

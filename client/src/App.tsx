@@ -21,7 +21,7 @@ const StyledApp = styled.div`
 `;
 
 const httpLink = createHttpLink({
-  uri: `http://${config.URL}:${config.PORT}/graphql`,
+  uri: `http://${config.URL}:${config.SERVER_PORT}/graphql`,
 });
 
 const authLink = setContext((_, { headers }) => {

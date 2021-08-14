@@ -138,7 +138,7 @@ const FavouriteJobOffersPage: FC = () => {
   const noJobOffersComponent = (
     <NoJobOffersWrapper>
       <Text size={35} weight={500}>
-        Sorry, no you don't have any favourite job offer. Try to add them.
+        Sorry, you don't have any favourite job offer. Try to add them.
       </Text>
     </NoJobOffersWrapper>
   );
