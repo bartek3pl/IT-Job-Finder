@@ -5,6 +5,7 @@ import color from '@styles/colors';
 import { GLOBAL_PADDING } from '@utils/constants/constants';
 
 interface BaseSideButtonProps {
+  name?: string;
   handleClick?: () => void;
 }
 
@@ -26,15 +27,20 @@ const StyledBaseSideButton = styled.button`
   }
 `;
 
-const BaseSideButton: FC<BaseSideButtonProps> = ({ children, handleClick }) => {
+const BaseSideButton: FC<BaseSideButtonProps> = ({
+  name,
+  handleClick,
+  children,
+}) => {
   return (
-    <StyledBaseSideButton onClick={handleClick}>
+    <StyledBaseSideButton name={name} onClick={handleClick}>
       {children}
     </StyledBaseSideButton>
   );
 };
 
 BaseSideButton.defaultProps = {
+  name: '',
   handleClick: () => {},
 };
 

@@ -36,7 +36,7 @@ const StyledAvatarButton = styled.button<StyledAvatarButtonProps>`
 
 const AvatarButton: FC<AvatarButtonProps> = ({ avatar, handleClick }) => {
   return (
-    <StyledAvatarButton onClick={handleClick} avatar={avatar}>
+    <StyledAvatarButton onClick={handleClick} avatar={avatar} name="avatar">
       {avatar ? null : <FiUser size={60} />}
     </StyledAvatarButton>
   );

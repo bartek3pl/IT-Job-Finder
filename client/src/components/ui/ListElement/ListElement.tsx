@@ -8,6 +8,7 @@ import Text from '@components/ui/Text/Text';
 import colors from '@styles/colors';
 
 interface ListElementProps {
+  name?: string;
   jobTitle?: string;
   salary?: string;
   details?: string;
@@ -69,6 +70,7 @@ const SalaryWrapper = styled.div`
 `;
 
 const ListElement: FC<ListElementProps> = ({
+  name,
   jobTitle,
   salary,
   details,
@@ -97,6 +99,7 @@ const ListElement: FC<ListElementProps> = ({
 
   return (
     <StyledListElement
+      name={name}
       disabled={disabled}
       onClick={handleClick}
       backgroundColor={backgroundColor}
@@ -149,6 +152,7 @@ const ListElement: FC<ListElementProps> = ({
 };
 
 ListElement.defaultProps = {
+  name: '',
   jobTitle: '',
   details: '',
   logo: '',

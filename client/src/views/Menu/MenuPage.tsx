@@ -57,7 +57,7 @@ const MenuPage: FC<MenuPageProps> = ({ closeModal, selectedPage }) => {
     <StyledMenuPage>
       <CloseButton handleClick={closeModal} />
       <ItemsWrapper>
-        <ItemWrapper onClick={redirectToMainMenuPage}>
+        <ItemWrapper name="Main Menu" onClick={redirectToMainMenuPage}>
           <Text
             size={50}
             weight={600}
@@ -68,7 +68,10 @@ const MenuPage: FC<MenuPageProps> = ({ closeModal, selectedPage }) => {
             Main Menu
           </Text>
         </ItemWrapper>
-        <ItemWrapper onClick={redirectToFavouriteJobOffersPage}>
+        <ItemWrapper
+          name="Favourite Job Offers"
+          onClick={redirectToFavouriteJobOffersPage}
+        >
           <Text
             size={50}
             weight={600}

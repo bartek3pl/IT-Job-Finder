@@ -16,6 +16,7 @@ import colors from '@styles/colors';
 import AuthenticationService from '@services/authenticationService';
 
 interface SquareCardProps {
+  name?: string;
   company: string;
   jobTitle: string;
   salary?: string;
@@ -83,6 +84,7 @@ const SalaryLocationWrapper = styled.div`
 `;
 
 const SquareCard: FC<SquareCardProps> = ({
+  name,
   company,
   jobTitle,
   salary,
@@ -181,6 +183,7 @@ const SquareCard: FC<SquareCardProps> = ({
 
   return (
     <StyledSquareCard
+      name={name}
       disabled={disabled}
       onClick={handleClick}
       backgroundColor={backgroundColor}
@@ -249,6 +252,7 @@ const SquareCard: FC<SquareCardProps> = ({
 };
 
 SquareCard.defaultProps = {
+  name: '',
   company: '',
   jobTitle: '',
   salary: '',

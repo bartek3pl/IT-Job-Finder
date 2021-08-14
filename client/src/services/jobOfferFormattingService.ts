@@ -68,9 +68,8 @@ class JobOfferFormattingService {
       return levels
         .map((level) => this.capitalizeFirstLetter(level?.toLowerCase()))
         .join(', ');
-    } else {
-      return '';
     }
+    return '';
   };
 
   formatTime = (updatedTime?: string) => {

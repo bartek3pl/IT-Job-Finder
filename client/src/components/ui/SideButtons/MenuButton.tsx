@@ -10,7 +10,7 @@ interface MenuButtonProps {
 
 const MenuButton: FC<MenuButtonProps> = ({ handleClick }) => {
   return (
-    <BaseSideButton handleClick={handleClick}>
+    <BaseSideButton name="menu" handleClick={handleClick}>
       <CgMenuLeftAlt size={60} color={color.primary} />
     </BaseSideButton>
   );

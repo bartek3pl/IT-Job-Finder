@@ -37,7 +37,10 @@ const Section: FC<SectionProps> = ({
         <Text size={45} weight={600}>
           {primaryText}
         </Text>
-        <SecondaryTextWrapper onClick={secondaryTextHandleClick}>
+        <SecondaryTextWrapper
+          onClick={secondaryTextHandleClick}
+          name={secondaryText}
+        >
           <Text size={30} weight={500} color={colors.secondary}>
             {secondaryText}
           </Text>

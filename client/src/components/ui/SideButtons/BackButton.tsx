@@ -13,7 +13,7 @@ const BackButton: FC = () => {
   };
 
   return (
-    <BaseSideButton handleClick={handleClick}>
+    <BaseSideButton name="back" handleClick={handleClick}>
       <FiArrowLeft size={60} color={color.primary} />
     </BaseSideButton>
   );

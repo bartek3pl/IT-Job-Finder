@@ -278,6 +278,7 @@ const JobOffersPage: FC = () => {
 
         return (
           <SquareCard
+            name={jobOffer.title}
             company={jobOffer.employer?.name}
             jobTitle={jobOffer.title}
             salary={formattedSalary}
@@ -307,6 +308,7 @@ const JobOffersPage: FC = () => {
 
         return (
           <ListElement
+            name={jobOffer?.title}
             jobTitle={jobOffer?.title}
             salary={formattedSalary}
             details={formattedDetails}

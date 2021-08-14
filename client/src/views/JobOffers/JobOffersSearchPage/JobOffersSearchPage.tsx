@@ -282,6 +282,7 @@ const JobOffersSearchPage: FC = () => {
 
         return (
           <RectangleCard
+            name={jobOffer?.title}
             company={jobOffer?.employer?.name}
             jobTitle={jobOffer?.title}
             salary={formattedSalary}

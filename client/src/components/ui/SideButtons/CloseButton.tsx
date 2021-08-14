@@ -1,5 +1,4 @@
 import React, { FC } from 'react';
-import { CgMenuLeftAlt } from 'react-icons/cg';
 import { MdClose } from 'react-icons/md';
 
 import BaseSideButton from '@components/ui/SideButtons/BaseSideButton';
@@ -11,7 +10,7 @@ interface CloseButtonProps {
 
 const CloseButton: FC<CloseButtonProps> = ({ handleClick }) => {
   return (
-    <BaseSideButton handleClick={handleClick}>
+    <BaseSideButton name="close" handleClick={handleClick}>
       <MdClose size={60} color={color.primary} />
     </BaseSideButton>
   );

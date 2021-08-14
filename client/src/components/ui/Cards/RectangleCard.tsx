@@ -17,6 +17,7 @@ import AuthenticationService from '@services/authenticationService';
 import JobOfferFormattingService from '@services/jobOfferFormattingService';
 
 interface RectangleCardProps {
+  name?: string;
   company?: string;
   jobTitle?: string;
   salary?: string;
@@ -90,6 +91,7 @@ const HeartWrapper = styled.a`
 `;
 
 const RectangleCard: FC<RectangleCardProps> = ({
+  name,
   company,
   jobTitle,
   salary,
@@ -197,6 +199,7 @@ const RectangleCard: FC<RectangleCardProps> = ({
 
   return (
     <StyledRectangleCard
+      name={name}
       disabled={disabled}
       onClick={handleClick}
       backgroundColor={backgroundColor}
@@ -271,6 +274,7 @@ const RectangleCard: FC<RectangleCardProps> = ({
 };
 
 RectangleCard.defaultProps = {
+  name: '',
   company: '',
   jobTitle: '',
   salary: '',
