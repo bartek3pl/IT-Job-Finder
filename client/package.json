@@ -4,7 +4,7 @@
   "description": "",
   "main": "index.js",
   "scripts": {
-    "start": "webpack serve --open --config webpack.config.js",
+    "start": "webpack serve --open --config webpack.config.js --mode production",
     "build": "webpack --mode production",
     "dev": "webpack serve --open --config webpack.config.js --mode development",
     "deploy": "git add . && git commit -m heroku && git push heroku master",
