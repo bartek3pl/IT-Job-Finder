@@ -100,11 +100,11 @@ var server = new apollo_server_express_1.ApolloServer({
     debug: config_1.default.NODE_ENV === 'development',
 });
 var protocol = 'http';
-var url = 'localhost';
+var url = config_1.default.URL || 'localhost';
 var port = config_1.default.PORT;
 var path = '/graphql';
 var app = express_1.default();
-app.use('*', cors_1.default());
+app.use(cors_1.default());
 server.applyMiddleware({ app: app, path: path });
 app.listen({ port: port }, function () {
     console.log("Apollo Server is listening on " + protocol + "://" + url + ":" + port + path + ".");
