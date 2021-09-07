@@ -1,5 +1,6 @@
 import React, { FC, ChangeEvent, FormEvent, useState, useEffect } from 'react';
 import { useQuery, useMutation } from '@apollo/client';
+import { useHistory } from 'react-router-dom'
 import styled from 'styled-components';
 
 import JobOfferFormattingService from '@services/jobOfferFormattingService';
@@ -79,6 +80,8 @@ const authenticationService = new AuthenticationService();
 const user = authenticationService.getUser();
 
 const ProfilePage: FC = () => {
+  const history = useHistory();
+
   const { data } = useQuery(GET_USER_BY_ID, {
     variables: {
       id: user._id,
@@ -261,6 +264,7 @@ const ProfilePage: FC = () => {
     } catch (error) {
       console.error(error);
     }
+    history.goBack();
   };
 
   const getSkillsTextButtons = () => {
